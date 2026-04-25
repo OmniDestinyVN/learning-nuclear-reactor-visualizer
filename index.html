@@ -1,2302 +1,2168 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-<title>Lò phản ứng hạt nhân mini · Dashboard học tập</title>
-<style>
-  :root{
-    --bg:#03070d;
-    --panel:#08131e;
-    --panel2:#091927;
-    --line:#17324b;
-    --line2:#27415d;
-    --text:#c9d7e3;
-    --muted:#6c8298;
-    --blue:#47c5ff;
-    --cyan:#93e6ff;
-    --green:#36d17d;
-    --amber:#f7c64a;
-    --orange:#ff9f43;
-    --red:#ff5d5d;
-    --violet:#b48cff;
-    --steel:#607387;
-    --concrete:#8c97a4;
-    --graphite:#253240;
-    --amber2:#f4b35c;
-    --coolant2:#6ce7ff;
-    --steam2:#a7ffd0;
-    --heat2:#ff7b59;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;background:radial-gradient(1200px 700px at 50% 5%, #08131e 0%, var(--bg) 55%);color:var(--text);font-family:Consolas, "Courier New", monospace;}
-  body{min-height:100vh;overflow-x:hidden}
-  .wrap{max-width:1440px;margin:0 auto;padding:14px}
-  .topbar{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:12px;flex-wrap:wrap}
-  .title{font-size:19px;letter-spacing:.18em;color:var(--blue);font-weight:800;text-transform:uppercase}
-  .subtitle{font-size:11px;color:var(--muted);letter-spacing:.12em;margin-top:4px}
-  .chiprow{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
-  .chip{border:1px solid var(--line);background:rgba(7,17,28,.78);padding:8px 10px;border-radius:12px;font-size:11px;color:var(--muted)}
-  .chip strong{color:var(--text)}
-  .grid{display:grid;grid-template-columns:1.55fr .95fr;gap:12px}
-  .panel{background:linear-gradient(180deg, rgba(12,22,35,.95), rgba(7,17,28,.95));border:1px solid rgba(22,48,74,.95);border-radius:18px;box-shadow:0 16px 50px rgba(0,0,0,.34);overflow:hidden}
-  .panel h3{margin:0;padding:14px 16px;border-bottom:1px solid rgba(22,48,74,.85);font-size:12px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
-  .panel .content{padding:14px 16px}
-  .coreWrap{position:relative}
-  #sceneCanvas{width:100%;height:auto;display:block;aspect-ratio: 1.44 / 1; background:
-      radial-gradient(900px 420px at 50% 46%, rgba(28,68,92,.26) 0%, rgba(12,19,30,.18) 42%, rgba(6,10,16,.72) 100%),
-      linear-gradient(180deg, #071018, #050a11);}
-  .overlayTop{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
-  .overlayBadge{display:inline-flex;align-items:center;gap:8px;background:rgba(7,17,28,.72);border:1px solid rgba(71,197,255,.28);border-radius:14px;padding:8px 12px;font-size:12px;color:var(--cyan);backdrop-filter: blur(4px)}
-  .overlayBadge strong{color:#fff}
-  .overlayBadge.ok{border-color:rgba(54,209,125,.35);color:var(--green)}
-  .overlayBadge.warn{border-color:rgba(247,198,74,.35);color:var(--amber)}
-  .overlayBadge.danger{border-color:rgba(255,93,93,.45);color:var(--red)}
-  .overlayBadge.melt{border-color:rgba(255,93,93,.65);color:#ff9e9e}
-  .overlayHint{background:rgba(4,9,14,.74);border:1px solid rgba(71,197,255,.18);border-radius:12px;padding:8px 12px;max-width:340px;font-size:11px;color:var(--muted);line-height:1.45}
-  .overlayHint strong{color:var(--text)}
-  .overlayGuide{position:absolute;right:12px;top:12px;background:rgba(4,9,14,.72);border:1px solid rgba(71,197,255,.18);border-radius:12px;padding:10px 12px;max-width:320px;font-size:11px;line-height:1.5;color:var(--muted)}
-  .overlayGuide strong{color:var(--text)}
-  .overlayFocus{position:absolute;left:12px;bottom:12px;right:12px;display:flex;gap:10px;align-items:flex-end;pointer-events:none}
-  .focusCard{flex:1;background:rgba(4,9,14,.74);border:1px solid rgba(71,197,255,.18);border-radius:14px;padding:10px 12px;min-height:72px}
-  .focusCard .lab{font-size:10px;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;margin-bottom:6px}
-  .focusCard .msg{font-size:12px;line-height:1.6;color:var(--text)}
-  .focusCard .small{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.5}
-  .focusPill{background:rgba(7,17,28,.72);border:1px solid rgba(71,197,255,.26);border-radius:999px;padding:8px 12px;font-size:11px;color:var(--cyan);white-space:nowrap}
-  .btnrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .btn{border:1px solid var(--line2);background:rgba(8,20,31,.72);color:var(--text);padding:10px 12px;border-radius:12px;cursor:pointer;font-family:inherit;font-size:12px;letter-spacing:.06em;transition:.15s ease}
-  .btn:hover{transform:translateY(-1px);border-color:var(--blue);box-shadow:0 0 0 1px rgba(71,197,255,.06)}
-  .btn.on{background:rgba(71,197,255,.12);border-color:rgba(71,197,255,.62);color:var(--cyan)}
-  .btn.negative{background:rgba(255,93,93,.1);border-color:rgba(255,93,93,.45);color:#ffadad}
-  .btn.soft{opacity:.9}
-  .section{margin-top:12px;padding-top:12px;border-top:1px solid rgba(22,48,74,.75)}
-  .sliderBlock{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:14px;padding:12px}
-  .sliderHeader{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
-  .label{font-size:11px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase}
-  .bigValue{font-size:26px;color:var(--green);font-weight:800;letter-spacing:.06em}
-  input[type=range]{width:100%;accent-color:var(--blue)}
-  .scaleRow{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);margin-top:6px}
-  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-  .metric{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:14px;padding:10px}
-  .metric .k{font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
-  .metric .v{font-size:22px;font-weight:700;line-height:1.1}
-  .metric .u{font-size:10px;color:var(--muted2);margin-top:4px}
-  .metric .n{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.45}
-  .progress{height:10px;border-radius:999px;background:#07111a;border:1px solid rgba(23,50,75,.85);overflow:hidden}
-  .fill{height:100%;width:0;background:linear-gradient(90deg, var(--green), var(--blue));border-radius:999px;transition:width .18s ease}
-  .fill.warn{background:linear-gradient(90deg, var(--amber), var(--orange))}
-  .fill.danger{background:linear-gradient(90deg, var(--orange), var(--red))}
-  .steps{display:grid;gap:8px}
-  .step{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;color:var(--muted)}
-  .step strong{color:var(--text)}
-  .step.on{border-color:rgba(71,197,255,.45);background:rgba(71,197,255,.08);color:var(--text)}
-  .legend{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  .legend div{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:12px;padding:8px 10px;font-size:11px;color:var(--muted);line-height:1.45}
-  .legend strong{color:var(--text)}
-  .smallNote{font-size:11px;color:var(--muted);line-height:1.55;background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:12px;padding:10px 12px}
-  .footerLine{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}
-  .badge{display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(71,197,255,.22);padding:6px 10px}
-  .badge strong{color:var(--text)}
-  .pulse{animation:pulse 1.1s infinite}
-  .shake{animation:shake .25s linear infinite}
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.28}}
-  @keyframes shake{0%,100%{transform:translate(0,0)}25%{transform:translate(-2px,1px)}50%{transform:translate(2px,-1px)}75%{transform:translate(-1px,-1px)}}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard 3 — SMR vs các công nghệ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --bg:#07111f;
+      --panel:#0d1b2a;
+      --panel2:#10253b;
+      --line:#1f3550;
+      --text:#eaf2ff;
+      --muted:#9eb2cb;
+      --accent:#7dd3fc;
+      --accent2:#c4b5fd;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125,211,252,.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(196,181,253,.12), transparent 24%),
+        linear-gradient(180deg, #04101c 0%, #08131f 100%);
+      color:var(--text);
+    }
+    .wrap{max-width:1400px; margin:0 auto; padding:24px;}
+    .hero{
+      background: linear-gradient(135deg, rgba(16,37,59,.88), rgba(9,19,33,.88));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 26px 26px 22px;
+      margin-bottom: 18px;
+    }
+    .eyebrow{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(125,211,252,.09);
+      color:#bfeaff;
+      border:1px solid rgba(125,211,252,.15);
+      font-size:13px;
+      margin-bottom:12px;
+    }
+    h1{margin:0 0 8px; font-size: clamp(28px, 3.2vw, 44px); line-height:1.06}
+    .sub{
+      color:var(--muted);
+      font-size:15px;
+      max-width: 1040px;
+      line-height:1.6;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .section{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(16,37,59,.84), rgba(10,20,34,.84));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .card h2{
+      margin:0 0 12px;
+      font-size:20px;
+    }
+    .muted{color:var(--muted)}
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .chip{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+      cursor:pointer;
+      user-select:none;
+      transition:.15s ease;
+      font-size:14px;
+    }
+    .chip:hover{transform: translateY(-1px); background: rgba(255,255,255,.05)}
+    .swatch{
+      width:12px; height:12px; border-radius:50%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.08);
+    }
+    .top-row{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .stat{
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:14px;
+    }
+    .stat .k{font-size:12px; color:var(--muted); margin-bottom:6px}
+    .stat .v{font-size:24px; font-weight:700}
+    .stat .s{font-size:12px; color:var(--muted); margin-top:4px; line-height:1.45}
+    canvas{max-height:460px}
+    .presetBar{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 10px;}
+    .presetBtn{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+      font-size:13px;
+      transition:.15s ease;
+    }
+    .presetBtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.07)}
+    .decisionBox{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .decisionTitle{font-weight:700; margin-bottom:10px; font-size:15px}
+    .decisionGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+    .decisionItem{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      min-height:72px;
+    }
+    .miniK{font-size:12px; color:var(--muted); margin-bottom:6px}
+    .miniV{font-size:18px; font-weight:700}
+    .decisionHint{margin-top:10px; color:var(--muted); font-size:13px; line-height:1.55}
+    .build{display:grid; gap:14px;}
+    .sliderBox{
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    input[type="range"]{width:100%}
+    .barWrap{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:8px;}
+    .barCard{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      border-radius:18px;
+      padding:14px;
+    }
+    .barHead{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      margin-bottom:10px;
+    }
+    .barTitle{font-weight:700}
+    .bar{
+      height:14px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      position:relative;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .fill.smr{background: linear-gradient(90deg, #60a5fa, #c4b5fd);}
+    .fill.pwr{background: linear-gradient(90deg, #f59e0b, #fb7185);}
+    .notes{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
+    .note{
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      min-height:118px;
+    }
+    .note h3{margin:0 0 8px; font-size:15px}
+    .note p{margin:0; color:var(--muted); line-height:1.6; font-size:13px}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    th, td{
+      padding:12px 12px;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      vertical-align:top;
+      font-size:13px;
+      line-height:1.5;
+    }
+    th{color:#cfe5ff; background: rgba(255,255,255,.04); font-size:13px;}
+    tr:last-child td{border-bottom:none}
+    .tableCard{margin-bottom:18px;}
+    .footer{color:var(--muted); font-size:12px; line-height:1.6; padding: 2px 2px 0;}
+    .miniGrid{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    .mini{
+      padding:10px 8px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .mini strong{
+      display:block;
+      color:var(--text);
+      font-size:16px;
+      margin-top:4px;
+    }
+    .subCard{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .subTitle{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+      font-weight:700;
+    }
+    .warningList{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    .warningItem{
+      position:relative;
+      overflow:hidden;
+      padding:12px;
+      border-radius:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      min-height:104px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 24px rgba(0,0,0,.12);
+    }
+    .warningItem::before{
+      content:"";
+      position:absolute;
+      inset:0 auto auto 0;
+      width:100%;
+      height:3px;
+      background: linear-gradient(90deg, rgba(125,211,252,.75), rgba(196,181,253,.75));
+    }
+    .warningList .warningItem:nth-child(2)::before{background: linear-gradient(90deg, rgba(251,191,36,.8), rgba(251,113,133,.8));}
+    .warningList .warningItem:nth-child(3)::before{background: linear-gradient(90deg, rgba(52,211,153,.8), rgba(96,165,250,.8));}
+    .warningItem .tag{
+      display:inline-flex;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:11px;
+      letter-spacing:.02em;
+      background: rgba(255,255,255,.10);
+      margin-bottom:8px;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .warningItem h4{margin:0 0 6px; font-size:14px}
+    .warningItem p{margin:0; color:var(--muted); font-size:13px; line-height:1.55}
+    .compareWrap{display:grid; gap:10px;}
+    .compareHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .select{
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    .compareRows{display:grid; gap:10px;}
+    .compareRow{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .compareLabel{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      font-size:13px;
+      color:#dbe8f8;
+    }
+    .compareBars{display:grid; gap:8px;}
+    .compareBar{
+      display:grid;
+      grid-template-columns: 72px 1fr 58px;
+      gap:8px;
+      align-items:center;
+      font-size:12px;
+    }
+    .tinyBar{
+      height:10px;
+      background: rgba(255,255,255,.08);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .tinyFill{height:100%; border-radius:999px;}
+    .tinyFill.solar{background: linear-gradient(90deg,#fbbf24,#fde68a)}
+    .tinyFill.other{background: linear-gradient(90deg,#60a5fa,#c4b5fd)}
+    .metricTag{font-size:11px; color:var(--muted); margin-left:6px;}
+    .mixGrid{display:grid; gap:10px;}
+    .mixRow{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mixRow .label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:13px;
+      margin-bottom:8px;
+    }
+    .mixReadout{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    .pill{
+      padding:10px 8px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill strong{
+      display:block;
+      color:var(--text);
+      font-size:16px;
+      margin-top:4px;
+    }
+    .insightBox{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(125,211,252,.18);
+      background: linear-gradient(180deg, rgba(125,211,252,.08), rgba(255,255,255,.03));
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+    }
+    .insightBox h3{margin:0 0 8px; font-size:15px;}
+    .insightBox p{margin:0; color:var(--muted); line-height:1.6; font-size:13px;}
 
-  .specterBadge{position:absolute;right:12px;top:84px;background:rgba(7,17,28,.76);border:1px solid rgba(71,197,255,.22);border-radius:12px;padding:8px 12px;font-size:11px;color:var(--cyan);backdrop-filter:blur(4px);line-height:1.45;max-width:300px}
-  .specterBadge strong{color:var(--text)}
-  .callout2d{position:absolute;background:rgba(4,9,14,.68);border:1px solid rgba(71,197,255,.18);border-radius:12px;padding:8px 10px;box-shadow:0 10px 24px rgba(0,0,0,.2);backdrop-filter:blur(4px)}
-  .callout2d .t{font-size:11px;letter-spacing:.12em;color:var(--cyan);text-transform:uppercase;margin-bottom:4px}
-  .callout2d .s{font-size:10px;line-height:1.35;color:var(--muted)}
-  .callout2d.warn{border-color:rgba(247,198,74,.22)}
-  .callout2d.ok{border-color:rgba(54,209,125,.22)}
-  .miniTooltip{position:absolute;left:0;top:0;z-index:25;min-width:180px;max-width:min(290px,calc(100vw - 36px));pointer-events:none;opacity:0;transform:translate(12px,12px) scale(.98);transition:opacity .12s ease, transform .12s ease;background:linear-gradient(180deg, rgba(7,17,28,.97), rgba(4,9,14,.94));border:1px solid rgba(108,231,255,.34);border-left:3px solid var(--blue);border-radius:14px;padding:10px 12px;box-shadow:0 14px 34px rgba(0,0,0,.38);backdrop-filter:blur(7px)}
-  .miniTooltip.on{opacity:1;transform:translate(12px,12px) scale(1)}
-  .miniTooltip .h{font-size:11px;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase;margin-bottom:4px}
-  .miniTooltip .b{font-size:10.5px;line-height:1.45;color:var(--text)}
-  .miniTooltip .f{font-size:9.5px;line-height:1.35;color:var(--muted);margin-top:6px}
-  .miniTooltip .tag{display:inline-block;font-size:9px;letter-spacing:.16em;color:var(--muted);text-transform:uppercase;margin-bottom:5px}
-  .step.active{border-color:rgba(71,197,255,.56);background:rgba(71,197,255,.12);color:var(--text)}
-  .step.done{border-color:rgba(54,209,125,.34);background:rgba(54,209,125,.08);color:var(--text)}
-  .btn.xray.on{background:rgba(108,231,255,.16);border-color:rgba(108,231,255,.7);color:#efffff;box-shadow:0 0 0 1px rgba(108,231,255,.06)}
-  .guideMask{position:fixed;inset:0;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
-  .guideMask.on{display:flex}
-  .guideCard{max-width:760px;width:100%;background:linear-gradient(180deg, rgba(12,22,35,.98), rgba(7,17,28,.98));border:1px solid rgba(71,197,255,.26);border-radius:20px;box-shadow:0 20px 70px rgba(0,0,0,.5);padding:20px}
-  .guideTitle{font-size:18px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
-  .guideSub{margin-top:8px;color:var(--muted);font-size:12px;line-height:1.6}
-  .guideGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
-  .guideGrid .item{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:14px;padding:12px;color:var(--muted);font-size:12px;line-height:1.6}
-  .guideGrid .item strong{color:var(--text)}
-  .guideActions{display:flex;justify-content:flex-end;gap:10px;margin-top:16px;flex-wrap:wrap}
-  .fatalMask{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:16px;background:radial-gradient(circle at center, rgba(255,60,60,.22) 0%, rgba(120,0,0,.78) 48%, rgba(0,0,0,.92) 100%);backdrop-filter: blur(3px);}
-  .fatalMask.on{display:flex;animation:fatalBlink .42s steps(2,end) infinite;}
-  .fatalCard{width:min(940px,100%);border:1px solid rgba(255,120,120,.55);border-radius:26px;padding:28px 22px 22px;background:linear-gradient(180deg, rgba(110,0,0,.72), rgba(30,0,0,.92));box-shadow:0 24px 90px rgba(0,0,0,.65);text-align:center;transform:scale(1);animation:fatalJolt .18s linear infinite;}
-  .fatalTitle{font-size:clamp(28px,5vw,58px);line-height:1.05;letter-spacing:.20em;color:#fff;text-transform:uppercase;font-weight:900;text-shadow:0 0 14px rgba(255,90,90,.9),0 0 36px rgba(255,90,90,.45);}
-  .fatalSub{margin-top:12px;font-size:clamp(13px,2.1vw,18px);line-height:1.65;color:#ffd9d9;letter-spacing:.04em}
-  .fatalPill{display:inline-flex;align-items:center;gap:8px;margin-top:18px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,200,200,.35);background:rgba(255,255,255,.06);color:#fff;font-size:12px;letter-spacing:.14em;text-transform:uppercase}
-  .fatalPill strong{color:#fff}
-  .fatalActions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
-  .fatalActions .btn{border-color:rgba(255,170,170,.42);color:#ffe5e5;background:rgba(255,255,255,.08)}
-  .fatalActions .btn.negative{background:rgba(255,93,93,.16);border-color:rgba(255,93,93,.65);color:#fff}
-  .screenStatic{position:absolute;inset:0;pointer-events:none;background:
-      linear-gradient(rgba(255,255,255,.05) 50%, rgba(0,0,0,0) 50%),
-      linear-gradient(90deg, rgba(255,70,70,.08), rgba(255,255,255,.02), rgba(255,70,70,.08));
-      background-size:100% 3px, 100% 100%;
-      mix-blend-mode:screen;opacity:.28;animation:staticShift .16s linear infinite}
-  .screenStatic::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(180deg, rgba(255,255,255,.06) 0 1px, transparent 1px 4px);opacity:.28}
-  @keyframes fatalBlink{0%,100%{filter:saturate(1) contrast(1)}50%{filter:saturate(1.35) contrast(1.2)}}
-  @keyframes fatalJolt{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-1px,1px) scale(1.001)}50%{transform:translate(1px,-1px) scale(1.002)}75%{transform:translate(-1px,-1px) scale(.999)}}
-  @keyframes staticShift{0%{transform:translateY(0)}100%{transform:translateY(3px)}}
-  canvas{image-rendering:auto}
-  @media (max-width: 1180px){
-    .grid{grid-template-columns:1fr}
-    .chiprow{justify-content:flex-start}
-  }
-  @media (max-width: 760px){
-    .guideGrid,.metrics,.legend{grid-template-columns:1fr}
-    .overlayGuide{position:static;max-width:none;margin:10px 12px 0}
-    .overlayFocus{position:static;display:block;padding:12px}
-    .focusPill{display:inline-block;margin-top:10px}
-    .miniTooltip{min-width:0;max-width:min(232px,calc(100vw - 32px));padding:9px 10px}
-    .specterBadge{top:auto;bottom:92px;max-width:250px}
-  }
-</style>
+    .timelineBox{
+      margin-top:16px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .timelineGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .timelineCol{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(16,37,59,.5);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .timelineHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .timelineRail{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .timelineStep{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .timelineStep.active{
+      color:var(--text);
+      border-color: rgba(125,211,252,.28);
+      background: rgba(125,211,252,.11);
+    }
+    .pairCard{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mixStacked{
+      display:flex;
+      width:100%;
+      height:18px;
+      overflow:hidden;
+      border-radius:999px;
+      margin:10px 0 12px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mixSeg{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      font-weight:700;
+      color:#08131f;
+      min-width:0;
+      white-space:nowrap;
+      overflow:hidden;
+    }
+    .mixPresetBar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 12px;
+    }
+    .mixPresetBtn{
+      padding:9px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+    }
+    .mixPresetBtn:hover{border-color: rgba(125,211,252,.35); background: rgba(125,211,252,.10);}
+
+    .phaseSwitch{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px;}
+    .phaseBtn{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+    }
+    .phaseBtn.active{background: rgba(125,211,252,.14); border-color: rgba(125,211,252,.32);}
+    .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 10px;}
+    .legendItem{display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border-radius:999px; background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); font-size:12px; color:var(--muted);}
+    .legendDot{width:10px; height:10px; border-radius:999px; flex:0 0 auto;}
+    .phasePanel{padding:14px; border-radius:18px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .phaseGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .phaseStat{padding:12px; border-radius:16px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .phaseStat .miniK{font-size:12px; color:var(--muted); margin-bottom:6px;}
+    .phaseStat .miniV{font-size:18px; font-weight:700;}
+    .radarNoteBox{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(125,211,252,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(125,211,252,.16);
+    }
+    .radarNoteTitle{font-weight:700; margin-bottom:10px;}
+    .radarNoteGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;}
+    .radarNoteItem{padding:12px; border-radius:14px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .radarNoteItem strong{display:block; margin-bottom:6px; font-size:13px;}
+    .radarNoteItem span{color:var(--muted); font-size:12px; line-height:1.45;}
+    .questionLine{
+      margin:0 0 12px;
+      color:#cfe5ff;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .readinessGrid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
+      margin:14px 0 12px;
+    }
+    .toggleCard{
+      position:relative;
+      display:grid;
+      gap:8px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .toggleCard:hover{border-color: rgba(125,211,252,.24);}
+    .toggleCard input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+    .toggleHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .toggleTitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      font-size:14px;
+    }
+    .toggleSwitch{
+      width:44px;
+      height:24px;
+      border-radius:999px;
+      background: rgba(148,163,184,.34);
+      position:relative;
+      flex:0 0 auto;
+      transition:.2s ease;
+    }
+    .toggleSwitch::after{
+      content:"";
+      position:absolute;
+      inset:3px auto auto 3px;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background:#f8fbff;
+      transition:.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,.22);
+    }
+    .toggleCard.active{
+      border-color: rgba(52,211,153,.26);
+      background: linear-gradient(180deg, rgba(52,211,153,.08), rgba(255,255,255,.03));
+    }
+    .toggleCard.active .toggleSwitch{
+      background: linear-gradient(90deg, rgba(52,211,153,.88), rgba(96,165,250,.88));
+    }
+    .toggleCard.active .toggleSwitch::after{
+      transform: translateX(20px);
+    }
+    .toggleHelp{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .statusPanel{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(251,113,133,.22);
+      background: linear-gradient(180deg, rgba(251,113,133,.09), rgba(255,255,255,.03));
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+    }
+    .statusPanel[data-state="good"]{
+      border-color: rgba(52,211,153,.24);
+      background: linear-gradient(180deg, rgba(52,211,153,.10), rgba(255,255,255,.03));
+    }
+    .statusMeta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .statusChip{
+      display:inline-flex;
+      align-items:center;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color:#dce9f9;
+    }
+    .statusTitle{
+      margin:0;
+      font-size:18px;
+    }
+    .statusPanel p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .idcStats{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .idcStat{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .idcStat .miniK{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .idcStat .miniV{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .idcStat p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .constraintGrid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .constraintCard{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .constraintCard .miniK{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .constraintCard .miniV{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .constraintCard p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .flowWrap{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+      gap:12px;
+      align-items:stretch;
+      margin-top:14px;
+    }
+    .flowArrow{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(191,234,255,.72);
+      font-size:28px;
+      line-height:1;
+    }
+    .flowCard{
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .flowCard.locked{
+      opacity:.72;
+      border-style:dashed;
+    }
+    .flowYear{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      margin-bottom:10px;
+    }
+    .taskList{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .taskItem{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .taskItem.done{
+      border-color: rgba(52,211,153,.24);
+      background: linear-gradient(180deg, rgba(52,211,153,.09), rgba(255,255,255,.03));
+    }
+    .taskDot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      margin-top:4px;
+      background: rgba(148,163,184,.5);
+      flex:0 0 auto;
+    }
+    .taskItem.done .taskDot{
+      background: var(--good);
+      box-shadow: 0 0 0 4px rgba(52,211,153,.14);
+    }
+    .taskBody strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+    .taskBody span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .phaseCheck{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+    }
+    .phaseCheck input{
+      margin-top:3px;
+      accent-color:#60a5fa;
+    }
+    .phaseCheck strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+    .phaseCheck span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .phaseCheck.disabled{
+      opacity:.58;
+      cursor:not-allowed;
+    }
+
+    @media (max-width: 1080px){
+      .grid, .section{grid-template-columns:1fr}
+      .flowWrap{grid-template-columns:1fr}
+      .flowArrow{min-height:24px; transform: rotate(90deg);}
+    }
+    @media (max-width: 980px){
+      .top-row, .notes, .miniGrid, .warningList, .mixReadout, .phaseGrid, .readinessGrid, .idcStats, .constraintGrid{grid-template-columns:1fr 1fr}
+      .barWrap{grid-template-columns:1fr;}
+    }
+    @media (max-width: 640px){
+      .top-row, .notes, .miniGrid, .warningList, .mixReadout, .phaseGrid, .readinessGrid, .idcStats, .constraintGrid{grid-template-columns:1fr}
+      .wrap{padding:14px}
+      .hero, .card{padding:16px}
+      .compareBar{grid-template-columns: 58px 1fr 48px;}
+    }
+  </style>
 </head>
 <body>
-<div class="guideMask" id="guideMask" aria-hidden="true">
-  <div class="guideCard">
-    <div class="guideTitle">Lò phản ứng hạt nhân mini · Cách đọc nhanh</div>
-    <div class="guideSub">
-      Đây là mô phỏng giáo dục. Mục tiêu là nhìn được chuỗi nhân quả: neutron → phân hạch → nhiệt → hơi nước → công suất.
-      3D cho phép quan sát cỗ máy theo lớp: vỏ an toàn, bình lò, bơm, bộ tạo hơi, tua-bin và, khi bật X-RAY, cả lõi bên trong.
-    </div>
-    <div class="guideGrid">
-      <div class="item"><strong>2D</strong><br/>Xem mặt cắt để hiểu bối cảnh tổng thể: lõi, cụm nhiên liệu, thanh điều khiển và dòng neutron.</div>
-      <div class="item"><strong>3D</strong><br/>Kéo chuột để quay camera, lăn bánh xe để zoom, WASD / QE để bay quanh máy. Bật X-RAY để thấy bên trong lõi.</div>
-      <div class="item"><strong>k</strong><br/>Thanh trượt điều khiển trạng thái dưới tới hạn / tới hạn / trên tới hạn. Nếu giữ quá lâu ở vùng xấu, nhiệt dư sẽ tích lũy.</div>
-      <div class="item"><strong>SCRAM</strong><br/>Cắm thanh điều khiển xuống nhanh. Phản ứng giảm, nhưng nhiệt dư vẫn còn và phải được làm mát.</div>
-    </div>
-    <div class="guideActions">
-      <button class="btn soft" id="guideClose">Hiểu rồi, vào mô phỏng</button>
-    </div>
-  </div>
-</div>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Dashboard 3 · SMR vs các công nghệ · so sánh trực quan</div>
+      <h1>SMR: điện nền theo pha, không phải cú nhảy vốn.</h1>
+      <div class="sub">
+        Biểu đồ radar dùng điểm chuẩn hóa 0–100 để tránh méo dữ liệu. Tập trung vào 5 chiều: hệ số công suất, ít phát thải, chi phí hệ thống, đất và nước.
+        Phần SMR giữ logic modular để người học thấy rõ sự khác nhau giữa thử nghiệm ban đầu và mở rộng về sau.
+      </div>
+    </section>
 
-<div class="fatalMask" id="fatalOverlay" aria-hidden="true">
-  <div class="fatalCard">
-    <div class="fatalTitle">CẢNH BÁO KHẨN CẤP</div>
-    <div class="fatalSub">
-      Lõi đã vượt ngưỡng hư hỏng nhiệt. SCRAM chỉ dừng chuỗi phân hạch chính; nhiệt dư vẫn tiếp tục tồn tại và phải được làm mát.
-      Đây là tình huống không được “tắt” bằng giao diện mà phải xử lý như một trạng thái vật lí riêng.
-    </div>
-    <div class="fatalPill"><strong>STATE:</strong> MELTDOWN · CÔ LẬP NHIỆT DƯ · MẤT ỔN ĐỊNH LÕI</div>
-    <div class="fatalActions">
-      <button class="btn negative" id="fatalResetBtn">ĐẶT LẠI MÔ PHỎNG</button>
-      <button class="btn soft" id="fatalDismissBtn">CHE CẢNH BÁO</button>
-    </div>
-  </div>
-  <div class="screenStatic"></div>
-</div>
-
-<div class="wrap">
-  <div class="topbar">
-    <div>
-      <div class="title">Lò phản ứng hạt nhân mini</div>
-      <div class="subtitle">Mô phỏng lò nhiệt hạt nhân · ưu tiên trực quan vật lí · 2D / 3D đồng bộ một lõi vật lí</div>
-    </div>
-    <div class="chiprow">
-      <div class="chip"><strong>Nhịp mô phỏng:</strong> 1 s ≈ 5 / 10 thế hệ</div>
-      <div class="chip"><strong>β_eff:</strong> 0.0065</div>
-      <div class="chip"><strong>Chế độ:</strong> <span id="modeText">MÔ PHỎNG</span></div>
-      <div class="chip"><strong>Khung nhìn:</strong> <span id="viewText">MẶT CẮT 2D</span></div>
-    </div>
-  </div>
-
-  <div class="grid">
-    <div class="panel">
-      <h3>Mặt cắt / Không gian 3D</h3>
-      <div class="coreWrap" id="coreWrap">
-        <canvas id="sceneCanvas" width="1024" height="712"></canvas>
-        <div class="overlayTop">
-          <div class="overlayBadge ok" id="statusBadge">BÌNH THƯỜNG</div>
-          <div class="overlayHint" id="sceneHint">
-            <strong>Gợi ý:</strong> lia chuột / chạm vào vật thể để hiện chú thích mini · dùng X-RAY để quan sát lõi.
+    
+    <section class="grid">
+      <div class="card">
+        <h2>Biểu đồ radar</h2>
+        <div class="muted" style="margin-bottom:12px">
+          Bật tắt các nguồn để đọc từng đánh đổi. Mỗi trục có ghi hướng tốt/xấu để dễ theo dõi hơn.
+        </div>
+        <div class="controls" id="techControls"></div>
+        <div class="presetBar">
+          <button class="presetBtn" data-preset="all">Bật tất cả</button>
+          <button class="presetBtn" data-preset="nuclear">Ưu tiên hạt nhân</button>
+          <button class="presetBtn" data-preset="renewables">Ưu tiên tái tạo</button>
+          <button class="presetBtn" data-preset="lowcarbon">Nhìn ít phát thải</button>
+        </div>
+        <div class="top-row">
+          <div class="stat">
+            <div class="k">Trục đang dùng</div>
+            <div class="v">5</div>
+            <div class="s">CF · ít phát thải · chi phí · đất · nước</div>
+          </div>
+          <div class="stat">
+            <div class="k">Cách đọc điểm</div>
+            <div class="v">Cao = tốt</div>
+            <div class="s">Riêng chi phí/đất/nước: mức thực tế càng thấp thì điểm càng cao.</div>
+          </div>
+          <div class="stat">
+            <div class="k">SMR</div>
+            <div class="v">Modular</div>
+            <div class="s">Tăng dần theo module, phù hợp đầu tư theo pha</div>
           </div>
         </div>
-        <div class="overlayGuide" id="cameraGuide">
-          Chạm / lia vào vật thể để mở chú thích mini.
-          Bình thường lõi được che bởi vỏ máy; chỉ nhìn sâu vào trong khi bật X-RAY hoặc zoom rất gần đúng vùng trung tâm.
-        </div>
-        <div class="miniTooltip" id="miniTooltip" aria-hidden="true"></div>
-        <div class="specterBadge" id="specterBadge"><strong>3D HỌC TẬP · LOD 0</strong><br/>Xa: thấy vỏ máy và đường ống · gần đúng vùng lõi mới hé nội thất</div>
-        <div class="overlayFocus">
-          <div class="focusCard">
-            <div class="lab">Đang xem gì</div>
-            <div class="msg" id="stageMsg">Lia chuột hoặc chạm vào vật thể để xem chú thích mini. Dùng X-RAY nếu muốn xem sâu hơn bên trong lõi.</div>
-            <div class="small" id="stageSmall">Bấm “Giải thích từng bước” để bật chuỗi nhân quả.</div>
+        <canvas id="radarChart"></canvas>
+        <div class="radarNoteBox">
+          <div class="radarNoteTitle">Đọc nhanh</div>
+          <div class="radarNoteGrid">
+            <div class="radarNoteItem"><strong>Điện nền</strong><span>SMR và PWR giữ lợi thế ở trục CF.</span></div>
+            <div class="radarNoteItem"><strong>Phát thải</strong><span>Những nguồn sạch nổi lên ở trục này, còn than tụt rất rõ.</span></div>
+            <div class="radarNoteItem"><strong>Chi phí hệ thống</strong><span>Không chỉ nhìn giá nhà máy, mà còn phải nhìn đất, nước và độ ổn định.</span></div>
           </div>
-          <div class="focusPill" id="zoomState">PHÓNG ĐẠI x1.00</div>
+        </div>
+        <div class="decisionBox">
+          <div class="decisionTitle">Tóm tắt nhanh theo các nguồn đang bật</div>
+          <div class="decisionGrid">
+            <div class="decisionItem">
+              <div class="miniK">Điện nền mạnh nhất</div>
+              <div class="miniV" id="bestCF">—</div>
+            </div>
+            <div class="decisionItem">
+              <div class="miniK">Ít phát thải nhất</div>
+              <div class="miniV" id="bestEmission">—</div>
+            </div>
+            <div class="decisionItem">
+              <div class="miniK">Cân bằng nhất</div>
+              <div class="miniV" id="bestBalance">—</div>
+            </div>
+          </div>
+          <div class="decisionHint" id="decisionHint">Chọn một nhóm nguồn để xem công nghệ nổi trội theo góc nhìn đó.</div>
         </div>
       </div>
-    </div>
 
-    <div class="panel">
-      <h3>Điều khiển & Thông số vật lí</h3>
-      <div class="content">
-        <div class="sliderBlock">
-          <div class="sliderHeader">
-            <div class="label">k đặt mục tiêu</div>
-            <div class="bigValue" id="kTargetRead">1.0000</div>
+      <div class="card">
+        <h2>Mô phỏng SMR theo module</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Mô phỏng này không giả lập vật lý lò, mà mô phỏng logic triển khai: công suất tăng theo nấc, vốn rải theo pha, và rủi ro đầu tư không dồn cục như lò lớn.
+          Khi số module còn ít, đây gần như là giai đoạn thử nghiệm an toàn hơn; khi số module tăng, SMR tiến dần về quy mô của lò lớn.
+        </div>
+        <div class="sliderBox">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px">
+            <strong>Số module</strong>
+            <span id="moduleLabel">4 module</span>
           </div>
-          <input id="kSlider" type="range" min="0.95" max="1.05" step="0.0005" value="1.0000" />
-          <div class="scaleRow"><span>0.95 dưới tới hạn</span><span>1.00 tới hạn</span><span>1.05 trên tới hạn</span></div>
-          <div class="btnrow">
-            <button class="btn on" id="demoBtn">MÔ PHỎNG</button>
-            <button class="btn" id="realityBtn">THỰC TẾ</button>
-            <button class="btn soft" id="viewBtn">KHÔNG GIAN 3D</button>
-            <button class="btn soft" id="xrayBtn">X-RAY</button>
-            <button class="btn soft" id="stepBtn">GIẢI THÍCH TỪNG BƯỚC</button>
-            <button class="btn soft" id="zoomBtn">PHÓNG ĐẠI</button>
-            <button class="btn negative" id="scramBtn">NGẮT KHẨN</button>
-            <button class="btn soft" id="resetBtn">ĐẶT LẠI</button>
-          </div>
-          <div class="smallNote" id="controlNote" style="margin-top:10px;">
-            Thanh trượt là lệnh của người vận hành. Mô phỏng dùng k hiệu dụng sau khi tính thanh điều khiển, Doppler, moderator và xenon. Sau SCRAM, nhiệt dư vẫn tồn tại nên lò không thể nguội ngay.
+          <input id="moduleSlider" type="range" min="1" max="12" value="4" />
+          <div class="miniGrid">
+            <div class="mini">Công suất<br><strong id="smrCapacity">308 MW</strong></div>
+            <div class="mini">Tỷ lệ so PWR<br><strong id="smrRatio">31%</strong></div>
+            <div class="mini">Đầu tư pha<br><strong id="smrPhased">Có</strong></div>
+            <div class="mini">Rủi ro IDC<br><strong id="smrIdc">Thấp hơn</strong></div>
+            <div class="mini">Khởi động<br><strong id="smrStart">Từng bước</strong></div>
           </div>
         </div>
 
-        <div class="section">
-          <div class="metrics">
-            <div class="metric">
-              <div class="k">k hiệu dụng</div>
-              <div class="v" id="kEffVal">1.0000</div>
-              <div class="u">k_eff</div>
-              <div class="n" id="kEffNote">tới hạn ổn định</div>
+        <div class="barWrap">
+          <div class="barCard">
+            <div class="barHead">
+              <div class="barTitle">SMR: build theo module</div>
+              <div class="muted" id="smrBarText">4 / 12 module</div>
             </div>
-            <div class="metric">
-              <div class="k">độ phản ứng</div>
-              <div class="v" id="rhoVal">0.0000</div>
-              <div class="u">ρ = (k−1)/k</div>
-              <div class="n" id="rhoNote">gần cân bằng tới hạn</div>
+            <div class="bar"><div class="fill smr" id="smrFill"></div></div>
+          </div>
+
+          <div class="barCard">
+            <div class="barHead">
+              <div class="barTitle">PWR: xây một lần</div>
+              <div class="muted">Dồn vốn một lần</div>
             </div>
-            <div class="metric">
-              <div class="k">neutron</div>
-              <div class="v" id="nVal">60</div>
-              <div class="u">hạt đang được mô phỏng</div>
-              <div class="n">Physics count tách riêng với số hạt hiển thị để tránh nhầm giữa mô hình và hình vẽ.</div>
-            </div>
-            <div class="metric">
-              <div class="k">phân hạch / s</div>
-              <div class="v" id="fissVal">0</div>
-              <div class="u">tốc độ phân hạch</div>
-              <div class="n">Sự kiện phân hạch tạo nhiệt và sinh ra 2–3 neutron mới.</div>
-            </div>
-            <div class="metric">
-              <div class="k">nhiệt nhiên liệu</div>
-              <div class="v" id="fuelVal">285</div>
-              <div class="u">°C</div>
-              <div class="n">Phản hồi Doppler làm độ phản ứng giảm khi nhiên liệu nóng hơn.</div>
-            </div>
-            <div class="metric">
-              <div class="k">nhiệt nước làm mát</div>
-              <div class="v" id="coolVal">275</div>
-              <div class="u">°C</div>
-              <div class="n">Nước làm chậm nóng hơn → làm chậm neutron kém hơn.</div>
-            </div>
-            <div class="metric">
-              <div class="k">công suất nhiệt</div>
-              <div class="v" id="powVal">100%</div>
-              <div class="u">công suất nhiệt</div>
-              <div class="n" id="powNote">đầu ra ổn định</div>
-            </div>
-            <div class="metric">
-              <div class="k">xenon-135</div>
-              <div class="v" id="xeVal">0.0000</div>
-              <div class="u">độ phạt xenon</div>
-              <div class="n">Sau SCRAM hoặc công suất cao, xenon tích lũy rồi làm giảm k.</div>
-            </div>
-            <div class="metric">
-              <div class="k">thanh điều khiển</div>
-              <div class="v" id="rodVal">30%</div>
-              <div class="u">độ chèn</div>
-              <div class="n">Cắm sâu hơn → hấp thụ neutron mạnh hơn.</div>
-            </div>
-            <div class="metric">
-              <div class="k">hơi nước</div>
-              <div class="v" id="steamVal">0%</div>
-              <div class="u">tỉ phần hơi</div>
-              <div class="n">Nhiệt đủ cao thì thành hơi, kéo tua-bin / phát điện.</div>
-            </div>
-            <div class="metric">
-              <div class="k">thời gian hoạt động</div>
-              <div class="v" id="upVal">00:00:00</div>
-              <div class="u">thời gian chạy</div>
-              <div class="n">Thời gian tính từ lúc khởi động mô phỏng.</div>
-            </div>
-            <div class="metric">
-              <div class="k">thời gian sự cố</div>
-              <div class="v" id="incVal">00:00:00</div>
-              <div class="u">đồng hồ sự cố</div>
-              <div class="n">Dùng để thấy vùng nguy hiểm kéo dài bao lâu trước khi quá nhiệt.</div>
+            <div class="bar"><div class="fill pwr" style="width:100%"></div></div>
+            <div class="muted" style="margin-top:10px; font-size:13px; line-height:1.55">
+              PWR là điện nền mạnh, nhưng mô hình đầu tư là “đổ vốn một lần”, nên rủi ro vốn và thời gian lớn hơn.
             </div>
           </div>
         </div>
 
-        <div class="section">
-          <div class="label" style="margin-bottom:8px">Chuỗi quá trình của lò</div>
-          <div class="steps" id="steps">
-            <div class="step" data-step="0"><strong>1.</strong> Neutron bay vào vùng nước làm chậm trong bình lò.</div>
-            <div class="step" data-step="1"><strong>2.</strong> Nước làm chậm neutron; tốc độ giảm để xác suất phân hạch tăng.</div>
-            <div class="step" data-step="2"><strong>3.</strong> Neutron nhiệt được cụm nhiên liệu hấp thụ và gây phân hạch.</div>
-            <div class="step" data-step="3"><strong>4.</strong> Mỗi phân hạch sinh 2–3 neutron mới, đồng thời tạo nhiệt trong lõi.</div>
-            <div class="step" data-step="4"><strong>5.</strong> Nhiệt chuyển sang nước sơ cấp; nếu là PWR, hơi được tạo ở bộ tạo hơi.</div>
-            <div class="step" data-step="5"><strong>6.</strong> Thanh điều khiển và phản hồi Doppler / chất làm chậm giữ k_eff không vượt ngưỡng.</div>
+        <div class="phasePanel">
+          <div class="subTitle">
+            <span>SMR vs PWR</span>
+            <span class="muted" style="font-size:12px">đầu kỳ → về sau</span>
           </div>
-        </div>
-
-        <div class="section">
-          <div class="smallNote">
-            Bấm hoặc lia chuột vào từng phần tử để hiện chú thích. Bảng chú giải cố định đã được bỏ để vùng nhìn sạch hơn; thông tin bây giờ chỉ bật lên khi bạn chạm vào đúng vật thể.
+          <div class="muted" style="margin-bottom:10px; line-height:1.55">
+            Đầu kỳ: SMR cho phép thử nghiệm theo module, giảm cú nhảy vốn đầu tiên. Về sau: khi chuỗi module và cấp phép ổn hơn, SMR có thể tiến gần quy mô của lò lớn nhưng vẫn giữ tính triển khai theo pha.
           </div>
-        </div>
-
-        <div class="section">
-          <div class="smallNote">
-            3D ở đây không phải để “đẹp mắt cho có”. Nó để nhìn thấy một điều quan trọng: neutron bay trong một không gian có nước, các thanh nhiên liệu và thanh điều khiển; khi neutron bị làm chậm và trúng viên nhiên liệu, phân hạch xảy ra ngay tại đó và sinh ra neutron mới cùng nhiệt.
+          <div class="phaseSwitch" id="phaseSwitch">
+            <button class="phaseBtn active" data-phase="early">Đầu kỳ</button>
+            <button class="phaseBtn" data-phase="late">Về sau</button>
           </div>
-        </div>
-
-        <div class="footerLine">
-          <div class="badge"><strong>Luôn bật:</strong> vật lí / trực quan hóa tách lớp</div>
-          <div class="badge"><strong>Ngắt khẩn:</strong> thủ công בלבד</div>
+          <div class="chartLegend" id="phaseLegend">
+            <div class="legendItem"><span class="legendDot" style="background:#c084fc"></span>SMR</div>
+            <div class="legendItem"><span class="legendDot" style="background:#60a5fa"></span>PWR</div>
+          </div>
+          <div class="phaseGrid" style="margin-bottom:12px">
+            <div class="phaseStat">
+              <div class="miniK" id="phaseK1">SMR — đầu kỳ</div>
+              <div class="miniV" id="phaseV1">An toàn hơn cho thử nghiệm</div>
+            </div>
+            <div class="phaseStat">
+              <div class="miniK" id="phaseK2">PWR — đầu kỳ</div>
+              <div class="miniV" id="phaseV2">Cú nhảy vốn lớn</div>
+            </div>
+          </div>
+          <canvas id="phaseChart" style="height:390px; max-height:390px"></canvas>
+          <div class="muted" id="phaseNote" style="margin-top:10px; line-height:1.55; font-size:13px"></div>
+          <div class="insightBox" id="phaseConclusionBox" style="margin-top:12px">
+            <h3 id="phaseConclusionTitle">Kết luận</h3>
+            <p id="phaseConclusionText">—</p>
+            <p id="phaseReasonText" style="margin-top:8px">—</p>
+          </div>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Bốn điều kiện không thể thiếu</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Mục này không hỏi lò có hiện đại hay không, mà hỏi hệ thống quốc gia đã đủ chín để mang công nghệ hạt nhân vào vận hành hay chưa. Thiếu một mắt xích, dự án có thể thất bại dù bản thân công nghệ tốt.
+        </div>
+        <p class="questionLine">Câu hỏi học: điều kiện nào là bắt buộc trước khi nói đến triển khai SMR?</p>
+
+        <div class="readinessGrid">
+          <label class="toggleCard" id="toggleCard-regulator">
+            <input id="readyRegulator" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Pháp quy độc lập</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Cơ quan an toàn phải có quyền dừng dự án dù dự án đang sinh lời. Nếu pháp quy bị phụ thuộc, toàn bộ lớp an toàn trở thành hình thức.</p>
+          </label>
+
+          <label class="toggleCard" id="toggleCard-workforce">
+            <input id="readyWorkforce" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Nhân lực 15–20 năm</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Một tổ hợp hạt nhân không thể chạy bằng đội ngũ mới học xong. Khoảng trễ đào tạo mới là nút thắt dài nhất.</p>
+          </label>
+
+          <label class="toggleCard" id="toggleCard-nepio">
+            <input id="readyNepio" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Điều phối quốc gia (NEPIO)</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Nếu thiếu đầu mối điều phối cấp quốc gia, pháp lý, đấu thầu, địa điểm và phối hợp liên bộ sẽ rời rạc ngay từ đầu.</p>
+          </label>
+
+          <label class="toggleCard" id="toggleCard-trust">
+            <input id="readyTrust" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Minh bạch xã hội</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Đồng thuận công chúng chỉ có khi dữ liệu và kịch bản ứng phó được nói rõ. Thiếu minh bạch, dự án thua trước khi khởi công.</p>
+          </label>
+        </div>
+
+        <div class="statusPanel" id="readinessPanel" data-state="bad">
+          <div class="statusMeta">
+            <h3 class="statusTitle" id="readinessTitle">Không thể triển khai an toàn</h3>
+            <span class="statusChip" id="readinessChip">0/4 điều kiện đã sẵn sàng</span>
+          </div>
+          <p id="readinessSummary">Điện hạt nhân là bài toán hệ thống. Khi một trong bốn trụ cột còn trống, công nghệ tốt đến đâu cũng chưa thể biến thành dự án an toàn.</p>
+          <p id="readinessDetail" style="margin-top:8px">Hãy bật lần lượt từng điều kiện để thấy vì sao SMR chưa thể đi thẳng từ ý tưởng sang triển khai.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Dòng tiền theo thời gian</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Biểu đồ này dùng thang tương đối để giải thích logic tài chính: trong lúc công trình chưa phát điện, lãi vay vẫn tiếp tục cộng dồn. Điểm khác nhau nằm ở chỗ SMR có thể đưa từng module vào vận hành sớm hơn.
+        </div>
+        <p class="questionLine">Câu hỏi học: điều gì làm một dự án thất bại ngay từ giai đoạn chưa có điện thương mại?</p>
+        <canvas id="idcChart" style="height:340px; max-height:340px"></canvas>
+        <div class="chartLegend" style="margin-top:12px">
+          <div class="legendItem"><span class="legendDot" style="background:#c084fc"></span>SMR</div>
+          <div class="legendItem"><span class="legendDot" style="background:#60a5fa"></span>PWR</div>
+          <div class="legendItem"><span class="legendDot" style="background:#f59e0b"></span>Vùng IDC tích lũy</div>
+        </div>
+        <div class="idcStats">
+          <div class="idcStat">
+            <div class="miniK">SMR chạm hòa vốn</div>
+            <div class="miniV" id="idcSmrBreakEven">—</div>
+            <p>Module đầu tiên hòa lưới sớm hơn nên đường âm không kéo dài quá lâu.</p>
+          </div>
+          <div class="idcStat">
+            <div class="miniK">PWR chạm hòa vốn</div>
+            <div class="miniV" id="idcPwrBreakEven">—</div>
+            <p>Toàn bộ vốn bị khóa lâu hơn nên áp lực lãi vay có thời gian phình to.</p>
+          </div>
+          <div class="idcStat">
+            <div class="miniK">Điểm cần nhớ</div>
+            <div class="miniV" id="idcRiskSignal">—</div>
+            <p id="idcRiskText">—</p>
+          </div>
+        </div>
+        <div class="insightBox" style="margin-top:12px">
+          <h3>Kết luận</h3>
+          <p id="idcConclusion">—</p>
+          <p id="idcReason" style="margin-top:8px">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Bộ trộn hệ thống</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Dùng để thử một cơ cấu đơn giản theo 3 nhóm: hạt nhân, tái tạo, hóa thạch. Kéo một thanh, hai thanh còn lại tự co giãn để tổng luôn bằng 100%. Đây là khối phụ trợ, không phải trọng tâm chính của SMR.
+        </div>
+        <div class="mixStacked" id="mixStacked"></div>
+        <div class="mixPresetBar">
+          <button class="mixPresetBtn" data-mix="balanced">Trung dung</button>
+          <button class="mixPresetBtn" data-mix="nuclear">Ưu tiên hạt nhân</button>
+          <button class="mixPresetBtn" data-mix="renewables">Ưu tiên tái tạo</button>
+          <button class="mixPresetBtn" data-mix="fossil">Giữ ổn định ngắn hạn</button>
+        </div>
+        <div class="mixGrid">
+          <div class="mixRow">
+            <div class="label"><span>Hạt nhân</span><strong id="mixNuclearLabel">40%</strong></div>
+            <input id="mixNuclear" type="range" min="0" max="100" value="40" />
+          </div>
+          <div class="mixRow">
+            <div class="label"><span>Tái tạo</span><strong id="mixRenewLabel">40%</strong></div>
+            <input id="mixRenew" type="range" min="0" max="100" value="40" />
+          </div>
+          <div class="mixRow">
+            <div class="label"><span>Hóa thạch</span><strong id="mixFossilLabel">20%</strong></div>
+            <input id="mixFossil" type="range" min="0" max="100" value="20" />
+          </div>
+          <div class="mixReadout">
+            <div class="pill">Ổn định<br><strong id="mixStability">—</strong></div>
+            <div class="pill">Ít phát thải<br><strong id="mixEmission">—</strong></div>
+            <div class="pill">Đất<br><strong id="mixLand">—</strong></div>
+            <div class="pill">Nước<br><strong id="mixWater">—</strong></div>
+          </div>
+          <div class="insightBox">
+            <h3>Nhận xét</h3>
+            <p id="mixInsight">—</p>
+          </div>
+          <div class="insightBox" id="mixConclusionBox" style="margin-top:12px; border-color: rgba(52,211,153,.22); background: linear-gradient(180deg, rgba(52,211,153,.08), rgba(255,255,255,.03));">
+            <h3>Kết luận</h3>
+            <p id="mixConclusionText">—</p>
+            <p id="mixReasonText" style="margin-top:8px">—</p>
+          </div>
+
+          <div class="subCard">
+            <div class="subTitle">
+              <span>Ràng buộc vật lý của hệ thống</span>
+              <span class="muted" style="font-size:12px">không chỉ nhìn tỷ lệ phần trăm</span>
+            </div>
+            <p class="questionLine" style="margin-bottom:0">Câu hỏi học: khi đem mix này vào lưới thật, hệ thống có đang thiếu điện nền hoặc dư tái tạo hay không?</p>
+            <div class="constraintGrid">
+              <div class="constraintCard">
+                <div class="miniK">Điện nền tối thiểu</div>
+                <div class="miniV" id="mixBaseloadState">—</div>
+                <p id="mixBaseloadText">—</p>
+              </div>
+              <div class="constraintCard">
+                <div class="miniK">Hấp thụ tái tạo</div>
+                <div class="miniV" id="mixRenewableState">—</div>
+                <p id="mixRenewableText">—</p>
+              </div>
+              <div class="constraintCard">
+                <div class="miniK">Trạng thái hệ thống</div>
+                <div class="miniV" id="mixSystemState">—</div>
+                <p id="mixSystemText">—</p>
+              </div>
+            </div>
+            <div class="insightBox" id="mixConstraintBox" style="margin-top:12px; border-color: rgba(251,191,36,.22); background: linear-gradient(180deg, rgba(251,191,36,.08), rgba(255,255,255,.03));">
+              <h3>Chẩn đoán</h3>
+              <p id="mixConstraintConclusion">—</p>
+              <p id="mixConstraintReason" style="margin-top:8px">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="subCard" style="margin-bottom:14px">
+          <div class="subTitle">
+            <span>Nhược điểm của SMR</span>
+            <span class="muted" style="font-size:12px">để tránh nhìn quá lạc quan</span>
+          </div>
+          <div class="warningList">
+            <div class="warningItem">
+              <div class="tag">FOAK</div>
+              <h4>Chi phí khởi đầu vẫn cao</h4>
+              <p>SMR chưa có lợi thế giá ngay lập tức; dự án đầu tiên thường chịu áp lực học phí công nghệ và chuỗi cung ứng.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Triển khai</div>
+              <h4>Chuỗi cung ứng và cấp phép</h4>
+              <p>Module hóa giúp giảm rủi ro thi công, nhưng giấy phép, logistics và chuẩn hóa vẫn có thể làm chậm nếu hệ thống chưa sẵn sàng.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Hệ thống</div>
+              <h4>Quy mô chưa chắc tối ưu</h4>
+              <p>SMR phù hợp đầu tư theo pha, nhưng nếu nhu cầu rất lớn thì vẫn cần số module đủ nhiều và lưới điện đủ tốt để hấp thụ.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subCard">
+          <div class="subTitle">
+            <span>Điểm gãy của các nguồn còn lại</span>
+            <span class="muted" style="font-size:12px">để thấy khác biệt ngoài SMR</span>
+          </div>
+          <div class="warningList">
+            <div class="warningItem">
+              <div class="tag">PWR</div>
+              <h4>Khối đầu tư lớn một lần</h4>
+              <p>PWR mạnh về điện nền, nhưng cú nhảy vốn và tiến độ lớn khiến rủi ro dồn rất mạnh ở giai đoạn đầu.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Than</div>
+              <h4>Kẹt vào phát thải và giá nhiên liệu</h4>
+              <p>Than có thể giữ công suất, nhưng bị kẹt vào phát thải cao, áp lực chính sách carbon và biến động nhiên liệu.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Gió</div>
+              <h4>Biến thiên theo thời tiết</h4>
+              <p>Gió rất sạch nhưng đầu ra dao động, nên vẫn cần lưu trữ hoặc nguồn nền để không làm lưới chao đảo.</p>
+            </div>
+          </div>
+          <div class="insightBox" style="margin-top:14px; border-color: rgba(251,191,36,.22); background: linear-gradient(180deg, rgba(251,191,36,.08), rgba(255,255,255,.03));">
+            <h3>Kết luận</h3>
+            <p>Điểm gãy của mỗi nguồn nằm ở chỗ khác nhau: PWR gãy ở cú nhảy vốn đầu kỳ, than gãy ở phát thải và carbon lock-in, còn gió gãy ở tính biến thiên nên phải dựa vào lưới và lưu trữ.</p>
+            <p style="margin-top:8px">Lý do: công nghệ nào càng mạnh ở một mặt thì thường càng phải trả giá ở mặt khác; vì vậy hệ tối ưu không phải một nguồn đơn lẻ mà là cách ghép nguồn đúng vai trò.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="card tableCard">
+      <h2>Chuẩn bị ngắn hạn và dài hạn</h2>
+      <div class="muted" style="margin-bottom:12px; line-height:1.55">
+        Mục này ghép lộ trình thời gian với điều kiện hệ thống. Giai đoạn 2025–2030 là xây nền; sau đó mới nói đến triển khai, làm chủ chuỗi cung ứng và tích hợp vào một hệ đa nguồn.
+      </div>
+      <p class="questionLine">Câu hỏi học: vì sao SMR chưa thể triển khai ngay, và vì sao không thể nhảy cóc qua giai đoạn chuẩn bị?</p>
+      <div class="flowWrap">
+        <div class="flowCard" id="prepPhase1Card">
+          <div class="flowYear">2025–2030</div>
+          <div class="subTitle" style="margin-bottom:0">
+            <span>Xây nền hệ điều hành</span>
+            <span class="muted" style="font-size:12px" id="prepPhase1Status">Chưa hoàn tất</span>
+          </div>
+          <div class="taskList">
+            <div class="taskItem" data-phase1-item="regulator">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Pháp quy độc lập</strong>
+                <span>Đây là công tắc an toàn của toàn bộ hệ thống.</span>
+              </div>
+            </div>
+            <div class="taskItem" data-phase1-item="workforce">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Nhân lực chiều sâu</strong>
+                <span>Khoảng trễ đào tạo 15–20 năm quyết định tốc độ thật của dự án.</span>
+              </div>
+            </div>
+            <div class="taskItem" data-phase1-item="nepio">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Ban điều phối quốc gia</strong>
+                <span>Thiếu đầu mối điều phối, dự án sẽ đứt mạch từ pháp lý đến địa điểm.</span>
+              </div>
+            </div>
+            <div class="taskItem" data-phase1-item="trust">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Minh bạch xã hội</strong>
+                <span>Đồng thuận không đến từ khẩu hiệu, mà đến từ thông tin mở và năng lực ứng phó rõ ràng.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flowArrow">→</div>
+
+        <div class="flowCard locked" id="prepPhase2Card">
+          <div class="flowYear">Sau 2030</div>
+          <div class="subTitle" style="margin-bottom:0">
+            <span>Triển khai và làm chủ</span>
+            <span class="muted" style="font-size:12px" id="prepPhase2Status">Đang bị khóa</span>
+          </div>
+          <div class="taskList">
+            <label class="phaseCheck" id="phase2IndustrialLabel">
+              <input id="phase2Industrial" type="checkbox" data-phase2 />
+              <span>
+                <strong>Hệ sinh thái công nghiệp nội địa</strong>
+                <span>Từng bước làm chủ cơ khí chính xác, vật liệu và bảo trì dài hạn.</span>
+              </span>
+            </label>
+            <label class="phaseCheck" id="phase2WasteLabel">
+              <input id="phase2Waste" type="checkbox" data-phase2 />
+              <span>
+                <strong>Chuỗi nhiên liệu và chất thải</strong>
+                <span>Phải xử lý từ đầu bài toán nhiên liệu đã qua sử dụng và trách nhiệm liên thế hệ.</span>
+              </span>
+            </label>
+            <label class="phaseCheck" id="phase2PeopleLabel">
+              <input id="phase2People" type="checkbox" data-phase2 />
+              <span>
+                <strong>Đội ngũ liên thế hệ</strong>
+                <span>Giữ chân chuyên gia và duy trì truyền nghề để không đứt tri thức.</span>
+              </span>
+            </label>
+            <label class="phaseCheck" id="phase2IntegrationLabel">
+              <input id="phase2Integration" type="checkbox" data-phase2 />
+              <span>
+                <strong>Tích hợp vào hệ thống đa nguồn</strong>
+                <span>SMR phải vào đúng vai: điện nền ổn định, đi cùng tái tạo chứ không thay thế tất cả.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="insightBox" id="prepFlowBox" style="margin-top:14px">
+        <h3 id="prepFlowTitle">Vì sao chưa thể nhảy sang pha 2?</h3>
+        <p id="prepFlowText">—</p>
+        <p id="prepFlowReason" style="margin-top:8px">—</p>
+      </div>
+    </section>
+<section class="card tableCard">
+      <h2>Bảng hướng dẫn đọc dashboard</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Mục</th>
+            <th>Cách đọc</th>
+            <th>Ý nghĩa chiến lược</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Biểu đồ radar</td>
+            <td>Điểm cao = tốt hơn trên từng trục. Không dùng số thô để tránh méo do đơn vị khác nhau; riêng chi phí/đất/nước là điểm đảo chiều so với giá trị thực.</td>
+            <td>Cho thấy công nghệ nào cân bằng nhất khi xét cùng lúc CF, ít phát thải, chi phí hệ thống, land và water.</td>
+          </tr>
+          <tr>
+            <td>Toggle công nghệ</td>
+            <td>Bật/tắt từng nguồn để xem so sánh 2–3 công nghệ cùng lúc.</td>
+            <td>Giúp người xem thấy đánh đổi thay vì chỉ nhìn một đường radar quá đông.</td>
+          </tr>
+          <tr>
+            <td>SMR module simulation</td>
+            <td>Kéo thanh trượt để xem công suất tăng theo module.</td>
+            <td>Nhấn vào lợi thế modular: triển khai theo pha, giảm áp lực vốn ban đầu.</td>
+          </tr>
+          <tr>
+            <td>SMR vs PWR theo pha</td>
+            <td>Chọn pha đầu kỳ hoặc về sau để xem cách SMR và PWR khác nhau về vốn, tốc độ vào lưới và mức độ dồn rủi ro.</td>
+            <td>Đầu kỳ thấy cú nhảy vốn của PWR; về sau thấy SMR tiến dần theo module và tiệm cận quy mô lớn.</td>
+          </tr>
+          <tr>
+            <td>Bốn điều kiện không thể thiếu</td>
+            <td>Bật từng điều kiện để xem bộ lọc an toàn quốc gia đã khép kín hay chưa.</td>
+            <td>Nhắc rằng SMR không thể đi thẳng từ ý tưởng sang triển khai nếu pháp quy, nhân lực, điều phối và minh bạch còn khuyết.</td>
+          </tr>
+          <tr>
+            <td>Dòng tiền theo thời gian</td>
+            <td>Quan sát đoạn tiền âm kéo dài bao lâu và lúc nào đường tiền quay lại vùng dương.</td>
+            <td>Giải thích vì sao IDC mới là điểm làm dự án gãy về tài chính, và vì sao SMR giảm rủi ro nhờ mở doanh thu sớm theo module.</td>
+          </tr>
+          <tr>
+            <td>Bộ trộn hệ thống</td>
+            <td>Kéo 3 nhóm nguồn để thử một cơ cấu điện đơn giản.</td>
+            <td>Biến trang này thành công cụ tư duy hệ thống, không chỉ là bảng so sánh.</td>
+          </tr>
+          <tr>
+            <td>Chuẩn bị ngắn hạn và dài hạn</td>
+            <td>Đọc từ trái sang phải: hoàn tất nền tảng trước, rồi mới mở khóa các bước làm chủ sau 2030.</td>
+            <td>Cho thấy lộ trình hạt nhân là bài toán nhiều thập kỷ và không có đường tắt.</td>
+          </tr>
+          <tr>
+            <td>Ghi chú dữ liệu</td>
+            <td>Dùng dữ liệu định tính đã chốt trong cuộc chat; đây là score mô phỏng, không phải bảng đo lường chính thức.</td>
+            <td>Tránh tranh luận sai trọng tâm: dashboard đang so sánh logic hệ thống, không phải công bố một bộ số kỹ thuật tuyệt đối.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Câu hỏi tư duy?</h2>
+      <div class="notes">
+        <div class="note">
+          <h3>1. Cái gì đang được tối ưu?</h3>
+          <p>Đang tối ưu chi phí rẻ nhất, điện nền ổn định nhất, hay khả năng triển khai theo pha? Ba mục tiêu này thường không trùng nhau.</p>
+        </div>
+        <div class="note">
+          <h3>2. Nguồn nào thắng khi hệ chịu áp lực?</h3>
+          <p>Một công nghệ nhìn đẹp ở trạng thái bình thường chưa chắc thắng khi thiếu nước, thiếu gió, hoặc cần điện ban đêm.</p>
+        </div>
+        <div class="note">
+          <h3>3. Rủi ro nằm ở đâu?</h3>
+          <p>Rủi ro vật lý, rủi ro tài chính, rủi ro cấp phép, hay rủi ro vận hành? SMR giảm một số rủi ro, nhưng không xóa hết.</p>
+        </div>
+        <div class="note">
+          <h3>4. Mix nào thật sự bền?</h3>
+          <p>Hệ bền không nhất thiết là hệ “sạch nhất” hay “rẻ nhất”, mà là hệ giữ được điện nền, phát thải thấp và khả thi trong thực tế.</p>
+        </div>
+      </div>
+      <div class="footer" style="margin-top:14px">
+        Score hiển thị đã được chuẩn hóa theo hướng “cao hơn = tốt hơn”. Riêng trục cost/land/water: thấp thực tế hơn thì score tốt hơn.
+      </div>
+    </section>
   </div>
-</div>
 
-<script>
-(() => {
-  const $ = (id) => document.getElementById(id);
-  const ui = {
-    guideMask: $('guideMask'),
-    guideClose: $('guideClose'),
-    fatalOverlay: $('fatalOverlay'),
-    fatalResetBtn: $('fatalResetBtn'),
-    fatalDismissBtn: $('fatalDismissBtn'),
-    scene: $('sceneCanvas'),
-    coreWrap: $('coreWrap'),
-    statusBadge: $('statusBadge'),
-    sceneHint: $('sceneHint'),
-    cameraGuide: $('cameraGuide'),
-    miniTooltip: $('miniTooltip'),
-    specterBadge: $('specterBadge'),
-    stageMsg: $('stageMsg'),
-    stageSmall: $('stageSmall'),
-    zoomState: $('zoomState'),
-    modeText: $('modeText'),
-    viewText: $('viewText'),
-    kSlider: $('kSlider'),
-    kTargetRead: $('kTargetRead'),
-    kEffVal: $('kEffVal'),
-    rhoVal: $('rhoVal'),
-    nVal: $('nVal'),
-    fissVal: $('fissVal'),
-    fuelVal: $('fuelVal'),
-    coolVal: $('coolVal'),
-    powVal: $('powVal'),
-    xeVal: $('xeVal'),
-    rodVal: $('rodVal'),
-    steamVal: $('steamVal'),
-    upVal: $('upVal'),
-    incVal: $('incVal'),
-    kEffNote: $('kEffNote'),
-    rhoNote: $('rhoNote'),
-    powNote: $('powNote'),
-    demoBtn: $('demoBtn'),
-    realityBtn: $('realityBtn'),
-    viewBtn: $('viewBtn'),
-    xrayBtn: $('xrayBtn'),
-    stepBtn: $('stepBtn'),
-    zoomBtn: $('zoomBtn'),
-    scramBtn: $('scramBtn'),
-    resetBtn: $('resetBtn'),
-    steps: Array.from(document.querySelectorAll('.step'))
-  };
-
-  const c = ui.scene.getContext('2d');
-
-  const GUIDE_KEY = 'mini_reactor_guide_v4_seen';
-  if(!localStorage.getItem(GUIDE_KEY)){
-    ui.guideMask.classList.add('on');
-    ui.guideMask.setAttribute('aria-hidden', 'false');
-    document.body.style.overflow = 'hidden';
-  }
-
-  function closeGuide(){
-    ui.guideMask.classList.remove('on');
-    ui.guideMask.setAttribute('aria-hidden', 'true');
-    document.body.style.overflow = '';
-    localStorage.setItem(GUIDE_KEY, '1');
-  }
-
-  function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
-  function lerp(a, b, t){ return a + (b - a) * t; }
-  function rand(a, b){ return a + Math.random() * (b - a); }
-  function isMobileLike(){ return window.innerWidth <= 760 || window.matchMedia('(pointer: coarse)').matches; }
-  function fmtTime(sec){
-    const s = Math.max(0, Math.floor(sec));
-    const h = String(Math.floor(s / 3600)).padStart(2, '0');
-    const m = String(Math.floor((s % 3600) / 60)).padStart(2, '0');
-    const ss = String(s % 60).padStart(2, '0');
-    return `${h}:${m}:${ss}`;
-  }
-
-  const S = {
-    mode: 'demo',
-    betaEff: 0.0065,
-    viewMode: '2d',  // 2d or 3d
-    time: 0,
-    incidentTime: 0,
-    dangerTime: 0,
-    thermalState: 'normal',
-    meltdown: false,
-    scram: false,
-    shutdownAge: 0,
-    shutdownPower: 1.0,
-    scramLatched: false,
-    promptPower: 1.0,
-    specterMode: 'auto',
-    xrayVision: false,
-    decayHeat: 0.0,
-    stepRevealMode: false,
-    stepRevealIndex: 0,
-    pointerType: 'mouse',
-    hoverHit: null,
-    pointerX: 0,
-    pointerY: 0,
-    hoverStickyUntil: 0,
-    kTarget: 1.0000,
-    kEff: 1.0000,
-    reactivity: 0,
-    generations: 0,
-    generationPulse: 0,
-    initialNeutrons: 60,
-    expectedNeutrons: 60,
-    displayCap: 90,
-    genPerSec: 5,
-    visualScale: 0.55,
-    speedScale: 0.50,
-    fuelTemp: 285,
-    coolantTemp: 275,
-    ambient: 28,
-    xenon: 0.0,
-    steam: 0.0,
-    power: 1.0,
-    fissionRate: 0,
-    fissionCounter: 0,
-    lastFissionEvents: 0,
-    displayCount: 0,
-    rodInsertion: 0.30,
-    rodPenalty: 0,
-    dopplerPenalty: 0,
-    moderatorPenalty: 0,
-    xenonPenalty: 0,
-    lastThermalCount: 0,
-    lastFastCount: 0,
-    uiFlash: 0,
-    particles: [],
-    heatTrail: [],
-    spark: [],
-    lastEvent: 'source',
-    lastFissionPos: {x:0,y:0,z:0},
-    sceneZoom: 1.00,
-    sceneTargetZoom: 1.00,
-    scenePanX: 0,
-    scenePanY: 0,
-    sceneTargetPanX: 0,
-    sceneTargetPanY: 0,
-    camYaw: 0.62,
-    camPitch: -0.28,
-    camDist: 680,
-    camTargetX: 0,
-    camTargetY: 0,
-    camTargetZ: 0,
-    camVelX: 0,
-    camVelY: 0,
-    camVelZ: 0,
-    dragging: false,
-    dragX: 0,
-    dragY: 0,
-    sourcePulse: 0
-  };
-
-  function setMode(mode){
-    const mobile = isMobileLike();
-    S.mode = mode;
-    if(mode === 'demo'){
-      S.initialNeutrons = 60;
-      S.displayCap = mobile ? 64 : 90;
-      S.genPerSec = 5;
-      S.visualScale = mobile ? 0.46 : 0.55;
-      S.speedScale = 0.50;
-      ui.demoBtn.classList.add('on');
-      ui.realityBtn.classList.remove('on');
-      ui.modeText.textContent = 'MÔ PHỎNG';
-    }else{
-      S.initialNeutrons = 140;
-      S.displayCap = mobile ? 160 : 270;
-      S.genPerSec = 10;
-      S.visualScale = mobile ? 0.68 : 0.85;
-      S.speedScale = 0.25;
-      ui.demoBtn.classList.remove('on');
-      ui.realityBtn.classList.add('on');
-      ui.modeText.textContent = 'THỰC TẾ';
-    }
-    resetReactor(true);
-  }
-
-  function setViewMode(mode){
-    S.viewMode = mode;
-    ui.viewText.textContent = mode === '3d' ? 'KIẾN TRÚC 3D' : 'MẶT CẮT 2D';
-    ui.viewBtn.textContent = mode === '3d' ? 'TRỞ VỀ MẶT CẮT' : 'KHÔNG GIAN 3D';
-    ui.viewBtn.classList.toggle('on', mode === '3d');
-    ui.cameraGuide.style.display = mode === '3d' ? 'block' : 'none';
-    ui.sceneHint.innerHTML = mode === '3d'
-      ? '<strong>Gợi ý:</strong> kéo để quay · bánh xe để zoom · WASD/QE để dịch camera. Chỉ nhìn xuyên vào lõi khi bật X-RAY hoặc zoom rất gần đúng vùng trung tâm.'
-      : '<strong>Gợi ý:</strong> lăn chuột để zoom · kéo để dịch · bấm 3D để xem kiến trúc che chắn quanh lõi.';
-    S.hoverHit = null;
-    setTooltip(false);
-  }
-
-  function resetReactor(keepMode = true){
-    const mode = S.mode;
-    const viewMode = S.viewMode;
-    Object.assign(S, {
-      time: 0,
-      incidentTime: 0,
-      dangerTime: 0,
-      thermalState: 'normal',
-      meltdown: false,
-      scram: false,
-      shutdownAge: 0,
-      shutdownPower: 1.0,
-      scramLatched: false,
-      promptPower: 1.0,
-      specterMode: 'auto',
-      decayHeat: 0.0,
-      stepRevealMode: false,
-      stepRevealIndex: 0,
-      kTarget: 1.0000,
-      kEff: 1.0000,
-      reactivity: 0,
-      generations: 0,
-      generationPulse: 0,
-      expectedNeutrons: S.initialNeutrons,
-      fuelTemp: 285,
-      coolantTemp: 275,
-      xenon: 0.0,
-      steam: 0.0,
-      power: 1.0,
-      fissionRate: 0,
-      fissionCounter: 0,
-      lastFissionEvents: 0,
-      displayCount: 0,
-      rodInsertion: 0.30,
-      rodPenalty: 0,
-      dopplerPenalty: 0,
-      moderatorPenalty: 0,
-      xenonPenalty: 0,
-      lastThermalCount: 0,
-      lastFastCount: 0,
-      uiFlash: 0,
-      particles: [],
-      heatTrail: [],
-      spark: [],
-      lastEvent: 'source',
-      lastFissionPos: {x:0,y:0,z:0},
-      sourcePulse: 0,
-      pointerType: 'mouse',
-      sceneZoom: 1.0,
-      sceneTargetZoom: 1.0,
-      scenePanX: 0,
-      scenePanY: 0,
-      sceneTargetPanX: 0,
-      sceneTargetPanY: 0
-    });
-    S.mode = keepMode ? mode : S.mode;
-    S.viewMode = viewMode;
-    S.camYaw = 0.62;
-    S.camPitch = -0.28;
-    S.camDist = 680;
-    S.sceneZoom = 1.0;
-    S.sceneTargetZoom = 1.0;
-    S.scenePanX = 0;
-    S.scenePanY = 0;
-    S.sceneTargetPanX = 0;
-    S.sceneTargetPanY = 0;
-    S.camTargetX = 0;
-    S.camTargetY = 0;
-    S.camTargetZ = 0;
-    S.camVelX = 0;
-    S.camVelY = 0;
-    S.camVelZ = 0;
-    ui.kSlider.value = '1.0000';
-    ui.kTargetRead.textContent = '1.0000';
-    ui.statusBadge.textContent = 'BÌNH THƯỜNG';
-    ui.statusBadge.className = 'overlayBadge ok';
-    ui.xrayBtn.classList.toggle('on', S.xrayVision);
-    ui.scramBtn.classList.remove('on');
-    ui.stepBtn.textContent = 'GIẢI THÍCH TỪNG BƯỚC';
-    ui.fatalOverlay.classList.remove('on');
-    ui.fatalOverlay.setAttribute('aria-hidden', 'true');
-    document.body.classList.remove('shake', 'meltdown-screen');
-    ui.xrayBtn.classList.toggle('on', S.xrayVision);
-    S.hoverHit = null;
-    setTooltip(false);
-    buildInitialPopulation();
-  }
-
-  function manualScram(){
-    if(S.meltdown) return;
-    S.scram = true;
-    S.shutdownAge = 0;
-    S.scramLatched = false;
-    S.lastEvent = 'scram';
-    ui.scramBtn.classList.add('on');
-  }
-
-  function decayHeatFraction(ageSec){
-    const age = Math.max(0, ageSec);
-    const blend = 0.50 * Math.exp(-age / 20) + 0.30 * Math.exp(-age / 300) + 0.20 * Math.exp(-age / 10000);
-    return 0.066 * blend;
-  }
-
-  function computeFeedback(){
-    const rodVisual = S.scram ? 1.0 : clamp(0.30 - (S.kTarget - 1.0) * 10.0, 0.0, 0.95);
-    S.rodInsertion = rodVisual;
-    S.dopplerPenalty = -0.000018 * Math.max(0, S.fuelTemp - 285);
-    S.moderatorPenalty = -0.000012 * Math.max(0, S.coolantTemp - 285);
-    S.xenonPenalty = S.xenon * 0.0225;
-    S.rodPenalty = 0.030 * (0.30 - S.rodInsertion);
-    const scramPenalty = S.scram ? -0.050 : 0.0;
-    S.kEff = clamp(S.kTarget + S.rodPenalty + S.dopplerPenalty + S.moderatorPenalty - S.xenonPenalty + scramPenalty, 0.82, 1.14);
-    S.reactivity = (S.kEff - 1) / S.kEff;
-  }
-
-  function spawnNeutron(x, y, z, fast = true, boost = 1){
-    const yaw = rand(0, Math.PI*2);
-    const pitch = rand(-0.8, 0.8);
-    const speedBase = fast ? rand(160, 240) : rand(65, 120);
-    const speed = speedBase * S.speedScale * boost;
-    const particle = {
-      x, y, z,
-      vx: Math.cos(yaw) * Math.cos(pitch) * speed,
-      vy: Math.sin(pitch) * speed,
-      vz: Math.sin(yaw) * Math.cos(pitch) * speed,
-      type: fast ? 'fast' : 'thermal',
-      age: 0,
-      life: rand(0.8, 2.6),
-      trail: [],
-      hitFlash: 0
+  <script>
+    const techData = {
+      "Hạt nhân lớn": {
+        color: "#60a5fa",
+        scores: [92, 94, 58, 84, 60],
+        note: "Điện nền mạnh, CF cao, đầu tư lớn một lần."
+      },
+      "SMR": {
+        color: "#c084fc",
+        scores: [90, 94, 58, 88, 65],
+        note: "Gần PWR về bản chất vật lý, khác ở mô hình triển khai và vốn."
+      },
+      "Than": {
+        color: "#94a3b8",
+        scores: [76, 8, 55, 48, 35],
+        note: "CF khá cao nhưng phát thải cao, là mốc đối chứng xấu về carbon."
+      },
+      "Mặt trời": {
+        color: "#fbbf24",
+        scores: [28, 85, 45, 18, 92],
+        note: "Sạch và tiết kiệm nước, nhưng gián đoạn theo thời điểm."
+      },
+      "Gió": {
+        color: "#34d399",
+        scores: [40, 95, 50, 42, 90],
+        note: "Sạch, đất và nước tốt, nhưng phụ thuộc điều kiện gió."
+      }
     };
-    S.particles.push(particle);
-    return particle;
-  }
 
-  function buildInitialPopulation(){
-    S.particles.length = 0;
-    const desired = clamp(S.initialNeutrons, 14, S.displayCap);
-    for(let i=0;i<desired;i++){
-      const pos = randomCorePoint(0.7);
-      spawnNeutron(pos.x, pos.y, pos.z, Math.random() > 0.22, rand(0.85,1.15));
-    }
-  }
+    const axes = ["CF cao", "Ít phát thải cao", "Chi phí thấp", "Đất thấp", "Nước thấp"];
 
-  function randomCorePoint(inner=1){
-    return {
-      x: rand(-180*inner, 180*inner),
-      y: rand(-120*inner, 120*inner),
-      z: rand(-135*inner, 135*inner)
-    };
-  }
+    const active = new Set(Object.keys(techData));
 
-  function inBox(p, box){
-    return p.x >= box.x && p.x <= box.x + box.w &&
-           p.y >= box.y && p.y <= box.y + box.h &&
-           p.z >= box.z && p.z <= box.z + box.d;
-  }
+    const controls = document.getElementById("techControls");
+    const presetButtons = [...document.querySelectorAll(".presetBtn")];
+    const radarCtx = document.getElementById("radarChart");
+    const mixStacked = document.getElementById("mixStacked");
+    const mixPresetButtons = [...document.querySelectorAll(".mixPresetBtn")];
+    const bestCF = document.getElementById("bestCF");
+    const bestEmission = document.getElementById("bestEmission");
+    const bestBalance = document.getElementById("bestBalance");
+    const decisionHint = document.getElementById("decisionHint");
 
-  function rodsLayout(){
-    const xs = [-120,-60,0,60,120];
-    const zs = [-90,-30,30,90];
-    const rods = [];
-    for(const x of xs) for(const z of zs) rods.push({x,z});
-    return rods;
-  }
+    function syncPairComparison(){}
 
-  function fuelPelletsForRod(rod){
-    const pellets = [];
-    for(let i=0;i<10;i++){
-      pellets.push({x:rod.x, y:-120 + i*26, z:rod.z});
-    }
-    return pellets;
-  }
+    function updateDecisionBox(selectedNames){
+      if (!selectedNames.length) return;
+      let cfWinner = selectedNames[0];
+      let emWinner = selectedNames[0];
+      let balanceWinner = selectedNames[0];
+      let bestCFScore = -Infinity;
+      let bestEmScore = -Infinity;
+      let bestBalanceScore = -Infinity;
 
-  const CORE_RODS = rodsLayout();
-  const CORE_PELLETS = CORE_RODS.flatMap(fuelPelletsForRod);
-
-  function updateParticles(dt){
-    const coreBox = {x:-210, y:-150, z:-160, w:420, h:300, d:320};
-    const fuelBox = {x:-150, y:-135, z:-110, w:300, h:270, d:220};
-    const pellets = CORE_PELLETS;
-    const trailLimit = isMobileLike() ? 6 : 10;
-    let thermalCount = 0;
-    let fastCount = 0;
-    let fissionEvents = 0;
-    const next = [];
-
-    for(const p of S.particles){
-      p.age += dt;
-      p.trail.push({x:p.x,y:p.y,z:p.z});
-      if(p.trail.length > trailLimit) p.trail.shift();
-
-      // diffuse motion and moderation
-      const slowdown = p.type === 'fast' ? 1 : 0.85;
-      p.x += p.vx * dt * slowdown;
-      p.y += p.vy * dt * slowdown;
-      p.z += p.vz * dt * slowdown;
-
-      // boundary handling
-      const outX = p.x < coreBox.x || p.x > coreBox.x + coreBox.w;
-      const outY = p.y < coreBox.y || p.y > coreBox.y + coreBox.h;
-      const outZ = p.z < coreBox.z || p.z > coreBox.z + coreBox.d;
-      if(outX || outY || outZ){
-        if(Math.random() < 0.28 + (S.kEff > 1 ? 0.08 : 0)){
-          continue;
-        }
-        if(outX) p.vx *= -1;
-        if(outY) p.vy *= -1;
-        if(outZ) p.vz *= -1;
-        p.x = clamp(p.x, coreBox.x, coreBox.x + coreBox.w);
-        p.y = clamp(p.y, coreBox.y, coreBox.y + coreBox.h);
-        p.z = clamp(p.z, coreBox.z, coreBox.z + coreBox.d);
-      }
-
-      // moderator scattering / thermalization
-      const inFuel = inBox(p, fuelBox);
-      const inModerator = inBox(p, coreBox);
-      if(inModerator && p.type === 'fast'){
-        const thermalize = (0.26 + 0.55 * (S.coolantTemp < 340 ? 1 : 0.65)) * dt;
-        if(Math.random() < thermalize){
-          p.type = 'thermal';
-          const speed = Math.hypot(p.vx, p.vy, p.vz) * 0.58;
-          const yaw = Math.atan2(p.vz, p.vx) + rand(-1.2, 1.2);
-          const pitch = Math.asin(clamp(p.vy / Math.max(1, Math.hypot(p.vx,p.vy,p.vz)), -1, 1)) + rand(-0.5, 0.5);
-          p.vx = Math.cos(yaw) * Math.cos(pitch) * speed;
-          p.vy = Math.sin(pitch) * speed;
-          p.vz = Math.sin(yaw) * Math.cos(pitch) * speed;
-          S.lastEvent = 'moderation';
-        }
-      }
-
-      // control rod absorption field
-      const absorptionField = S.scram ? 0.72 : (0.10 + 0.55 * S.rodInsertion);
-      const rodXs = [148, 178];
-      for(const rx of rodXs){
-        if(Math.abs(p.x - rx) < 18 && p.y > -150 && p.y < 150 && Math.abs(p.z) < 120){
-          if(Math.random() < absorptionField * dt * 10){
-            p.hitFlash = 1;
-            p.dead = true;
-            S.lastEvent = 'rod';
-            break;
-          }
-        }
-      }
-      if(p.dead) continue;
-
-      // fission on thermal neutron inside fuel pellet zone
-      if(inFuel && p.type === 'thermal'){
-        const nearPellet = pellets.some(q => Math.abs(p.x - q.x) < 11 && Math.abs(p.y - q.y) < 11 && Math.abs(p.z - q.z) < 11);
-        const drive = clamp(0.055 + (S.kEff - 1.0) * 2.8 + S.power * 0.02, 0.02, 0.48);
-        if(nearPellet && Math.random() < drive * dt * 18){
-          fissionEvents++;
-          S.lastEvent = 'fission';
-          S.lastFissionPos = {x:p.x, y:p.y, z:p.z};
-          const births = 2 + (Math.random() < 0.58 ? 1 : 0);
-          for(let i=0;i<births;i++){
-            const pos = {
-              x: p.x + rand(-6,6),
-              y: p.y + rand(-6,6),
-              z: p.z + rand(-6,6)
-            };
-            spawnNeutron(pos.x, pos.y, pos.z, true, rand(0.75,1.18));
-          }
-          continue;
-        }
-      }
-
-      // steam / source visual
-      if(p.age > p.life) continue;
-      if(Math.abs(p.vx)+Math.abs(p.vy)+Math.abs(p.vz) < 6) continue;
-
-      if(p.type === 'fast') fastCount++; else thermalCount++;
-      next.push(p);
-    }
-
-    const targetDisplay = clamp(Math.round(S.expectedNeutrons * S.visualScale), 8, S.displayCap);
-    while(next.length < targetDisplay){
-      const pos = randomCorePoint(0.74);
-      next.push(spawnNeutron(pos.x, pos.y, pos.z, Math.random() > 0.5, rand(0.82,1.12)));
-    }
-    if(next.length > S.displayCap) next.length = S.displayCap;
-
-    S.particles = next;
-    S.displayCount = next.length;
-    S.lastThermalCount = thermalCount;
-    S.lastFastCount = fastCount;
-    S.lastFissionEvents = fissionEvents;
-    S.fissionCounter += fissionEvents;
-    S.generationPulse = fissionEvents > 0 ? 1 : Math.max(0, S.generationPulse - dt*1.3);
-  }
-
-  function updatePhysics(dt){
-    if(S.meltdown) return;
-
-    S.time += dt;
-    S.incidentTime += dt;
-
-    if(S.scram){
-      S.shutdownAge += dt;
-    }
-
-    computeFeedback();
-
-    if(S.scram && !S.scramLatched){
-      S.shutdownPower = Math.max(0.25, S.powerPrompt || S.power || 1.0);
-      S.scramLatched = true;
-    }
-    if(!S.scram){
-      S.shutdownAge = 0;
-      S.shutdownPower = Math.max(0.25, S.powerPrompt || S.power || 1.0);
-    }
-
-    S.generations += dt * S.genPerSec;
-    const targetN = S.initialNeutrons * Math.pow(Math.max(0.15, S.kEff), S.generations);
-    S.expectedNeutrons = lerp(S.expectedNeutrons, targetN, clamp(dt * 4.2, 0, 0.35));
-
-    const fluxRatio = S.expectedNeutrons / S.initialNeutrons;
-    const aboveCritical = Math.max(0, S.kEff - 1.0);
-    const thermalShare = Math.max(0.15, Math.min(0.95, S.displayCount ? (S.lastThermalCount / Math.max(1, S.displayCount)) : 0.45));
-    S.promptPower = clamp(0.72 * fluxRatio + aboveCritical * 7.5 + thermalShare * 0.8, 0, 6.5);
-
-    const decayFrac = S.scram ? decayHeatFraction(S.shutdownAge) : 0;
-    S.decayHeat = S.scram ? S.shutdownPower * decayFrac : 0;
-    S.power = clamp(S.promptPower + S.decayHeat, 0, 6.5);
-
-    const heatIn = 24 * S.power + 9 * aboveCritical;
-    const heatLoss = (S.fuelTemp - S.ambient) * 0.08 + (S.coolantTemp - S.ambient) * 0.04;
-    const netHeat = heatIn - heatLoss;
-
-    S.fuelTemp += netHeat * dt;
-    S.coolantTemp += ((S.fuelTemp - S.coolantTemp) * 0.55 - (S.coolantTemp - S.ambient) * 0.04) * dt;
-
-    const xeProduction = 0.00055 * S.power * S.genPerSec;
-    const xeDecay = 0.0011 * S.xenon;
-    const xeScramBoost = S.scram ? 0.00055 : 0;
-    S.xenon += (xeProduction + xeScramBoost - xeDecay) * dt;
-    S.xenon = clamp(S.xenon, 0, 2.8);
-
-    S.fissionRate = lerp(S.fissionRate, S.lastFissionEvents * (S.mode === 'demo' ? 5 : 10), clamp(dt * 3, 0, 0.25));
-    S.steam = clamp((S.coolantTemp - 100) / 900, 0, 1);
-
-    const thermalLoad = (Math.max(0, S.fuelTemp - 300) / 220) + (Math.max(0, S.coolantTemp - 280) / 240) + (S.power / 1.9) + (S.decayHeat * 15);
-    const coolingDeficit = netHeat > 0.2;
-
-    switch(S.thermalState){
-      case 'normal':
-        if(thermalLoad > 0.95 || S.fuelTemp > 560 || S.power > 1.35){
-          S.thermalState = 'warning';
-          S.dangerTime = Math.max(S.dangerTime, 0.25);
-        }else{
-          S.dangerTime = Math.max(0, S.dangerTime - dt * 0.8);
-        }
-        break;
-
-      case 'warning':
-        if(thermalLoad > 1.55 || S.fuelTemp > 760 || S.coolantTemp > 360 || (coolingDeficit && S.dangerTime > 1.4)){
-          S.thermalState = 'transient';
-          S.dangerTime = Math.max(S.dangerTime, 1.5);
-        }else if(thermalLoad < 0.72 && S.fuelTemp < 500 && S.power < 1.2){
-          S.thermalState = 'normal';
-          S.dangerTime = Math.max(0, S.dangerTime - dt * 1.1);
-        }else{
-          S.dangerTime = Math.min(6.0, S.dangerTime + dt * 0.35);
-        }
-        break;
-
-      case 'transient':
-        if((thermalLoad > 2.25 || S.fuelTemp > 1020 || S.coolantTemp > 430 || (S.reactivity >= S.betaEff && S.power > 1.1)) && S.dangerTime > 2.8){
-          S.thermalState = 'prompt_critical';
-          S.dangerTime = Math.max(S.dangerTime, 3.0);
-        }else if(thermalLoad < 1.20 && S.fuelTemp < 700 && S.power < 1.6){
-          S.thermalState = 'warning';
-          S.dangerTime = Math.max(0, S.dangerTime - dt * 0.7);
-        }else{
-          S.dangerTime += dt * 0.55;
-        }
-        break;
-
-      case 'prompt_critical':
-        if(S.fuelTemp > 1500 || (S.dangerTime > 7.5 && coolingDeficit) || (S.shutdownAge > 0 && S.decayHeat > 0.03 && S.fuelTemp > 1320)){
-          S.thermalState = 'meltdown';
-          triggerMeltdown();
-        }else if(thermalLoad < 1.65 && S.fuelTemp < 980 && S.power < 1.8){
-          S.thermalState = 'transient';
-          S.dangerTime = Math.max(0, S.dangerTime - dt * 0.5);
-        }else{
-          S.dangerTime += dt * 0.9;
-        }
-        break;
-    }
-
-    if(S.thermalState === 'meltdown'){
-      S.meltdown = true;
-      return;
-    }
-
-    if(S.thermalState === 'prompt_critical' || thermalLoad > 2.0 || S.fuelTemp > 850){
-      S.uiFlash = Math.min(1, S.uiFlash + dt * 2);
-    }else{
-      S.uiFlash = Math.max(0, S.uiFlash - dt * 1.6);
-    }
-  }
-
-  function triggerMeltdown(){
-    if(S.meltdown) return;
-    S.meltdown = true;
-    S.thermalState = 'meltdown';
-    ui.statusBadge.textContent = 'NÓNG CHẢY LÕI';
-    ui.statusBadge.className = 'overlayBadge melt';
-    ui.stageMsg.textContent = 'Lõi đã vượt ngưỡng nhiệt và hư hỏng. Nhiệt dư vẫn tồn tại sau khi SCRAM nên làm mát vẫn là điều kiện sống còn.';
-    ui.stageSmall.textContent = 'Sau khi nóng chảy lõi, hãy dùng ĐẶT LẠI để thử lại từ đầu và kiểm tra tác động của nhiệt dư.';
-    ui.fatalOverlay.classList.add('on');
-    ui.fatalOverlay.setAttribute('aria-hidden', 'false');
-    document.body.classList.add('shake', 'meltdown-screen');
-  }
-
-  function statusForState(){
-    switch(S.thermalState){
-      case 'warning': return {text:'CẢNH BÁO', cls:'warn', note:'nhiệt đang tích lũy'};
-      case 'transient': return {text:'QUÁ ĐỘ', cls:'danger', note:'tải nhiệt nguy hiểm'};
-      case 'prompt_critical': return {text:'TỚI HẠN TỨC THỜI', cls:'danger', note:'vùng prompt neutron'};
-      case 'meltdown': return {text:'NÓNG CHẢY LÕI', cls:'melt', note:'hư hỏng lõi'};
-      default:
-        if(S.scram || S.decayHeat > 0.01) return {text:'THẢI NHIỆT', cls:'warn', note:'đang loại bỏ nhiệt dư'};
-        return {text:'BÌNH THƯỜNG', cls:'ok', note:'gần tới hạn ổn định'};
-    }
-  }
-
-  function roundRect(ctx, x, y, w, h, r){
-    ctx.beginPath();
-    ctx.moveTo(x+r, y);
-    ctx.arcTo(x+w, y, x+w, y+h, r);
-    ctx.arcTo(x+w, y+h, x, y+h, r);
-    ctx.arcTo(x, y+h, x, y, r);
-    ctx.arcTo(x, y, x+w, y, r);
-    ctx.closePath();
-  }
-
-  function wrapLines(ctx, text, maxWidth){
-    const words = String(text).split(/\s+/);
-    const lines = [];
-    let line = '';
-    for(const word of words){
-      const test = line ? `${line} ${word}` : word;
-      if(ctx.measureText(test).width > maxWidth && line){
-        lines.push(line);
-        line = word;
-      }else{
-        line = test;
-      }
-    }
-    if(line) lines.push(line);
-    return lines;
-  }
-
-  function drawCallout2D(x, y, w, title, sub, anchorX, anchorY, tone='ok'){
-    const isWarn = tone === 'warn';
-    const accent = isWarn ? 'rgba(247,198,74,.8)' : 'rgba(147,230,255,.9)';
-    const border = isWarn ? 'rgba(247,198,74,.24)' : 'rgba(71,197,255,.24)';
-    c.save();
-    c.fillStyle = 'rgba(4,9,14,.74)';
-    roundRect(c, x, y, w, 50, 12);
-    c.fill();
-    c.strokeStyle = border;
-    c.lineWidth = 1;
-    c.stroke();
-    c.fillStyle = accent;
-    c.font = '11px Consolas, monospace';
-    c.fillText(title, x + 10, y + 18);
-    c.fillStyle = 'rgba(255,255,255,.62)';
-    c.font = '9.5px Consolas, monospace';
-    const lines = wrapLines(c, sub, w - 20).slice(0, 2);
-    lines.forEach((ln, i) => c.fillText(ln, x + 10, y + 34 + i * 12));
-    c.strokeStyle = accent;
-    c.lineWidth = 1.6;
-    c.beginPath();
-    c.moveTo(x + w * 0.5, y + 50);
-    c.lineTo(anchorX, anchorY);
-    c.stroke();
-    c.fillStyle = accent;
-    c.beginPath();
-    c.arc(anchorX, anchorY, 2.4, 0, Math.PI * 2);
-    c.fill();
-    c.restore();
-  }
-
-  function setTooltip(visible, title='', body='', foot='', x=0, y=0, tone='ok'){
-    ui.miniTooltip.classList.toggle('on', !!visible);
-    ui.miniTooltip.setAttribute('aria-hidden', visible ? 'false' : 'true');
-    if(!visible){
-      ui.miniTooltip.innerHTML = '';
-      return;
-    }
-    const ring = tone === 'warn' ? 'rgba(247,198,74,.34)' : tone === 'danger' ? 'rgba(255,93,93,.34)' : 'rgba(108,231,255,.34)';
-    ui.miniTooltip.style.borderColor = ring;
-    ui.miniTooltip.style.borderLeftColor = tone === 'warn' ? 'rgba(247,198,74,.95)' : tone === 'danger' ? 'rgba(255,93,93,.95)' : 'var(--blue)';
-    ui.miniTooltip.innerHTML = `<div class="tag">ĐANG TRỎ TỚI</div><div class="h">${title}</div><div class="b">${body}</div>${foot ? `<div class="f">${foot}</div>` : ''}`;
-    const rect = ui.coreWrap.getBoundingClientRect();
-    const cw = rect.width, ch = rect.height;
-    const px = x * (cw / Math.max(1, ui.scene.width));
-    const py = y * (ch / Math.max(1, ui.scene.height));
-    const tipW = Math.min(290, Math.max(180, ui.miniTooltip.offsetWidth || 220));
-    const tipH = Math.min(220, Math.max(88, ui.miniTooltip.offsetHeight || 112));
-    const preferLeft = px > cw * 0.58;
-    const preferUp = py > ch * 0.62;
-    const left = clamp(preferLeft ? px - tipW - 18 : px + 18, 8, cw - tipW - 8);
-    const top = clamp(preferUp ? py - tipH - 18 : py + 18, 8, ch - tipH - 8);
-    ui.miniTooltip.style.left = `${left}px`;
-    ui.miniTooltip.style.top = `${top}px`;
-  }
-
-  function getSpecterLOD(){
-    if(S.viewMode !== '3d') return 0;
-    if(S.camDist > 760) return 0;
-    if(S.camDist > 430) return 1;
-    return 2;
-  }
-
-  function canvasPointFromEvent(ev){
-    const rect = ui.scene.getBoundingClientRect();
-    const x = (ev.clientX - rect.left) * (ui.scene.width / rect.width);
-    const y = (ev.clientY - rect.top) * (ui.scene.height / rect.height);
-    return {x, y, rect};
-  }
-
-  function scenePointFor2DHit(canvasX, canvasY){
-    const W = ui.scene.width, H = ui.scene.height;
-    const zoom = Math.max(0.01, S.sceneZoom);
-    return {
-      x: ((canvasX - (W * 0.5 + S.scenePanX)) / zoom) + W * 0.5,
-      y: ((canvasY - (H * 0.5 + S.scenePanY)) / zoom) + H * 0.5
-    };
-  }
-
-  function sceneToScreen2D(x, y){
-    const W = ui.scene.width, H = ui.scene.height;
-    return {
-      x: (x - W * 0.5) * S.sceneZoom + W * 0.5 + S.scenePanX,
-      y: (y - H * 0.5) * S.sceneZoom + H * 0.5 + S.scenePanY
-    };
-  }
-
-  function scoreRectHit(item, px, py){
-    const cx = item.x + item.w * 0.5;
-    const cy = item.y + item.h * 0.5;
-    const dx = px - cx;
-    const dy = py - cy;
-    const dist = Math.hypot(dx, dy) / Math.max(26, Math.min(item.w, item.h));
-    const bias = (item.priority || 0) * 0.18;
-    return dist + bias + ((item.w * item.h) / 480000);
-  }
-
-  function scoreCircleHit(item, px, py){
-    const dx = px - item.x;
-    const dy = py - item.y;
-    const distNorm = Math.hypot(dx, dy) / Math.max(18, item.r || 1);
-    const bias = (item.priority || 0) * 0.14;
-    const depthBias = typeof item.scale === 'number' ? (-item.scale * 0.06) : 0;
-    return distNorm + bias + depthBias;
-  }
-
-  function shouldRevealInterior(cam, W, H, lod){
-    if(S.viewMode !== '3d' || S.xrayVision) return S.xrayVision;
-    if(lod < 2 || S.camDist > 330) return false;
-    const core = project3D(0, 0, 0, cam, W, H);
-    const focusRadius = Math.max(48, 120 * core.scale);
-    const dx = S.pointerX - core.x;
-    const dy = S.pointerY - core.y;
-    return (dx * dx + dy * dy) <= (focusRadius * focusRadius);
-  }
-
-  function get2DHotspots(W, H){
-    const vessel = {x: 150, y: 74, w: 730, h: 500};
-    const core = {x: 310, y: 128, w: 420, h: 300};
-    const sg = {x: vessel.x + vessel.w + 34, y: vessel.y + 106, w: 118, h: 180};
-    return [
-      {key:'fuel', x:core.x+12, y:core.y+10, w:core.w-24, h:core.h-20, priority:0, title:'CỤM NHIÊN LIỆU', body:'Các thanh nhiên liệu chứa nhiều viên pellet; lõi không phải một khối uranium đặc.', foot:'Mỗi thanh là một phần tử riêng của bó nhiên liệu.'},
-      {key:'control', x:668, y:126, w:82, h:280, priority:0, tone:'warn', title:'THANH ĐIỀU KHIỂN', body:'Thanh điều khiển hấp thụ neutron bằng vật liệu hấp thụ mạnh như boron carbide hoặc hafnium.', foot:'Chèn sâu hơn thì k_eff giảm xuống.'},
-      {key:'decay_heat', x:core.x+62, y:core.y-20, w:core.w-124, h:66, priority:0, tone:'danger', hidden: !(S.scram || S.decayHeat > 0.01), title:'NHIỆT DƯ', body:'Sau SCRAM, lõi vẫn còn nhiệt do sản phẩm phân hạch tiếp tục phân rã phóng xạ.', foot:'Vì vậy shutdown không đồng nghĩa với nguội ngay.'},
-      {key:'primary_loop', x:vessel.x + vessel.w - 8, y:vessel.y + 122, w:sg.x - (vessel.x + vessel.w) + 20, h:150, priority:2, title:'VÒNG SƠ CẤP', body:'Nước áp suất cao mang nhiệt từ bình lò sang bộ tạo hơi nhưng không được phép sôi trong bình lò.', foot:'Đây là mạch kín chính của PWR.'},
-      {key:'secondary_loop', x:sg.x, y:sg.y+16, w:sg.w, h:sg.h-32, priority:2, title:'VÒNG THỨ CẤP', body:'Mạch thứ cấp nhận nhiệt từ bộ tạo hơi để tạo hơi nước dẫn tới tua-bin.', foot:'Hai mạch tách nhau để phần tua-bin không nằm trong mạch sơ cấp.'},
-      {key:'steam_generator', x:sg.x-10, y:sg.y-8, w:sg.w+20, h:sg.h+16, priority:0, title:'BỘ TẠO HƠI', body:'Thiết bị trao đổi nhiệt giữa vòng sơ cấp và vòng thứ cấp.', foot:'Đây là điểm chuyển nhiệt chứ không phải chính lõi phản ứng.'},
-      {key:'moderator', x:vessel.x+18, y:vessel.y+18, w:vessel.w-36, h:vessel.h-36, priority:3, title:'NƯỚC LÀM CHẬM', body:'Nước vừa làm chậm neutron vừa mang nhiệt ra khỏi nhiên liệu.', foot:'Nước làm chậm nóng hơn thì khả năng làm chậm neutron giảm.'},
-      {key:'vessel', x:vessel.x, y:vessel.y, w:vessel.w, h:vessel.h, priority:4, title:'BÌNH CHỊU ÁP LỰC', body:'Bình chịu áp lực bao lõi và giữ nước mạch sơ cấp trong điều kiện áp suất cao.', foot:'Đây là lớp kết cấu giữ toàn bộ quá trình truyền nhiệt chính.'}
-    ];
-  }
-
-  function get3DHotspots(cam, W, H, lod){
-    const items = [];
-    const push = (key, title, body, foot, p, r, tone='ok', layer='outer', priority=2) => items.push({key,title,body,foot,x:p.x,y:p.y,r, tone, layer, priority, scale:p.scale});
-    const vesselP = project3D(0,0,0,cam,W,H);
-    const coreP = project3D(0,0,0,cam,W,H);
-    const sgP = project3D(330, 10, 40, cam, W, H);
-    const turP = project3D(560, 18, 70, cam, W, H);
-    const controlP = project3D(170, 0, 0, cam, W, H);
-    const pumpP = project3D(-334, 40, 0, cam, W, H);
-    const pressP = project3D(-255, -180, 70, cam, W, H);
-    push('containment','VỎ AN TOÀN','Khối vỏ ngoài và nhà lò bao bọc toàn bộ vùng phản ứng để che chắn và cô lập sự cố.', 'Ở chế độ thường, lớp này không để người xem “nhìn xuyên lõi”.', project3D(0,-120,0,cam,W,H), 156 + lod*10, 'ok', 'outer', 0);
-    push('shielding','LỚP CHE CHẮN','Các lớp thép, bê tông và tấm chắn quanh bình lò làm giảm bức xạ và che kín lõi.', 'Chỉ mở vào trong khi bật X-RAY hoặc zoom rất gần đúng vùng trung tâm.', project3D(0,-6,96,cam,W,H), 120 + lod*8, 'ok', 'outer', 1);
-    push('vessel','BÌNH CHỊU ÁP LỰC','Bình chịu áp lực chứa lõi và nước mạch sơ cấp.', 'Đây là phần trung tâm của cụm lò PWR.', vesselP, 90 + lod*6, 'ok', 'outer', 2);
-    push('primary_loop','VÒNG SƠ CẤP','Vòng sơ cấp mang nhiệt từ bình lò sang bộ tạo hơi trong điều kiện áp suất cao.', 'Nước mạch này không đi ra tua-bin.', project3D(250,0,10,cam,W,H), 90 + lod*8, 'ok', 'outer', 1);
-    push('secondary_loop','VÒNG THỨ CẤP','Vòng thứ cấp nhận nhiệt tại bộ tạo hơi rồi tạo hơi nước cho tua-bin.', 'Hai mạch không trộn trực tiếp với nhau.', sgP, 96 + lod*7, 'ok', 'outer', 2);
-    push('steam_generator','BỘ TẠO HƠI','Thiết bị trao đổi nhiệt giữa vòng sơ cấp và vòng thứ cấp.', 'Hơi cho tua-bin được tạo ở đây chứ không phải ngay trong bình lò PWR.', sgP, 72 + lod*4, 'ok', 'outer', 0);
-    push('pump','BƠM TUẦN HOÀN','Bơm giữ lưu lượng mạch sơ cấp ổn định quanh lõi.', 'Lưu lượng làm mát là điều kiện sống còn sau SCRAM.', pumpP, 78 + lod*6, 'ok', 'outer', 1);
-    push('pressurizer','BÌNH ĐIỀU ÁP','Bình điều áp giữ nước mạch sơ cấp ở áp suất đủ cao để tránh sôi trong bình lò.', 'Đây là chi tiết rất đặc trưng của PWR.', pressP, 76 + lod*6, 'ok', 'outer', 1);
-    push('turbine','KHU TUA-BIN','Cụm tua-bin nằm xa lõi, nhận hơi từ vòng thứ cấp để tạo công cơ học và điện.', 'Điện không được tạo ngay trong lõi mà ở khối máy phía sau.', turP, 95 + lod*6, 'ok', 'outer', 2);
-    push('moderator','NƯỚC LÀM CHẬM','Nước trong bình lò làm chậm neutron và đồng thời tải nhiệt ra khỏi nhiên liệu.', 'Đây là môi trường quyết định cả động học neutron lẫn truyền nhiệt.', project3D(-40,20,0,cam,W,H), 112 + lod*8, 'ok', 'inner', 3);
-    push('fuel','CỤM NHIÊN LIỆU','Bó nhiên liệu gồm nhiều thanh và pellet, không phải một khối đặc.', 'Cận cảnh sẽ thấy pellet, vị trí phân hạch và dấu nhiệt hiện ra theo mức zoom.', coreP, 120 + lod*8, 'ok', 'inner', 1);
-    push('control','THANH ĐIỀU KHIỂN','Thanh điều khiển hấp thụ neutron mạnh để giảm reactivity.', 'SCRAM là đưa chúng xuống rất nhanh chứ không làm lõi nguội ngay.', controlP, 70 + lod*4, 'warn', 'inner', 0);
-    if(S.displayCount > 0){
-      push('neutron','TRƯỜNG NEUTRON','Các chấm và vệt chỉ là mẫu hiển thị của neutron để người học thấy xu hướng chuyển động và tương tác.', 'Số hạt hiển thị đã được giảm tải; logic vật lí vẫn tính riêng.', project3D(-18, 26, 18, cam, W, H), 56 + lod*6, 'ok', 'inner', 2);
-    }
-    if(S.lastEvent === 'fission' || S.lastFissionEvents > 0){
-      push('fission_point','ĐIỂM PHÂN HẠCH','Vòng sáng này đánh dấu một sự kiện phân hạch gần nhất trong vùng nhiên liệu.', 'Tại đây neutron bị hấp thụ, sinh neutron mới và giải phóng nhiệt.', project3D(S.lastFissionPos.x, S.lastFissionPos.y, S.lastFissionPos.z, cam, W, H), 34 + lod*4, 'warn', 'inner', 0);
-    }
-    if(S.scram || S.decayHeat > 0.01){
-      push('decay_heat','NHIỆT DƯ','Sau SCRAM, nhiệt vẫn tiếp tục sinh ra từ phân rã phóng xạ của sản phẩm phân hạch.', 'Đó là lý do hệ làm mát vẫn phải hoạt động sau khi chuỗi phân hạch chính dừng.', project3D(0, -96, 0, cam, W, H), 48 + lod*4, 'danger', 'inner', 0);
-    }
-    return items;
-  }
-
-  function resolveHoverHit(){
-    const W = ui.scene.width, H = ui.scene.height;
-    const cam = {yaw:S.camYaw,pitch:S.camPitch,dist:S.camDist,fov:820,tx:S.camTargetX,ty:S.camTargetY,tz:S.camTargetZ};
-    const x = S.pointerX, y = S.pointerY;
-    if(x == null || y == null) return null;
-    if(S.viewMode === '2d'){
-      const p = scenePointFor2DHit(x, y);
-      const items = get2DHotspots(W,H)
-        .filter(it => !it.hidden)
-        .filter(it => p.x >= it.x && p.x <= it.x + it.w && p.y >= it.y && p.y <= it.y + it.h)
-        .map(it => {
-          const ax = clamp(p.x, it.x + 12, it.x + it.w - 12);
-          const ay = clamp(p.y, it.y + 12, it.y + it.h - 12);
-          const screen = sceneToScreen2D(ax, ay);
-          return {...it, anchorX:screen.x, anchorY:screen.y, score:scoreRectHit(it, p.x, p.y)};
-        })
-        .sort((a,b) => a.score - b.score);
-      return items[0] || null;
-    }
-    const lod = getSpecterLOD();
-    const interiorOpen = shouldRevealInterior(cam, W, H, lod);
-    const items = get3DHotspots(cam,W,H,lod)
-      .filter(it => it.layer === 'outer' || S.xrayVision || interiorOpen)
-      .filter(it => {
-      const dx = x - it.x;
-      const dy = y - it.y;
-      return (dx*dx + dy*dy) <= (it.r * it.r);
-    })
-      .map(it => {
-        let score = scoreCircleHit(it, x, y);
-        if(interiorOpen && !S.xrayVision){
-          score += it.layer === 'inner' ? -0.34 : 0.24;
-        }
-        return {...it, anchorX:it.x, anchorY:it.y, score};
+      selectedNames.forEach((name) => {
+        const s = techData[name].scores;
+        const cf = s[0];
+        const em = s[1];
+        const balance = (s[0] + s[1] + s[2] + s[3] + s[4]) / 5;
+        if (cf > bestCFScore) { bestCFScore = cf; cfWinner = name; }
+        if (em > bestEmScore) { bestEmScore = em; emWinner = name; }
+        if (balance > bestBalanceScore) { bestBalanceScore = balance; balanceWinner = name; }
       });
-    items.sort((a,b) => a.score - b.score);
-    return items[0] || null;
-  }
 
-  function syncHoverTooltip(force=false){
-    const hit = resolveHoverHit();
-    S.hoverHit = hit;
-    if(!hit){
-      if(force || performance.now() > S.hoverStickyUntil) setTooltip(false);
-      return;
-    }
-    setTooltip(true, hit.title, hit.body, hit.foot || '', hit.anchorX ?? S.pointerX, hit.anchorY ?? S.pointerY, hit.tone || 'ok');
-  }
+      bestCF.textContent = cfWinner;
+      bestEmission.textContent = emWinner;
+      bestBalance.textContent = balanceWinner;
 
-  function resizeCanvas(){
-    const rect = ui.scene.getBoundingClientRect();
-    const mobile = isMobileLike();
-    const dpr = Math.max(1, Math.min(mobile ? 1.35 : 2, window.devicePixelRatio || 1));
-    const minW = mobile ? 360 : 720;
-    const minH = mobile ? 250 : 500;
-    ui.scene.width = Math.max(minW, Math.round(rect.width * dpr));
-    ui.scene.height = Math.max(minH, Math.round(rect.height * dpr));
-  }
-
-  function project3D(x,y,z, cam, W, H){
-    const tx = x - cam.tx, ty = y - cam.ty, tz = z - cam.tz;
-    const cy = Math.cos(cam.yaw), sy = Math.sin(cam.yaw);
-    const cp = Math.cos(cam.pitch), sp = Math.sin(cam.pitch);
-    const x1 = tx * cy - tz * sy;
-    const z1 = tx * sy + tz * cy;
-    const y1 = ty * cp - z1 * sp;
-    const z2 = ty * sp + z1 * cp;
-    const dist = Math.max(120, cam.dist - z2);
-    const scale = cam.fov / dist;
-    return {
-      x: W * 0.5 + x1 * scale,
-      y: H * 0.56 - y1 * scale,
-      scale,
-      depth: z2
-    };
-  }
-
-  function shadeByFace(base, factor){
-    const [r,g,b,alpha] = base;
-    const rr = clamp(Math.round(r * factor), 0, 255);
-    const gg = clamp(Math.round(g * factor), 0, 255);
-    const bb = clamp(Math.round(b * factor), 0, 255);
-    return `rgba(${rr},${gg},${bb},${alpha})`;
-  }
-
-  function drawBox3D(cx, cy, cz, w, h, d, cam, base, edge, glow=0, bevel=false){
-    const pts = [
-      [-w/2, -h/2, -d/2], [ w/2, -h/2, -d/2], [ w/2,  h/2, -d/2], [-w/2,  h/2, -d/2],
-      [-w/2, -h/2,  d/2], [ w/2, -h/2,  d/2], [ w/2,  h/2,  d/2], [-w/2,  h/2,  d/2]
-    ].map(([x,y,z]) => project3D(cx+x, cy+y, cz+z, cam, ui.scene.width, ui.scene.height));
-    const faces = [
-      [0,1,2,3], [4,5,6,7], [0,1,5,4], [1,2,6,5], [2,3,7,6], [3,0,4,7]
-    ];
-    const faceOrder = faces.map(idx => ({idx, z: idx.reduce((a,i)=>a+pts[i].depth,0)/4})).sort((a,b)=>b.z-a.z);
-    for(const face of faceOrder){
-      const avg = face.z;
-      const light = clamp(1.05 - (avg + 120) / 900, 0.55, 1.25);
-      const fill = shadeByFace(base, light);
-      c.beginPath();
-      const p0 = pts[face.idx[0]];
-      c.moveTo(p0.x, p0.y);
-      for(let i=1;i<face.idx.length;i++){
-        const p = pts[face.idx[i]];
-        c.lineTo(p.x, p.y);
-      }
-      c.closePath();
-      c.fillStyle = fill;
-      c.fill();
-      c.strokeStyle = edge;
-      c.lineWidth = bevel ? 1.2 : 1;
-      c.stroke();
-    }
-    if(glow){
-      const cc = project3D(cx, cy, cz, cam, ui.scene.width, ui.scene.height);
-      c.save();
-      c.globalAlpha = glow;
-      c.fillStyle = 'rgba(247,198,74,.7)';
-      c.beginPath();
-      c.arc(cc.x, cc.y, Math.max(2.5, 3.5 * cc.scale), 0, Math.PI*2);
-      c.fill();
-      c.restore();
-    }
-  }
-
-  function drawCylinderDots(cx, cz, cam, h, count, color, radius=2.4){
-    for(let i=0;i<count;i++){
-      const y = -120 + i * (h/(count-1));
-      const pt = project3D(cx, y, cz, cam, ui.scene.width, ui.scene.height);
-      c.save();
-      c.globalAlpha = 0.85;
-      c.fillStyle = color;
-      c.shadowBlur = 10;
-      c.shadowColor = color;
-      c.beginPath();
-      c.arc(pt.x, pt.y, Math.max(1.5, radius*pt.scale), 0, Math.PI*2);
-      c.fill();
-      c.restore();
-    }
-  }
-
-  function drawArrow2D(x1,y1,x2,y2,color,label){
-    c.save();
-    c.strokeStyle = color;
-    c.fillStyle = color;
-    c.lineWidth = 2;
-    c.beginPath();
-    c.moveTo(x1,y1); c.lineTo(x2,y2); c.stroke();
-    const ang = Math.atan2(y2-y1, x2-x1);
-    c.beginPath();
-    c.moveTo(x2, y2);
-    c.lineTo(x2 - Math.cos(ang - 0.45)*10, y2 - Math.sin(ang - 0.45)*10);
-    c.lineTo(x2 - Math.cos(ang + 0.45)*10, y2 - Math.sin(ang + 0.45)*10);
-    c.closePath();
-    c.fill();
-    c.font = '11px Consolas, monospace';
-    c.fillStyle = 'rgba(255,255,255,.8)';
-    c.fillText(label, x1 + 8, y1 - 8);
-    c.restore();
-  }
-
-  function drawScene2D(){
-    const W = ui.scene.width, H = ui.scene.height;
-    c.clearRect(0,0,W,H);
-    const bg = c.createLinearGradient(0,0,0,H);
-    bg.addColorStop(0, 'rgba(5,10,16,1)');
-    bg.addColorStop(1, 'rgba(6,12,18,1)');
-    c.fillStyle = bg;
-    c.fillRect(0,0,W,H);
-
-    const vessel = {x: 150, y: 74, w: 730, h: 500};
-    const core = {x: 310, y: 128, w: 420, h: 300};
-
-    c.save();
-    c.translate(W/2 + S.scenePanX, H/2 + S.scenePanY);
-    c.scale(S.sceneZoom, S.sceneZoom);
-    c.translate(-W/2, -H/2);
-
-    // vessel shell
-    const shell = c.createLinearGradient(vessel.x, vessel.y, vessel.x, vessel.y+vessel.h);
-    shell.addColorStop(0,'rgba(13,28,41,.95)');
-    shell.addColorStop(1,'rgba(7,14,22,.98)');
-    roundRect(c, vessel.x, vessel.y, vessel.w, vessel.h, 26);
-    c.fillStyle = shell;
-    c.fill();
-
-    // coolant field
-    const g = c.createRadialGradient(W*0.52, H*0.5, 50, W*0.52, H*0.5, 420);
-    g.addColorStop(0, 'rgba(67,197,255,.18)');
-    g.addColorStop(0.5, 'rgba(67,197,255,.08)');
-    g.addColorStop(1, 'rgba(67,197,255,0)');
-    c.fillStyle = g;
-    c.fillRect(vessel.x+12, vessel.y+12, vessel.w-24, vessel.h-24);
-
-    // water waves
-    c.save();
-    c.globalAlpha = 0.2;
-    for(let i=0;i<13;i++){
-      const y = vessel.y + 34 + i*34;
-      c.strokeStyle = i%2 ? '#2ea8e5' : '#0d5f90';
-      c.beginPath();
-      c.moveTo(vessel.x + 22, y);
-      c.quadraticCurveTo(W*0.5, y + (i%2?10:-10), vessel.x + vessel.w - 22, y);
-      c.stroke();
-    }
-    c.restore();
-
-    // fuel assembly region
-    roundRect(c, core.x, core.y, core.w, core.h, 18);
-    c.fillStyle = 'rgba(29,56,77,.58)';
-    c.fill();
-
-    // rods
-    const rodXs = [-124,-62,0,62,124];
-    const rodZs = [-90,-30,30,90];
-    const rodCenterX = core.x + core.w/2;
-    const rodCenterY = core.y + 18;
-    const rodGapX = 50;
-    const rodGapZ = 55;
-    let rodIndex = 0;
-    for(let zi=0;zi<rodZs.length;zi++){
-      for(let xi=0;xi<rodXs.length;xi++){
-        const rx = rodCenterX + rodXs[xi] * 0.45 + (zi%2?8:-8);
-        const ry = rodCenterY + 16 + rodZs[zi] * 0.20;
-        const h = 248;
-        c.fillStyle = 'rgba(17,24,34,.92)';
-        roundRect(c, rx-7, ry, 14, h, 6);
-        c.fill();
-        c.fillStyle = 'rgba(71,197,255,.08)';
-        c.fillRect(rx-7, ry, 14, 2);
-        c.fillStyle = 'rgba(247,198,74,.52)';
-        for(let p=0;p<8;p++){
-          const py = ry + 20 + p*28;
-          if(py < ry + h - 6){
-            c.beginPath();
-            c.arc(rx, py, 1.8, 0, Math.PI*2);
-            c.fill();
-          }
-        }
-        rodIndex++;
-      }
+      const count = selectedNames.length;
+      const textMap = {
+        1: `Đang xem một công nghệ: ${selectedNames[0]}. Đây là chế độ kiểm tra đơn lẻ, phù hợp khi muốn soi một lựa chọn cụ thể.`,
+        2: `Đang so sánh cặp: ${selectedNames.join(" vs ")}. Lúc này trade-off hiện ra rõ nhất.`,
+        3: `Ba nguồn đang được so cùng lúc. Nên đọc theo trục thay vì đọc theo tổng thể.`,
+        4: `Bốn nguồn đang mở. Cần chú ý công nghệ nào thắng ở điện nền và công nghệ nào thắng ở ít phát thải.`,
+        5: `Đủ 5 nguồn: đây là bức tranh đầy đủ nhất, nhưng cũng là chế độ dễ rối nhất nếu không đọc theo mục tiêu.`
+      };
+      decisionHint.textContent = textMap[count] || "Chọn một nhóm nguồn để xem công nghệ nổi trội theo góc nhìn đó.";
     }
 
-    // control rods
-    const ctrlXs = [680, 724];
-    ctrlXs.forEach((rx,i) => {
-      const insert = S.rodInsertion;
-      const h = 250 * insert;
-      c.fillStyle = S.scram ? 'rgba(255,93,93,.14)' : 'rgba(8,12,18,.95)';
-      roundRect(c, rx-8, core.y - 2, 16, h, 7);
-      c.fill();
-      c.fillStyle = S.scram ? 'rgba(255,93,93,.7)' : 'rgba(247,198,74,.6)';
-      c.fillRect(rx-8, core.y - 2, 16, 2);
-      c.strokeStyle = S.scram ? 'rgba(255,93,93,.45)' : 'rgba(120,140,160,.28)';
-      c.strokeRect(rx-8, core.y - 2, 16, 250);
-    });
+    const buildChart = () => {
+      const datasets = [...active].map((name) => ({
+        label: name,
+        data: techData[name].scores,
+        borderColor: techData[name].color,
+        backgroundColor: techData[name].color + "22",
+        pointBackgroundColor: techData[name].color,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.18
+      }));
 
-    // PWR steam generator + loops
-    const sg = {x: vessel.x + vessel.w + 34, y: vessel.y + 106, w: 118, h: 180};
-    const hotLegY = vessel.y + 140;
-    const coldLegY = vessel.y + 260;
-    c.save();
-    c.strokeStyle = 'rgba(147,230,255,.42)';
-    c.lineWidth = 6;
-    c.lineCap = 'round';
-    c.beginPath();
-    c.moveTo(vessel.x + vessel.w - 2, hotLegY);
-    c.lineTo(sg.x + 6, hotLegY);
-    c.stroke();
-    c.strokeStyle = 'rgba(93,255,168,.28)';
-    c.beginPath();
-    c.moveTo(sg.x + 6, coldLegY);
-    c.lineTo(vessel.x + vessel.w - 2, coldLegY);
-    c.stroke();
-    c.restore();
+      updateDecisionBox([...active]);
 
-    c.save();
-    c.fillStyle = 'rgba(10,16,24,.95)';
-    roundRect(c, sg.x, sg.y, sg.w, sg.h, 18);
-    c.fill();
-    c.strokeStyle = 'rgba(93,255,168,.32)';
-    c.stroke();
-    c.fillStyle = 'rgba(147,230,255,.9)';
-    c.font = '12px Consolas, monospace';
-    c.fillText('BỘ TẠO HƠI', sg.x + 10, sg.y + 26);
-    c.fillStyle = 'rgba(255,255,255,.62)';
-    c.font = '10px Consolas, monospace';
-    c.fillText('VÒNG THỨ CẤP', sg.x + 10, sg.y + 52);
-    for(let i=0;i<8;i++){
-      const yy = sg.y + 70 + i*16;
-      c.strokeStyle = i % 2 ? 'rgba(93,255,168,.34)' : 'rgba(147,230,255,.24)';
-      c.beginPath();
-      c.moveTo(sg.x + 12, yy);
-      c.lineTo(sg.x + sg.w - 12, yy);
-      c.stroke();
-    }
-    c.restore();
-
-    // 2D particle draw
-    S.particles.forEach(p => {
-      c.save();
-      for(let i=0;i<p.trail.length;i++){
-        const t = p.trail[i];
-        const alpha = (i / Math.max(1,p.trail.length-1)) * (p.type==='fast' ? 0.25 : 0.35);
-        c.globalAlpha = alpha;
-        c.fillStyle = p.type === 'fast' ? '#eff8ff' : '#ffc94d';
-        c.beginPath();
-        c.arc(t.x + W/2, t.y + H/2, p.type==='fast' ? 1.2 : 1.6, 0, Math.PI*2);
-        c.fill();
-      }
-      c.globalAlpha = 1;
-      c.fillStyle = p.type === 'fast' ? '#edf8ff' : '#ffcc4f';
-      if(S.reactivity >= S.betaEff && p.type==='fast') c.fillStyle = '#ff6d6d';
-      c.beginPath();
-      c.arc(p.x + W/2, p.y + H/2, p.type === 'fast' ? 2.6 : 3.0, 0, Math.PI*2);
-      c.fill();
-      c.restore();
-    });
-
-    // steam plumes
-    const steam = clamp(S.steam, 0, 1);
-    if(steam > 0.01){
-      const steamCount = isMobileLike() ? 10 : 18;
-      c.save();
-      c.globalAlpha = 0.15 + steam * 0.35;
-      for(let i=0;i<steamCount;i++){
-        const x = core.x + 40 + i*20 + Math.sin(S.time*1.5 + i) * 3;
-        const y = core.y - 14 - ((S.time*26 + i*12) % 180);
-        c.fillStyle = 'rgba(170,220,255,.6)';
-        c.beginPath();
-        c.arc(x,y, 8 + (i%3), 0, Math.PI*2);
-        c.fill();
-      }
-      c.restore();
-    }
-
-    if(S.reactivity >= S.betaEff){
-      c.save();
-      c.globalAlpha = clamp((S.dangerTime - 1.2) / 4, 0, 0.45);
-      const g2 = c.createRadialGradient(W/2, H*0.14, 10, W/2, H*0.14, 300);
-      g2.addColorStop(0, 'rgba(255,93,93,.5)');
-      g2.addColorStop(1, 'rgba(255,93,93,0)');
-      c.fillStyle = g2;
-      c.fillRect(0,0,W,H*0.25);
-      c.restore();
-    }
-
-    // overlay labels for mode
-    c.save();
-    c.fillStyle = 'rgba(71,197,255,.10)';
-    roundRect(c, 18, 18, 245, 72, 16);
-    c.fill();
-    c.strokeStyle = 'rgba(71,197,255,.28)';
-    c.stroke();
-    c.fillStyle = 'rgba(147,230,255,.95)';
-    c.font = '12px Consolas, monospace';
-    c.fillText('MẶT CẮT 2D', 34, 44);
-    c.fillStyle = 'rgba(255,255,255,.6)';
-    c.fillText('Nhìn quan hệ lõi - nước làm chậm - vòng nhiệt', 34, 64);
-    c.restore();
-    c.restore();
-  }
-
-  function drawLabel3D(world, text, color, align='left', offsetX=18, offsetY=-8){
-    const W = ui.scene.width, H = ui.scene.height;
-    const cam = {
-      yaw: S.camYaw,
-      pitch: S.camPitch,
-      dist: S.camDist,
-      fov: 820,
-      tx: S.camTargetX,
-      ty: S.camTargetY,
-      tz: S.camTargetZ
-    };
-    const p = project3D(world.x, world.y, world.z, cam, W, H);
-    c.save();
-    c.font = '12px Consolas, monospace';
-    c.fillStyle = color;
-    c.strokeStyle = 'rgba(4,9,14,.95)';
-    c.lineWidth = 4;
-    const x = p.x + offsetX;
-    const y = p.y + offsetY;
-    c.beginPath();
-    c.moveTo(p.x, p.y);
-    c.lineTo(x, y);
-    c.stroke();
-    c.fillText(text, x, y);
-    c.restore();
-  }
-
-
-  function drawScene3D(){
-    const W = ui.scene.width, H = ui.scene.height;
-    c.clearRect(0,0,W,H);
-    const lod = getSpecterLOD();
-
-    const bg = c.createLinearGradient(0,0,0,H);
-    bg.addColorStop(0,'rgba(4,8,13,1)');
-    bg.addColorStop(1,'rgba(2,5,9,1)');
-    c.fillStyle = bg;
-    c.fillRect(0,0,W,H);
-
-    const cam = {
-      yaw: S.camYaw,
-      pitch: S.camPitch,
-      dist: S.camDist,
-      fov: 820,
-      tx: S.camTargetX,
-      ty: S.camTargetY,
-      tz: S.camTargetZ
-    };
-    const mobile = isMobileLike();
-    const interiorPeek = shouldRevealInterior(cam, W, H, lod);
-    const revealInterior = S.xrayVision || interiorPeek;
-    const steamParticleCount = mobile ? 10 : 18;
-    const pelletDots = mobile ? 6 : 9;
-
-    // far grid and ambient haze
-    c.save();
-    c.strokeStyle = 'rgba(64,120,160,.10)';
-    c.lineWidth = 1;
-    for(let i=-6;i<=6;i++){
-      const a = project3D(-240 + i*40, -150, -190, cam, W, H);
-      const b = project3D(-240 + i*40, -150, 190, cam, W, H);
-      c.beginPath(); c.moveTo(a.x,a.y); c.lineTo(b.x,b.y); c.stroke();
-    }
-    for(let i=-5;i<=5;i++){
-      const a = project3D(-240, -150, -190 + i*34, cam, W, H);
-      const b = project3D(240, -150, -190 + i*34, cam, W, H);
-      c.beginPath(); c.moveTo(a.x,a.y); c.lineTo(b.x,b.y); c.stroke();
-    }
-    c.restore();
-
-    c.save();
-    const haze = c.createRadialGradient(W*0.50, H*0.50, 10, W*0.50, H*0.50, Math.max(W,H)*0.72);
-    haze.addColorStop(0, S.xrayVision ? 'rgba(80,170,220,.12)' : 'rgba(50,100,150,.05)');
-    haze.addColorStop(1, 'rgba(0,0,0,0)');
-    c.fillStyle = haze;
-    c.fillRect(0,0,W,H);
-    c.restore();
-
-    // machine exterior architecture: containment + shielding + service halls
-    drawBox3D(0, -18, 0, 700, 450, 560, cam, [28,34,40,.98], 'rgba(160,176,190,.18)', 0.02, true);
-    drawBox3D(0, -238, 0, 760, 72, 630, cam, [34,38,44,.99], 'rgba(180,190,200,.16)', 0.02, true);
-    drawBox3D(0, 226, 0, 770, 58, 650, cam, [22,28,34,.99], 'rgba(120,140,155,.14)', 0.02, true);
-    drawBox3D(0, -12, 0, 590, 390, 430, cam, [18,22,28,.98], 'rgba(122,140,155,.15)', 0.02, true);
-    drawBox3D(0, -8, 0, 540, 360, 378, cam, [16,20,24,.98], 'rgba(108,231,255,.14)', 0.01, true);
-    drawBox3D(0, -8, 124, 500, 336, 30, cam, [14,18,22,.99], 'rgba(88,109,126,.18)', 0.01, true); // front shield plug
-
-    // structural shells around the plant
-    drawBox3D(-310, 38, 0, 176, 220, 180, cam, [18,24,30,.98], 'rgba(108,231,255,.20)', 0.02, true); // pump bay
-    drawBox3D(-250, -185, 72, 92, 164, 92, cam, [30,34,42,.97], 'rgba(244,179,92,.16)', 0.02, true); // pressurizer
-    drawBox3D(332, 8, 44, 132, 214, 118, cam, [16,28,38,.97], 'rgba(93,255,168,.22)', 0.04, true); // steam generator
-    drawBox3D(602, 18, 92, 260, 174, 216, cam, [28,30,34,.97], 'rgba(244,179,92,.14)', 0.02, true); // turbine hall
-    drawBox3D(800, 34, 90, 150, 154, 190, cam, [20,30,36,.96], 'rgba(124,195,255,.16)', 0.02, true); // condenser / aux
-    drawBox3D(452, 150, 34, 180, 82, 160, cam, [20,22,28,.96], 'rgba(71,197,255,.14)', 0.02, true); // steam pipe gallery
-    drawBox3D(-30, 156, 132, 420, 42, 48, cam, [26,28,34,.98], 'rgba(130,150,168,.14)', 0.01, true); // service deck
-    drawBox3D(-228, -20, 136, 34, 310, 44, cam, [22,26,30,.98], 'rgba(88,109,126,.18)', 0.01, true);
-    drawBox3D(228, -20, 136, 34, 310, 44, cam, [22,26,30,.98], 'rgba(88,109,126,.18)', 0.01, true);
-
-    // containment penetration and piping
-    c.save();
-    c.strokeStyle = 'rgba(147,230,255,.56)';
-    c.lineWidth = 5;
-    c.lineCap = 'round';
-    const a1 = project3D(260, -20, 10, cam, W, H);
-    const a2 = project3D(315, 0, 24, cam, W, H);
-    const a3 = project3D(400, 10, 38, cam, W, H);
-    const a4 = project3D(500, 18, 52, cam, W, H);
-    const a5 = project3D(602, 18, 92, cam, W, H);
-    c.beginPath();
-    c.moveTo(a1.x, a1.y); c.lineTo(a2.x, a2.y); c.lineTo(a3.x, a3.y); c.lineTo(a4.x, a4.y); c.lineTo(a5.x, a5.y);
-    c.stroke();
-
-    c.strokeStyle = 'rgba(93,255,168,.42)';
-    const b1 = project3D(332, 8, 44, cam, W, H);
-    const b2 = project3D(420, 10, 56, cam, W, H);
-    const b3 = project3D(560, 16, 74, cam, W, H);
-    c.beginPath();
-    c.moveTo(b1.x, b1.y); c.lineTo(b2.x, b2.y); c.lineTo(b3.x, b3.y);
-    c.stroke();
-
-    c.strokeStyle = 'rgba(244,179,92,.38)';
-    const c1 = project3D(602, 18, 92, cam, W, H);
-    const c2 = project3D(700, 26, 100, cam, W, H);
-    const c3 = project3D(860, 36, 96, cam, W, H);
-    c.beginPath();
-    c.moveTo(c1.x, c1.y); c.lineTo(c2.x, c2.y); c.lineTo(c3.x, c3.y);
-    c.stroke();
-    c.restore();
-
-    if(!revealInterior){
-      c.save();
-      c.globalAlpha = 0.22;
-      const coreGlow = c.createRadialGradient(W*0.48, H*0.49, 10, W*0.48, H*0.49, 240);
-      coreGlow.addColorStop(0, 'rgba(108,231,255,.20)');
-      coreGlow.addColorStop(1, 'rgba(0,0,0,0)');
-      c.fillStyle = coreGlow;
-      c.fillRect(0,0,W,H);
-      c.restore();
-    }
-
-    // hidden interior unless xray or focused close inspection
-    if(revealInterior){
-      drawBox3D(0, 0, 0, 520, 350, 360, cam, [30,38,48,S.xrayVision ? 0.26 : 0.36], 'rgba(71,197,255,.28)', 0.03, true);
-      drawBox3D(0, 0, 0, 430, 300, 280, cam, [28,108,150,S.xrayVision ? 0.08 : 0.12], 'rgba(95,201,255,.22)', 0.02, false);
-
-      for(const rod of CORE_RODS){
-        const x = rod.x;
-        const z = rod.z;
-          const tempGlow = clamp((S.fuelTemp - 285) / 900, 0, 1);
-          drawBox3D(x, 0, z, 14, 250, 14, cam, [17,24,34,0.96], 'rgba(62,104,144,.32)', 0.15 + tempGlow * 0.1, true);
-          if(lod >= 2){
-            for(let p=0;p<pelletDots;p++){
-              const yy = -108 + p*26;
-              const pt = project3D(x, yy, z, cam, W, H);
-              c.save();
-              c.globalAlpha = 0.9;
-              c.fillStyle = 'rgba(247,198,74,.75)';
-              c.shadowBlur = 10;
-              c.shadowColor = 'rgba(247,198,74,.85)';
-              c.beginPath();
-              c.arc(pt.x, pt.y, Math.max(1.0, 1.6 * pt.scale), 0, Math.PI*2);
-              c.fill();
-              c.restore();
+      if (window._radarChart) window._radarChart.destroy();
+      window._radarChart = new Chart(radarCtx, {
+        type: "radar",
+        data: { labels: axes, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: "#eaf2ff",
+                boxWidth: 14,
+                boxHeight: 14
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.dataset.label}: ${ctx.formattedValue}`
+              }
+            }
+          },
+          scales: {
+            r: {
+              angleLines: { color: "rgba(255,255,255,.10)" },
+              grid: { color: "rgba(255,255,255,.10)" },
+              pointLabels: {
+                color: "#d5e6ff",
+                font: { size: 13, weight: "600" }
+              },
+              ticks: {
+                color: "#9eb2cb",
+                backdropColor: "transparent",
+                stepSize: 20
+              },
+              suggestedMin: 0,
+              suggestedMax: 100
             }
           }
-      }
-
-      const ctrlXs = [160, 194];
-      ctrlXs.forEach((x, idx) => {
-        const insert = S.rodInsertion;
-        const h = 260 * insert;
-        const y = 120 - h*0.5;
-        drawBox3D(x, y, idx ? 18 : -18, lod >= 1 ? 18 : 14, h, lod >= 1 ? 18 : 14, cam,
-          S.scram ? [44,8,12,0.95] : [8,12,18,0.95],
-          S.scram ? 'rgba(255,93,93,.55)' : 'rgba(120,140,160,.34)',
-          S.scram ? 0.22 : 0.08,
-          true);
+        }
       });
+    };
 
-      // neutron trails and particles inside the vessel
-      S.particles.forEach(p => {
-        const danger = S.reactivity >= S.betaEff;
-        c.save();
-        const trailMax = lod >= 2 ? Math.min(p.trail.length, mobile ? 6 : 10) : Math.min(mobile ? 3 : 4, p.trail.length);
-        for(let i=0;i<trailMax;i++){
-          const t = p.trail[i];
-          const pp = project3D(t.x, t.y, t.z, cam, W, H);
-          c.globalAlpha = (i / Math.max(1,trailMax-1)) * (p.type === 'fast' ? 0.24 : 0.34);
-          c.fillStyle = p.type === 'fast' ? '#eff8ff' : '#ffc94d';
-          c.beginPath();
-          c.arc(pp.x, pp.y, Math.max(0.8, (p.type === 'fast' ? 1.1 : 1.4) * pp.scale * 0.72), 0, Math.PI*2);
-          c.fill();
-        }
-        const pp = project3D(p.x, p.y, p.z, cam, W, H);
-        c.globalAlpha = 1;
-        c.shadowBlur = p.type === 'fast' ? 16 : 10;
-        c.shadowColor = p.type === 'fast' ? 'rgba(255,255,255,.7)' : 'rgba(255,201,77,.7)';
-        c.fillStyle = danger && p.type === 'fast' ? '#ff6d6d' : (p.type === 'fast' ? '#edf8ff' : '#ffcc4f');
-        c.beginPath();
-        c.arc(pp.x, pp.y, Math.max(1.8, (p.type === 'fast' ? 2.7 : 3.0) * pp.scale * 0.72), 0, Math.PI*2);
-        c.fill();
-
-        if(p.hitFlash > 0.01){
-          c.globalAlpha = clamp(p.hitFlash, 0, 1);
-          c.strokeStyle = 'rgba(255,93,93,.6)';
-          c.lineWidth = 2;
-          c.beginPath();
-          c.arc(pp.x, pp.y, 14, 0, Math.PI*2);
-          c.stroke();
-        }
-        c.restore();
+    const renderControls = () => {
+      controls.innerHTML = "";
+      Object.keys(techData).forEach((name) => {
+        const chip = document.createElement("label");
+        chip.className = "chip";
+        chip.innerHTML = `
+          <span class="swatch" style="background:${techData[name].color}"></span>
+          <input type="checkbox" ${active.has(name) ? "checked" : ""} style="accent-color:${techData[name].color}; transform: translateY(1px);" />
+          <span>${name}</span>
+        `;
+        const input = chip.querySelector("input");
+        input.addEventListener("change", () => {
+          if (input.checked) active.add(name); else active.delete(name);
+          if (!active.size) {
+            input.checked = true;
+            active.add(name);
+            return;
+          }
+          buildChart();
+        });
+        controls.appendChild(chip);
       });
+    };
 
-      // steam / heat plume from top
-      const steam = clamp(S.steam, 0, 1);
-      if(steam > 0.01){
-        c.save();
-        c.globalAlpha = 0.10 + steam * 0.28;
-        for(let i=0;i<steamParticleCount;i++){
-          const x = -10 + Math.sin(S.time*1.2 + i*0.8) * 16 + (i%4)*8;
-          const y = -112 + ((S.time*36 + i*14) % 230);
-          const pt = project3D(x, y, 0, cam, W, H);
-          c.fillStyle = 'rgba(170,220,255,.52)';
-          c.beginPath();
-          c.arc(pt.x, pt.y, 8 + (i%4), 0, Math.PI*2);
-          c.fill();
+    presetButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const preset = btn.dataset.preset;
+        active.clear();
+
+        if (preset === "all") {
+          Object.keys(techData).forEach((name) => active.add(name));
+        } else if (preset === "nuclear") {
+          ["Hạt nhân lớn", "SMR", "Gió"].forEach((name) => active.add(name));
+        } else if (preset === "renewables") {
+          ["Mặt trời", "Gió", "SMR"].forEach((name) => active.add(name));
+        } else if (preset === "lowcarbon") {
+          ["Hạt nhân lớn", "SMR", "Mặt trời", "Gió"].forEach((name) => active.add(name));
         }
-        c.restore();
-      }
 
-      if(S.scram || S.decayHeat > 0.01){
-        c.save();
-        c.globalAlpha = clamp(0.12 + S.decayHeat * 2.4, 0.14, 0.44);
-        const decayCount = mobile ? 7 : 12;
-        for(let i=0;i<decayCount;i++){
-          const x = Math.sin(S.time*0.9 + i*0.8) * (24 + (i%3) * 12);
-          const y = -84 + ((S.time*28 + i*18) % 110);
-          const pt = project3D(x, y, (i%4 - 1.5) * 16, cam, W, H);
-          c.fillStyle = i % 2 ? 'rgba(255,170,104,.62)' : 'rgba(255,103,103,.58)';
-          c.beginPath();
-          c.arc(pt.x, pt.y, 4 + (i % 3), 0, Math.PI*2);
-          c.fill();
-        }
-        c.restore();
-      }
-
-      // glow/halo cues
-      if(S.reactivity >= S.betaEff){
-        c.save();
-        c.globalAlpha = clamp((S.dangerTime - 1.1) / 4, 0, 0.42);
-        const halo = c.createRadialGradient(W*0.50, H*0.42, 10, W*0.50, H*0.42, 300);
-        halo.addColorStop(0, 'rgba(255,93,93,.55)');
-        halo.addColorStop(1, 'rgba(255,93,93,0)');
-        c.fillStyle = halo;
-        c.fillRect(0,0,W,H);
-        c.restore();
-      }
-
-      if(S.lastEvent === 'fission' && S.generationPulse > 0.15){
-        c.save();
-        const fp = project3D(S.lastFissionPos.x, S.lastFissionPos.y, S.lastFissionPos.z, cam, W, H);
-        c.globalAlpha = clamp(0.9 * S.generationPulse, 0, 0.9);
-        c.strokeStyle = 'rgba(255,214,111,.92)';
-        c.lineWidth = 2.2;
-        c.beginPath();
-        c.arc(fp.x, fp.y, 14 + S.generationPulse * 10, 0, Math.PI*2);
-        c.stroke();
-        c.fillStyle = 'rgba(255,255,255,.8)';
-        c.beginPath();
-        c.arc(fp.x, fp.y, 2.4, 0, Math.PI*2);
-        c.fill();
-        c.restore();
-      }
-    }
-
-    // front shielding remains visible unless X-RAY is on
-    if(!S.xrayVision){
-      if(revealInterior){
-        drawBox3D(-174, -8, 146, 84, 318, 30, cam, [16,20,24,.96], 'rgba(96,118,134,.20)', 0.01, true);
-        drawBox3D(174, -8, 146, 84, 318, 30, cam, [16,20,24,.96], 'rgba(96,118,134,.20)', 0.01, true);
-        drawBox3D(0, -126, 146, 430, 74, 30, cam, [16,20,24,.96], 'rgba(96,118,134,.20)', 0.01, true);
-        drawBox3D(0, 126, 146, 430, 74, 30, cam, [16,20,24,.96], 'rgba(96,118,134,.20)', 0.01, true);
-      }else{
-        drawBox3D(0, -8, 146, 470, 330, 28, cam, [14,18,22,.99], 'rgba(96,118,134,.20)', 0.01, true);
-      }
-    }else{
-      drawBox3D(0, -8, 146, 470, 330, 28, cam, [28,54,72,.16], 'rgba(108,231,255,.28)', 0.01, true);
-    }
-
-    // Hover highlights
-    if(S.hoverHit){
-      c.save();
-      c.strokeStyle = S.hoverHit.tone === 'danger'
-        ? 'rgba(255,103,103,.82)'
-        : S.hoverHit.tone === 'warn'
-          ? 'rgba(247,198,74,.82)'
-          : 'rgba(147,230,255,.70)';
-      c.lineWidth = 2;
-      if(S.hoverHit.key === 'containment'){
-        const p = project3D(0,-18,0,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 124 * p.scale, 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'shielding'){
-        const p = project3D(0,-6,96,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 88 * p.scale, 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'steam_generator'){
-        const p = project3D(332,8,44,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 54 * p.scale, 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'control'){
-        const p = project3D(178,0,0,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 42 * p.scale, 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'fuel'){
-        const p = project3D(0,0,0,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 56 * p.scale, 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'decay_heat'){
-        const p = project3D(0,-96,0,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 36 * p.scale, 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'fission_point'){
-        const p = project3D(S.lastFissionPos.x, S.lastFissionPos.y, S.lastFissionPos.z, cam, W, H);
-        c.beginPath(); c.arc(p.x, p.y, 18 * Math.max(1, p.scale), 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'neutron'){
-        const p = project3D(-18,26,18,cam,W,H);
-        c.beginPath(); c.arc(p.x, p.y, 32 * p.scale, 0, Math.PI*2); c.stroke();
-      }
-      c.restore();
-    }
-
-    // 3D labels for external architecture only
-    if(S.viewMode === '3d' && !mobile && (S.xrayVision || lod <= 1)){
-      c.save();
-      c.fillStyle = 'rgba(147,230,255,.88)';
-      c.font = '12px Consolas, monospace';
-      const label = (w, txt, dx, dy) => {
-        const p = project3D(w.x,w.y,w.z,cam,W,H);
-        c.fillText(txt, p.x + dx, p.y + dy);
-      };
-      label({x:-250,y:-185,z:72}, 'BÌNH ĐIỀU ÁP', 18, -8);
-      label({x:332,y:8,z:44}, 'BỘ TẠO HƠI', 18, -8);
-      label({x:602,y:18,z:92}, 'KHU TUA-BIN', 18, -8);
-      label({x:-310,y:38,z:0}, 'BƠM TUẦN HOÀN', -14, -8);
-      label({x:0,y:-18,z:0}, 'VỎ AN TOÀN', -34, -150);
-      label({x:0,y:-8,z:146}, 'CHE CHẮN', -20, -12);
-      c.restore();
-    }
-
-    // small guidance
-    const helpW = Math.min(380, W - 36);
-    c.save();
-    c.fillStyle = 'rgba(4,9,14,.66)';
-    roundRect(c, 18, H - 76, helpW, 54, 14);
-    c.fill();
-    c.strokeStyle = 'rgba(108,231,255,.22)';
-    c.stroke();
-    c.fillStyle = 'rgba(147,230,255,.92)';
-    c.font = '11px Consolas, monospace';
-    c.fillText('QUAN SÁT 3D', 34, H - 48);
-    c.fillStyle = 'rgba(255,255,255,.62)';
-    const guideText = S.xrayVision
-      ? (mobile ? 'X-RAY: thấy cả vỏ che chắn lẫn nội thất.' : 'X-RAY đang bật: thấy vỏ che chắn, lõi, neutron và dòng nhiệt cùng lúc.')
-      : interiorPeek
-        ? (mobile ? 'Đang nhìn gần lõi để học chi tiết.' : 'Đang zoom gần đúng vùng lõi: chỉ hé nội thất phục vụ học tập.')
-        : (mobile ? 'Mặc định chỉ thấy kiến trúc ngoài.' : 'Bình thường chỉ thấy kiến trúc ngoài; hãy hover đúng vật thể để xem chú thích.');
-    c.fillText(guideText, 34, H - 30);
-    c.restore();
-  }
-
-  function drawScene(){
-    if(S.viewMode === '3d') drawScene3D();
-    else drawScene2D();
-  }
-
-  function updateStepPanel(){
-    const idx = S.stepRevealMode ? S.stepRevealIndex : ({
-      source: 0,
-      moderation: 1,
-      fission: 2,
-      rod: 5,
-      scram: 5,
-      default: 4
-    }[S.lastEvent] ?? 4);
-    ui.steps.forEach(el => {
-      const n = Number(el.dataset.step);
-      el.classList.toggle('on', S.stepRevealMode ? n <= idx : n === idx);
-      el.classList.toggle('done', S.stepRevealMode ? n < idx : false);
+        renderControls();
+        buildChart();
+        syncPairComparison();
+      });
     });
-    ui.stepBtn.textContent = S.stepRevealMode ? `BƯỚC ${Math.min(idx + 1, STEP_EXPLAIN.length)}/${STEP_EXPLAIN.length}` : 'GIẢI THÍCH TỪNG BƯỚC';
-  }
 
-  function refreshUI(){
-    const stat = statusForState();
-    const cam = {yaw:S.camYaw,pitch:S.camPitch,dist:S.camDist,fov:820,tx:S.camTargetX,ty:S.camTargetY,tz:S.camTargetZ};
-    const lodNow = getSpecterLOD();
-    const inspectionOpen = shouldRevealInterior(cam, ui.scene.width, ui.scene.height, lodNow);
+    const slider = document.getElementById("moduleSlider");
+    const moduleLabel = document.getElementById("moduleLabel");
+    const smrCapacity = document.getElementById("smrCapacity");
+    const smrRatio = document.getElementById("smrRatio");
+    const smrFill = document.getElementById("smrFill");
+    const smrBarText = document.getElementById("smrBarText");
+    const smrPhased = document.getElementById("smrPhased");
+    const smrIdc = document.getElementById("smrIdc");
+    const smrStart = document.getElementById("smrStart");
 
-    ui.kTargetRead.textContent = S.kTarget.toFixed(4);
-    ui.kEffVal.textContent = S.kEff.toFixed(4);
-    ui.rhoVal.textContent = S.reactivity.toFixed(4);
-    ui.nVal.textContent = Math.max(0, Math.round(S.expectedNeutrons)).toLocaleString('en-US');
-    ui.fissVal.textContent = Math.max(0, S.fissionRate).toFixed(0);
-    ui.fuelVal.textContent = Math.round(S.fuelTemp).toString();
-    ui.coolVal.textContent = Math.round(S.coolantTemp).toString();
-    ui.powVal.textContent = `${Math.round(S.power * 100)}%`;
-    ui.xeVal.textContent = S.xenon.toFixed(4);
-    ui.rodVal.textContent = `${Math.round(S.rodInsertion * 100)}%`;
-    ui.steamVal.textContent = `${Math.round(S.steam * 100)}%`;
-    ui.upVal.textContent = fmtTime(S.time);
-    ui.incVal.textContent = fmtTime(S.incidentTime);
+    const PWR_CAPACITY = 1000;
+    const MODULE_MW = 77;
 
-    ui.statusBadge.textContent = stat.text;
-    ui.statusBadge.className = `overlayBadge ${stat.cls}`;
+    function updateSMR(){
+      const modules = Number(slider.value);
+      const cap = modules * MODULE_MW;
+      const ratio = Math.round((cap / PWR_CAPACITY) * 100);
 
-    if(S.meltdown){
-      ui.kEffNote.textContent = 'hỏng lõi';
-      ui.kEffNote.style.color = 'var(--red)';
-    }else if(S.thermalState === 'prompt_critical'){
-      ui.kEffNote.textContent = 'vùng tới hạn tức thời';
-      ui.kEffNote.style.color = 'var(--red)';
-    }else if(S.thermalState === 'transient'){
-      ui.kEffNote.textContent = 'vùng chuyển tiếp nguy hiểm';
-      ui.kEffNote.style.color = 'var(--orange)';
-    }else if(S.thermalState === 'warning'){
-      ui.kEffNote.textContent = 'nhiệt đang tích lũy';
-      ui.kEffNote.style.color = 'var(--amber)';
-    }else if(S.kEff < 0.985){
-      ui.kEffNote.textContent = 'dưới tới hạn: chuỗi tắt dần';
-      ui.kEffNote.style.color = 'var(--amber)';
-    }else{
-      ui.kEffNote.textContent = 'tới hạn ổn định';
-      ui.kEffNote.style.color = 'var(--green)';
+      moduleLabel.textContent = `${modules} module${modules > 1 ? "s" : ""}`;
+      smrCapacity.textContent = `${cap} MW`;
+      smrRatio.textContent = `${ratio}%`;
+      smrBarText.textContent = `${modules} / 12 module`;
+      smrFill.style.width = `${(modules / 12) * 100}%`;
+      smrPhased.textContent = modules <= 3 ? "Khởi động" : modules <= 7 ? "Mở rộng" : "Gần đầy tải";
+      smrIdc.textContent = modules <= 3 ? "Rất thấp" : modules <= 7 ? "Thấp hơn" : "Tăng dần";
+      smrStart.textContent = modules <= 3 ? "Thử nghiệm an toàn" : modules <= 7 ? "Mở rộng theo pha" : "Tiệm cận quy mô lớn";
     }
+    slider.addEventListener("input", updateSMR);
 
-    if(S.thermalState === 'prompt_critical'){
-      ui.rhoNote.textContent = 'delayed neutrons không còn đủ để kìm phản ứng';
-      ui.rhoVal.style.color = 'var(--red)';
-    }else if(S.thermalState === 'transient' || S.thermalState === 'warning'){
-      ui.rhoNote.textContent = 'nhiệt và reactivity đang lệch khỏi cân bằng';
-      ui.rhoVal.style.color = 'var(--amber)';
-    }else if(S.kEff < 0.985){
-      ui.rhoNote.textContent = 'độ phản ứng âm ròng';
-      ui.rhoVal.style.color = 'var(--amber)';
-    }else{
-      ui.rhoNote.textContent = 'gần cân bằng tới hạn';
-      ui.rhoVal.style.color = 'var(--green)';
-    }
 
-    const fillPct = clamp((S.power / 6.5) * 100, 0, 100);
-    let fill = ui.scene.parentElement.querySelector('.fill');
-    if(!fill){
-      // no-op; placeholder if we later add a progress bar
-    }
+    const phaseSwitch = document.getElementById("phaseSwitch");
+    const phaseLegend = document.getElementById("phaseLegend");
+    const phaseK1 = document.getElementById("phaseK1");
+    const phaseV1 = document.getElementById("phaseV1");
+    const phaseK2 = document.getElementById("phaseK2");
+    const phaseV2 = document.getElementById("phaseV2");
+    const phaseCtx = document.getElementById("phaseChart");
+    const phaseNote = document.getElementById("phaseNote");
+    const phaseConclusionTitle = document.getElementById("phaseConclusionTitle");
+    const phaseConclusionText = document.getElementById("phaseConclusionText");
+    const phaseReasonText = document.getElementById("phaseReasonText");
+    let currentPhase = "early";
 
-    if(S.meltdown){
-      ui.powNote.textContent = 'hư hỏng lõi: nhiệt dư đã vượt vùng kiểm soát';
-    }else if(S.scram && S.decayHeat > 0.01){
-      ui.powNote.textContent = `nhiệt dư còn ${Math.round(S.decayHeat * 100)}% công suất danh định`;
-    }else if(S.thermalState === 'prompt_critical'){
-      ui.powNote.textContent = 'nguy hiểm: công suất và nhiệt tăng đồng thời';
-    }else if(S.power > 2.0){
-      ui.powNote.textContent = 'quá độ: đầu ra cao hơn mức danh định';
-    }else{
-      ui.powNote.textContent = 'đầu ra ổn định';
-    }
+    const phaseData = {
+      early: {
+        labels: ["0","1","2","3","4","5","6"],
+        smr: [0, 77, 154, 231, 308, 308, 308],
+        pwr: [0, 0, 0, 0, 0, 0, 1000],
+        k1: "SMR — đầu kỳ",
+        v1: "An toàn hơn cho thử nghiệm",
+        k2: "PWR — đầu kỳ",
+        v2: "Cú nhảy vốn lớn",
+        note: "Đầu kỳ: SMR cho phép mở từng module nên vốn không bị khóa hết trong một cú xây; PWR vẫn phải gánh một khối đầu tư lớn trước khi có công suất thương mại.",
+        conclusion: "SMR hợp hơn cho giai đoạn thử nghiệm và mở bước đầu. PWR hợp hơn khi đã có khả năng chịu một cú nhảy vốn lớn.",
+        reason: "SMR chia nhỏ rủi ro đầu tư theo module, còn PWR gom rủi ro vào một dự án lớn trước khi có điện thương mại. Đây là khác biệt về đường cong vốn, không phải khác biệt về bản chất vật lý."
+      },
+      late: {
+        labels: ["0","2","4","6","8","10","12"],
+        smr: [308, 385, 462, 539, 616, 770, 924],
+        pwr: [1000, 1000, 1000, 1000, 1000, 1000, 1000],
+        k1: "SMR — về sau",
+        v1: "Tiệm cận quy mô lò lớn",
+        k2: "PWR — về sau",
+        v2: "Ổn định khi đã vào vận hành",
+        note: "Về sau: nếu dây chuyền module và cấp phép đã ổn, SMR tiếp tục cộng dần công suất. Khi đủ vốn và đủ module, nó tiệm cận quy mô lò lớn nhưng vẫn không đổi bản chất triển khai theo pha.",
+        conclusion: "Về sau, SMR không còn là câu chuyện ‘thử nghiệm nhỏ’, mà là câu chuyện cộng dồn công suất theo pha. PWR lúc này chỉ còn lợi thế khi dự án đã vượt qua được cửa vốn ban đầu.",
+        reason: "Khi hệ sinh thái đã chín, cái quyết định không còn là khả năng dựng một lò có công suất lớn ngay lập tức, mà là năng lực mở rộng, chuẩn hóa và nhân bản. SMR mạnh ở điểm đó; PWR mạnh ở điểm ‘đã xong thì rất ổn định’."
+      }
+    };
 
-    ui.viewText.textContent = S.viewMode === '3d' ? 'KIẾN TRÚC 3D' : 'MẶT CẮT 2D';
-    ui.viewBtn.textContent = S.viewMode === '3d' ? 'TRỞ VỀ MẶT CẮT' : 'KHÔNG GIAN 3D';
-    ui.viewBtn.classList.toggle('on', S.viewMode === '3d');
-    ui.zoomBtn.textContent = S.viewMode === '3d' ? `ZOOM 3D x${(680 / S.camDist).toFixed(2)}` : (S.kTarget > 1.01 ? 'THU NHỎ' : 'PHÓNG ĐẠI');
-    ui.zoomState.textContent = S.viewMode === '3d'
-      ? `${S.xrayVision ? 'X-RAY' : inspectionOpen ? 'FOCUS LÕI' : 'VỎ KÍN'} · LOD ${lodNow} · x${(680 / S.camDist).toFixed(2)}`
-      : `PHÓNG ĐẠI x${S.sceneZoom.toFixed(2)}`;
-
-    const stage = deriveStageMessage();
-    ui.stageMsg.textContent = stage.msg;
-    ui.stageSmall.textContent = stage.small;
-    ui.sceneHint.innerHTML = S.viewMode === '3d'
-      ? `<strong>Gợi ý:</strong> kéo để quay · bánh xe để zoom · WASD / QE để dịch · ${S.xrayVision ? 'X-RAY đang mở.' : inspectionOpen ? 'Đang nhìn gần lõi.' : 'Vỏ ngoài đang che lõi.'}`
-      : '<strong>Gợi ý:</strong> kéo để dịch, bánh xe để zoom · 3D để xem vỏ che chắn và đường nhiệt.';
-    ui.specterBadge.style.display = S.viewMode === '3d' ? 'block' : 'none';
-    ui.specterBadge.innerHTML = S.viewMode === '3d'
-      ? `<strong>3D HỌC TẬP · LOD ${lodNow}</strong><br/>${
-          S.xrayVision
-            ? 'X-RAY: thấy vỏ, bình lò, neutron, điểm phân hạch và nhiệt dư cùng lúc.'
-            : inspectionOpen
-              ? 'Focus gần: hé lõi để học rods, moderator, neutron và dòng nhiệt.'
-              : lodNow === 0
-                ? 'Xa: thấy toàn khối lò và vỏ che chắn.'
-                : lodNow === 1
-                  ? 'Trung cảnh: thấy đường ống, bộ tạo hơi và kiến trúc máy.'
-                  : 'Cận cảnh: chỉ mở lõi khi trỏ đúng vùng trung tâm.'
-        }`
-      : '<strong>MẶT CẮT 2D</strong><br/>Nhìn tổng thể: lõi, nước làm chậm, vòng sơ cấp và bộ tạo hơi.';
-    updateStepPanel();
-  }
-
-  const STEP_EXPLAIN = [
-    {msg:'Neutron nhanh đi vào vùng nước làm chậm trong bình lò.', small:'Trong PWR, chính nước quanh nhiên liệu vừa làm chậm neutron vừa nhận nhiệt từ nhiên liệu.'},
-    {msg:'Neutron bị làm chậm thành neutron nhiệt.', small:'Khi tốc độ giảm, xác suất bị U-235 hấp thụ để gây phân hạch tăng lên.'},
-    {msg:'Neutron nhiệt bị nhiên liệu hấp thụ và gây phân hạch.', small:'Mỗi sự kiện phân hạch thường sinh 2-3 neutron mới cùng một lượng nhiệt đáng kể.'},
-    {msg:'Chuỗi neutron mới lan ra trong lõi và tiếp tục tạo nhiệt.', small:'Nhiệt tích trong nhiên liệu trước rồi mới truyền dần sang nước làm mát.'},
-    {msg:'Nhiệt đi từ mạch sơ cấp sang bộ tạo hơi rồi sang mạch thứ cấp.', small:'Hai mạch không trộn lẫn; tua-bin nhận năng lượng từ hơi ở mạch thứ cấp.'},
-    {msg:'Thanh điều khiển, Doppler và phản hồi moderator giữ hệ trong vùng ổn định.', small:'SCRAM dừng chuỗi phân hạch chính nhưng không xóa nhiệt dư còn lại trong lõi.'}
-  ];
-
-  function deriveStageMessage(){
-    if(S.stepRevealMode){
-      return STEP_EXPLAIN[clamp(S.stepRevealIndex, 0, STEP_EXPLAIN.length - 1)];
-    }
-    if(S.hoverHit){
+    function renderPhaseChart(phase){
+      const data = phaseData[phase];
+      phaseK1.textContent = data.k1;
+      phaseV1.textContent = data.v1;
+      phaseK2.textContent = data.k2;
+      phaseV2.textContent = data.v2;
+      if (window._phaseChart) window._phaseChart.destroy();
+      window._phaseChart = new Chart(phaseCtx, {
+        type: "line",
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: "SMR",
+              data: data.smr,
+              borderColor: "#c084fc",
+              backgroundColor: "rgba(192,132,252,.18)",
+              tension: .2,
+              borderWidth: 3.25,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#c084fc",
+              fill: false,
+              order: 2
+            },
+            {
+              label: "PWR",
+              data: data.pwr,
+              borderColor: "#60a5fa",
+              backgroundColor: "rgba(96,165,250,.14)",
+              tension: .12,
+              borderWidth: 3.25,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#60a5fa",
+              borderDash: [7, 5],
+              fill: false,
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 10, right: 18, bottom: 4, left: 8 } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.dataset.label}: ${ctx.formattedValue}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              offset: true,
+              grid: { color: "rgba(255,255,255,.06)" },
+              ticks: {
+                color: "#9eb2cb",
+                callback: (value, index) => index === 0 ? "" : value
+              },
+              title: {
+                display: true,
+                text: "Năm sau khởi công",
+                color: "#9eb2cb",
+                font: { size: 12, weight: "600" }
+              }
+            },
+            y: {
+              min: 0,
+              max: 1120,
+              grid: { color: "rgba(255,255,255,.08)" },
+              ticks: { color: "#9eb2cb", stepSize: 200 },
+              title: {
+                display: true,
+                text: "Công suất (MW)",
+                color: "#9eb2cb",
+                font: { size: 12, weight: "600" }
+              }
+            }
+          }
+        }
+      });
       return {
-        msg: `Đang xem: ${S.hoverHit.title}.`,
-        small: `${S.hoverHit.body}${S.hoverHit.foot ? ` ${S.hoverHit.foot}` : ''}`.trim()
+        note: data.note,
+        conclusion: data.conclusion,
+        reason: data.reason
       };
     }
-    switch(S.thermalState){
-      case 'meltdown':
-        return {msg:'Lõi đã nóng chảy. Đây là trạng thái hư hỏng nhiệt độc lập với giao diện, không phải hiệu ứng bị reset bởi UI.', small:'Nhiệt dư sau shutdown vẫn tồn tại, nên “tắt lò” không đồng nghĩa với hết nguy hiểm.'};
-      case 'prompt_critical':
-        return {msg:'Đang ở vùng tới hạn tức thời. Neutron trễ không còn đủ để kìm phản ứng và nhiệt vẫn đang tăng.', small:'Đây là vùng cực nguy hiểm: vừa có động học neutron rất nhanh, vừa có tải nhiệt lớn.'};
-      case 'transient':
-        return {msg:'Lò đang trong vùng chuyển tiếp nguy hiểm. Công suất và nhiệt độ còn tăng dù phản ứng đã bị kìm bớt.', small:'Nếu hệ làm mát không theo kịp, trạng thái này có thể đi tiếp lên vùng tới hạn tức thời.'};
-      case 'warning':
-        return {msg:'Nhiệt đang tích lũy. Đây là dấu hiệu sớm rằng hệ làm mát hoặc mức công suất đang rời vùng an toàn.', small:'Theo dõi thời gian giữ trong vùng xấu: nhiệt không thể bị “tắt rụp” chỉ bằng nút SCRAM.'};
-    }
-    if(S.scram || S.decayHeat > 0.01){
-      return {msg:'Lò đã dừng chuỗi phân hạch chính, nhưng nhiệt dư vẫn còn. Hệ làm mát phải tiếp tục lấy nhiệt khỏi lõi.', small:'Đây là lý do shutdown không đồng nghĩa với nguội ngay.'};
-    }
-    if(S.lastEvent === 'fission' || S.lastFissionEvents > 0){
-      return {msg:'Neutron nhiệt vừa bị U-235 hấp thụ. Phân hạch sinh neutron mới và giải phóng nhiệt trong nhiên liệu.', small:'Một sự kiện phân hạch có thể tiếp tục nuôi chuỗi phản ứng nếu k còn đủ lớn.'};
-    }
-    if(S.lastEvent === 'moderation'){
-      return {msg:'Neutron nhanh đang đi trong nước làm chậm. Nước làm chậm giúp tăng xác suất bị nhiên liệu hấp thụ.', small:'Neutron chậm hơn sẽ dễ gây phân hạch hơn khi gặp hạt nhân phân hạch được.'};
-    }
-    if(S.lastEvent === 'rod'){
-      return {msg:'Thanh điều khiển vừa hấp thụ neutron. Càng chèn sâu, k_eff càng giảm.', small:'Vật liệu hấp thụ mạnh như boron carbide hoặc hafnium là công cụ chính để điều chỉnh phản ứng.'};
-    }
-    return {msg:'Đang nhìn tổng thể hệ lò. Bình thường bạn thấy kiến trúc ngoài trước, rồi mới đi sâu vào lõi khi cần học chi tiết.', small:'Đây là vùng quan sát mặc định để tránh cảm giác “nhìn xuyên” như mô hình rỗng.'};
-  }
 
-  function updateCamera(dt){
-    // 3D spectator style: target can be moved with WASD/QE while orbiting around it
-    const move = 140 * dt;
-    const cosY = Math.cos(S.camYaw), sinY = Math.sin(S.camYaw);
-    const forwardX = cosY, forwardZ = sinY;
-    const rightX = -sinY, rightZ = cosY;
-    if(keys['KeyW']){ S.camTargetX += forwardX * move; S.camTargetZ += forwardZ * move; }
-    if(keys['KeyS']){ S.camTargetX -= forwardX * move; S.camTargetZ -= forwardZ * move; }
-    if(keys['KeyA']){ S.camTargetX -= rightX * move; S.camTargetZ -= rightZ * move; }
-    if(keys['KeyD']){ S.camTargetX += rightX * move; S.camTargetZ += rightZ * move; }
-    if(keys['KeyQ']) S.camTargetY += move;
-    if(keys['KeyE']) S.camTargetY -= move;
-    S.camTargetX = clamp(S.camTargetX, -120, 120);
-    S.camTargetY = clamp(S.camTargetY, -60, 60);
-    S.camTargetZ = clamp(S.camTargetZ, -120, 120);
-
-    if(S.specterMode === 'auto' && !S.dragging && !keys['KeyW'] && !keys['KeyA'] && !keys['KeyS'] && !keys['KeyD'] && !keys['KeyQ'] && !keys['KeyE']){
-      const focus = (S.lastEvent === 'fission' && S.generationPulse > 0.28)
-        ? S.lastFissionPos
-        : {x:0,y:0,z:0};
-      S.camTargetX = lerp(S.camTargetX, focus.x * 0.6, clamp(dt * 2.1, 0, 0.18));
-      S.camTargetY = lerp(S.camTargetY, focus.y * 0.35, clamp(dt * 2.1, 0, 0.18));
-      S.camTargetZ = lerp(S.camTargetZ, focus.z * 0.6, clamp(dt * 2.1, 0, 0.18));
+    function setPhase(phase){
+      currentPhase = phase;
+      phaseSwitch.querySelectorAll(".phaseBtn").forEach(btn => btn.classList.toggle("active", btn.dataset.phase === phase));
+      const payload = renderPhaseChart(phase);
+      phaseNote.textContent = payload.note;
+      phaseConclusionTitle.textContent = phase === "early" ? "Kết luận đầu kỳ" : "Kết luận về sau";
+      phaseConclusionText.textContent = payload.conclusion;
+      phaseReasonText.textContent = payload.reason;
+      return payload.note;
     }
 
-    S.camPitch = clamp(S.camPitch, -1.2, 1.1);
-    S.camDist = clamp(S.camDist, 260, 980);
-  }
+    phaseSwitch.addEventListener("click", (e) => {
+      const btn = e.target.closest(".phaseBtn");
+      if (!btn) return;
+      setPhase(btn.dataset.phase);
+    });
 
-  function updateControls(dt){
-    if(S.viewMode === '3d'){
-      updateCamera(dt);
-    }else{
-      S.camDist = 680;
-      S.sceneZoom = lerp(S.sceneZoom, S.sceneTargetZoom, clamp(dt * 6, 0, 1));
-      S.scenePanX = lerp(S.scenePanX, S.sceneTargetPanX, clamp(dt * 6, 0, 1));
-      S.scenePanY = lerp(S.scenePanY, S.sceneTargetPanY, clamp(dt * 6, 0, 1));
-    }
-  }
+    setPhase("early");
 
-  function loop(ts){
-    const now = performance.now();
-    const dt = Math.min(0.05, Math.max(0.001, (now - (loop.last || now)) / 1000));
-    loop.last = now;
+    const readinessInputs = {
+      regulator: document.getElementById("readyRegulator"),
+      workforce: document.getElementById("readyWorkforce"),
+      nepio: document.getElementById("readyNepio"),
+      trust: document.getElementById("readyTrust")
+    };
+    const readinessCards = {
+      regulator: document.getElementById("toggleCard-regulator"),
+      workforce: document.getElementById("toggleCard-workforce"),
+      nepio: document.getElementById("toggleCard-nepio"),
+      trust: document.getElementById("toggleCard-trust")
+    };
+    const readinessLabels = {
+      regulator: "pháp quy độc lập",
+      workforce: "nhân lực chiều sâu",
+      nepio: "điều phối NEPIO",
+      trust: "minh bạch xã hội"
+    };
+    const readinessPanel = document.getElementById("readinessPanel");
+    const readinessTitle = document.getElementById("readinessTitle");
+    const readinessChip = document.getElementById("readinessChip");
+    const readinessSummary = document.getElementById("readinessSummary");
+    const readinessDetail = document.getElementById("readinessDetail");
 
-    if(!S.meltdown){
-      updatePhysics(dt);
-      updateParticles(dt);
-    }else{
-      S.uiFlash = 1;
-    }
-    updateControls(dt);
+    const prepPhase1Status = document.getElementById("prepPhase1Status");
+    const prepPhase2Status = document.getElementById("prepPhase2Status");
+    const prepPhase2Card = document.getElementById("prepPhase2Card");
+    const prepFlowTitle = document.getElementById("prepFlowTitle");
+    const prepFlowText = document.getElementById("prepFlowText");
+    const prepFlowReason = document.getElementById("prepFlowReason");
+    const prepPhase1Items = [...document.querySelectorAll("[data-phase1-item]")];
+    const prepPhase2Inputs = [...document.querySelectorAll("[data-phase2]")];
 
-    drawScene();
-    refreshUI();
-    syncHoverTooltip();
+    function updatePrepFlow(){
+      const phase1Count = Object.values(readinessInputs).filter((input) => input.checked).length;
+      const phase1Ready = phase1Count === Object.keys(readinessInputs).length;
+      const phase2Count = phase1Ready ? prepPhase2Inputs.filter((input) => input.checked).length : 0;
 
-    ui.coreWrap.classList.toggle('shake', S.uiFlash > 0.35 && !S.meltdown);
-    document.body.classList.toggle('meltdown-screen', S.meltdown);
-    ui.scene.classList.toggle('pulse', S.generationPulse > 0.4 && S.viewMode === '3d');
-    ui.scene.classList.toggle('xray', S.xrayVision);
-    ui.xrayBtn.classList.toggle('on', S.xrayVision);
+      prepPhase1Status.textContent = phase1Ready ? "Đã đủ nền tảng" : `${phase1Count}/4 trụ cột`;
+      prepPhase2Card.classList.toggle("locked", !phase1Ready);
 
-    requestAnimationFrame(loop);
-  }
+      prepPhase2Inputs.forEach((input) => {
+        input.disabled = !phase1Ready;
+        input.closest(".phaseCheck").classList.toggle("disabled", !phase1Ready);
+      });
 
-  // Interaction
-  ui.kSlider.addEventListener('input', (e) => {
-    S.kTarget = parseFloat(e.target.value);
-    ui.kTargetRead.textContent = S.kTarget.toFixed(4);
-  });
-  ui.demoBtn.addEventListener('click', () => setMode('demo'));
-  ui.realityBtn.addEventListener('click', () => setMode('reality'));
-  ui.viewBtn.addEventListener('click', () => setViewMode(S.viewMode === '3d' ? '2d' : '3d'));
-  ui.stepBtn.addEventListener('click', () => {
-    if(!S.stepRevealMode){
-      S.stepRevealMode = true;
-      S.stepRevealIndex = 0;
-    }else if(S.stepRevealIndex < STEP_EXPLAIN.length - 1){
-      S.stepRevealIndex += 1;
-    }else{
-      S.stepRevealMode = false;
-      S.stepRevealIndex = 0;
-    }
-  });
-  ui.xrayBtn.addEventListener('click', () => { S.xrayVision = !S.xrayVision; ui.xrayBtn.classList.toggle('on', S.xrayVision); });
-  ui.zoomBtn.addEventListener('click', () => {
-    if(S.viewMode === '3d'){
-      const reset = Math.abs(S.camDist - 680) > 6 || Math.abs(S.camTargetX) > 4 || Math.abs(S.camTargetY) > 4 || Math.abs(S.camTargetZ) > 4;
-      if(reset){
-        S.camDist = 680;
-        S.camTargetX = 0;
-        S.camTargetY = 0;
-        S.camTargetZ = 0;
-        S.camYaw = 0.62;
-        S.camPitch = -0.28;
-      }else{
-        S.camDist = 420;
+      if (!phase1Ready) {
+        prepPhase2Status.textContent = "Đang bị khóa";
+        prepFlowTitle.textContent = "Vì sao chưa thể nhảy sang pha 2?";
+        prepFlowText.textContent = "Vì phần việc trước 2030 không phải thủ tục phụ. Đó là nơi dựng ra luật chơi, con người và năng lực điều phối để dự án không tự sập vì chính cấu trúc của nó.";
+        prepFlowReason.textContent = "Khi pha 1 còn thiếu, nói về triển khai sau 2030 chỉ là đi nhanh hơn năng lực quốc gia. SMR giảm áp lực vốn, nhưng không xóa được khoảng trễ pháp lý và nhân lực.";
+        return;
       }
-    }else{
-      if(S.sceneTargetZoom > 1.02){
-        S.sceneTargetZoom = 1.0;
-        S.sceneTargetPanX = 0;
-        S.sceneTargetPanY = 0;
-      }else{
-        S.sceneTargetZoom = 1.55;
-        S.sceneTargetPanX = 0;
-        S.sceneTargetPanY = 0;
+
+      if (phase2Count < prepPhase2Inputs.length) {
+        prepPhase2Status.textContent = `${phase2Count}/4 bước dài hạn`;
+        prepFlowTitle.textContent = "Pha 2 đã mở, nhưng mới chỉ bắt đầu";
+        prepFlowText.textContent = "Sau khi có nền tảng, bài toán chuyển sang làm chủ công nghiệp phụ trợ, chuỗi nhiên liệu, đội ngũ liên thế hệ và cách ghép SMR vào hệ thống đa nguồn.";
+        prepFlowReason.textContent = "Đây là lý do Mục 4 xem điện hạt nhân là bài toán nhiều thập kỷ: xây nhà máy có thể nhanh hơn xây cả hệ sinh thái giữ nó vận hành an toàn.";
+        return;
       }
-    }
-  });
-  ui.scramBtn.addEventListener('click', manualScram);
-  ui.resetBtn.addEventListener('click', () => resetReactor(true));
-  ui.guideClose.addEventListener('click', closeGuide);
-  ui.guideMask.addEventListener('click', (ev) => { if(ev.target === ui.guideMask) closeGuide(); });
-  ui.fatalResetBtn.addEventListener('click', () => resetReactor(true));
-  ui.fatalDismissBtn.addEventListener('click', () => ui.fatalOverlay.classList.remove('on'));
 
-  const keys = {};
-  window.addEventListener('keydown', (e) => {
-    keys[e.code] = true;
-    if(e.code === 'Space'){
-      e.preventDefault();
-      if(S.viewMode === '3d'){
-        S.camTargetX = 0; S.camTargetY = 0; S.camTargetZ = 0;
-        S.camYaw = 0.62; S.camPitch = -0.28; S.camDist = 680;
+      prepPhase2Status.textContent = "Sẵn sàng làm chủ";
+      prepFlowTitle.textContent = "Lúc này mới có thể nói đến triển khai bền";
+      prepFlowText.textContent = "Khi cả hai pha đều khép kín, SMR không còn là một ý tưởng công nghệ đơn lẻ mà trở thành một phần của chiến lược điện nền dài hạn.";
+      prepFlowReason.textContent = "Bài học ở đây không phải 'có lò là xong', mà là chỉ khi nền tảng và trách nhiệm dài hạn cùng hiện diện thì chương trình hạt nhân mới có cửa đi xa.";
+    }
+
+    function updateReadiness(){
+      const missing = [];
+      Object.entries(readinessInputs).forEach(([key, input]) => {
+        const checked = input.checked;
+        readinessCards[key].classList.toggle("active", checked);
+        if (!checked) missing.push(readinessLabels[key]);
+      });
+
+      const readyCount = Object.keys(readinessInputs).length - missing.length;
+      const ready = missing.length === 0;
+
+      readinessPanel.dataset.state = ready ? "good" : "bad";
+      readinessTitle.textContent = ready ? "Đủ điều kiện khởi động" : "Không thể triển khai an toàn";
+      readinessChip.textContent = `${readyCount}/4 điều kiện đã sẵn sàng`;
+
+      if (ready) {
+        readinessSummary.textContent = "Khi đủ cả bốn điều kiện, câu chuyện mới chuyển từ 'có nên làm hay không' sang 'triển khai theo nhịp nào để an toàn và bền vững'.";
+        readinessDetail.textContent = "Điểm cần thấy là SMR không tự mở cửa dự án. Công nghệ chỉ bước vào sau khi luật, nhân lực, điều phối và niềm tin xã hội đã đứng vững.";
+      } else if (missing.length === 4) {
+        readinessSummary.textContent = "Cả bốn trụ cột đều chưa được xác nhận. Đây là trạng thái của một ý tưởng công nghệ chưa có hệ điều hành quốc gia đi kèm.";
+        readinessDetail.textContent = "Bật dần từng điều kiện để thấy dự án hạt nhân thất bại trước hết ở chỗ hệ thống chưa sẵn sàng, không chỉ ở bản thân lò phản ứng.";
+      } else {
+        readinessSummary.textContent = `Mắt xích còn thiếu: ${missing.join(", ")}. Chỉ cần một mắt xích chưa có, toàn bộ dự án vẫn chưa vượt qua bộ lọc an toàn quốc gia.`;
+        readinessDetail.textContent = "Đây là điều Mục 4 muốn nhấn mạnh: điện hạt nhân là phép thử của thể chế, nhân lực và minh bạch, chứ không chỉ là phép thử công nghệ.";
       }
-    }
-  });
-  window.addEventListener('keyup', (e) => { keys[e.code] = false; });
 
-  ui.scene.addEventListener('pointerdown', (e) => {
-    S.dragging = true;
-    S.dragX = e.clientX;
-    S.dragY = e.clientY;
-    S.pointerType = e.pointerType || 'mouse';
-    const pt = canvasPointFromEvent(e);
-    S.pointerX = pt.x; S.pointerY = pt.y;
-    if(e.pointerType === 'touch' || e.pointerType === 'pen'){
-      S.hoverStickyUntil = performance.now() + 1800;
-      S.hoverHit = resolveHoverHit();
-      syncHoverTooltip(true);
-    }else{
-      S.hoverStickyUntil = 0;
-      S.hoverHit = resolveHoverHit();
-      syncHoverTooltip(true);
+      prepPhase1Items.forEach((item) => {
+        item.classList.toggle("done", readinessInputs[item.dataset.phase1Item].checked);
+      });
+
+      updatePrepFlow();
     }
-  });
-  window.addEventListener('pointerup', () => { S.dragging = false; });
-  window.addEventListener('pointermove', (e) => {
-    const pt = canvasPointFromEvent(e);
-    S.pointerX = pt.x; S.pointerY = pt.y;
-    S.pointerType = e.pointerType || S.pointerType || 'mouse';
-    if(S.dragging){
-      const dx = e.clientX - S.dragX;
-      const dy = e.clientY - S.dragY;
-      S.dragX = e.clientX;
-      S.dragY = e.clientY;
-      if(S.viewMode === '3d'){
-        S.camYaw += dx * 0.006;
-        S.camPitch += dy * 0.005;
-        S.camPitch = clamp(S.camPitch, -1.05, 0.95);
-      }else{
-        S.sceneTargetPanX = clamp(S.sceneTargetPanX + dx, -180, 180);
-        S.sceneTargetPanY = clamp(S.sceneTargetPanY + dy, -140, 140);
+
+    Object.values(readinessInputs).forEach((input) => input.addEventListener("input", updateReadiness));
+    prepPhase2Inputs.forEach((input) => input.addEventListener("input", updatePrepFlow));
+
+    const idcSmrBreakEven = document.getElementById("idcSmrBreakEven");
+    const idcPwrBreakEven = document.getElementById("idcPwrBreakEven");
+    const idcRiskSignal = document.getElementById("idcRiskSignal");
+    const idcRiskText = document.getElementById("idcRiskText");
+    const idcConclusion = document.getElementById("idcConclusion");
+    const idcReason = document.getElementById("idcReason");
+
+    const idcYears = Array.from({ length: 15 }, (_, i) => i);
+    const idcSmrSeries = [0, -12, -24, -36, -44, -38, -18, 6, 18, 27, 34, 40, 45, 49, 52];
+    const idcPwrSeries = [0, -16, -34, -56, -82, -110, -138, -162, -178, -172, -146, -108, -62, -14, 18];
+
+    function findBreakEven(series){
+      for (let i = 1; i < series.length; i += 1){
+        if (series[i] >= 0) return i;
       }
+      return null;
     }
-    if(e.pointerType === 'mouse' || e.pointerType === 'pen'){
-      S.hoverStickyUntil = 0;
-      S.hoverHit = resolveHoverHit();
-      syncHoverTooltip(true);
-    }else if(performance.now() < S.hoverStickyUntil){
-      S.hoverHit = resolveHoverHit();
-      syncHoverTooltip(false);
+
+    const idcHighlightPlugin = {
+      id: "idcHighlightPlugin",
+      beforeDatasetsDraw(chart){
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || chart.canvas.id !== "idcChart" || !scales.x || !scales.y) return;
+        const start = scales.x.getPixelForValue(1);
+        const end = scales.x.getPixelForValue(8);
+        ctx.save();
+        ctx.fillStyle = "rgba(245, 158, 11, 0.10)";
+        ctx.fillRect(start, chartArea.top, end - start, chartArea.bottom - chartArea.top);
+        ctx.fillStyle = "rgba(255,255,255,0.70)";
+        ctx.font = "12px Inter, sans-serif";
+        ctx.fillText("IDC tích lũy", start + 10, chartArea.top + 18);
+        ctx.restore();
+      },
+      afterDatasetsDraw(chart){
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || chart.canvas.id !== "idcChart" || !scales.x || !scales.y) return;
+        const breakEvenMarks = [
+          { year: findBreakEven(idcSmrSeries), color: "#c084fc", label: "SMR hòa vốn" },
+          { year: findBreakEven(idcPwrSeries), color: "#60a5fa", label: "PWR hòa vốn" }
+        ];
+
+        ctx.save();
+        ctx.setLineDash([6, 5]);
+        ctx.lineWidth = 1;
+        ctx.font = "12px Inter, sans-serif";
+
+        breakEvenMarks.forEach((mark, index) => {
+          if (mark.year == null) return;
+          const x = scales.x.getPixelForValue(mark.year);
+          ctx.strokeStyle = mark.color;
+          ctx.beginPath();
+          ctx.moveTo(x, chartArea.top + 8);
+          ctx.lineTo(x, chartArea.bottom);
+          ctx.stroke();
+
+          ctx.fillStyle = mark.color;
+          ctx.fillText(mark.label, x + 6, chartArea.top + 18 + index * 16);
+        });
+
+        ctx.restore();
+      }
+    };
+
+    Chart.register(idcHighlightPlugin);
+
+    function initIdcChart(){
+      const smrBreakEven = findBreakEven(idcSmrSeries);
+      const pwrBreakEven = findBreakEven(idcPwrSeries);
+
+      idcSmrBreakEven.textContent = smrBreakEven == null ? "Chưa có" : `Năm ${smrBreakEven}`;
+      idcPwrBreakEven.textContent = pwrBreakEven == null ? "Chưa có" : `Năm ${pwrBreakEven}`;
+      idcRiskSignal.textContent = "Lãi vay phình to khi dự án còn chưa phát điện";
+      idcRiskText.textContent = "Điểm đau tài chính không nằm ở công suất danh nghĩa, mà nằm ở độ dài của đoạn tiền âm bị lãi vay chồng lãi vay.";
+      idcConclusion.textContent = "SMR giảm rủi ro tài chính không phải chỉ vì nhỏ hơn, mà vì có thể rút ngắn thời gian nằm trong vùng IDC tích lũy và mở doanh thu sớm hơn theo từng module.";
+      idcReason.textContent = "PWR dồn gần như toàn bộ áp lực vào giai đoạn xây dựng. SMR vẫn chịu IDC, nhưng dòng tiền được giải nén theo pha nên khả năng đổ vỡ tài chính thấp hơn khi dự án còn đang học và đang mở rộng.";
+
+      new Chart(document.getElementById("idcChart"), {
+        type: "line",
+        data: {
+          labels: idcYears,
+          datasets: [
+            {
+              label: "SMR",
+              data: idcSmrSeries,
+              borderColor: "#c084fc",
+              backgroundColor: "rgba(192,132,252,.15)",
+              tension: .32,
+              borderWidth: 3,
+              pointRadius: (ctx) => ctx.dataIndex === smrBreakEven ? 5 : 2.5,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#f8fbff"
+            },
+            {
+              label: "PWR",
+              data: idcPwrSeries,
+              borderColor: "#60a5fa",
+              backgroundColor: "rgba(96,165,250,.12)",
+              tension: .28,
+              borderWidth: 3,
+              pointRadius: (ctx) => ctx.dataIndex === pwrBreakEven ? 5 : 2.5,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#f8fbff"
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title(items){
+                  return `Năm ${items[0].label}`;
+                },
+                label(context){
+                  return `${context.dataset.label}: ${context.raw}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: "Thời gian (năm)" },
+              grid: { color: "rgba(255,255,255,.06)" },
+              ticks: { color: "#cfe5ff" }
+            },
+            y: {
+              title: { display: true, text: "Dòng tiền tích lũy (chỉ số tương đối)" },
+              grid: { color: "rgba(255,255,255,.08)" },
+              ticks: { color: "#cfe5ff" }
+            }
+          }
+        }
+      });
     }
-  });
-  ui.scene.addEventListener('pointerleave', () => {
-    if(S.pointerType === 'mouse' || performance.now() > S.hoverStickyUntil){
-      setTooltip(false);
-      S.hoverHit = null;
+
+
+    const mixNuclear = document.getElementById("mixNuclear");
+    const mixRenew = document.getElementById("mixRenew");
+    const mixFossil = document.getElementById("mixFossil");
+    const mixNuclearLabel = document.getElementById("mixNuclearLabel");
+    const mixRenewLabel = document.getElementById("mixRenewLabel");
+    const mixFossilLabel = document.getElementById("mixFossilLabel");
+    const mixStability = document.getElementById("mixStability");
+    const mixEmission = document.getElementById("mixEmission");
+    const mixLand = document.getElementById("mixLand");
+    const mixWater = document.getElementById("mixWater");
+    const mixInsight = document.getElementById("mixInsight");
+    const mixConclusionText = document.getElementById("mixConclusionText");
+    const mixReasonText = document.getElementById("mixReasonText");
+    const mixBaseloadState = document.getElementById("mixBaseloadState");
+    const mixBaseloadText = document.getElementById("mixBaseloadText");
+    const mixRenewableState = document.getElementById("mixRenewableState");
+    const mixRenewableText = document.getElementById("mixRenewableText");
+    const mixSystemState = document.getElementById("mixSystemState");
+    const mixSystemText = document.getElementById("mixSystemText");
+    const mixConstraintConclusion = document.getElementById("mixConstraintConclusion");
+    const mixConstraintReason = document.getElementById("mixConstraintReason");
+
+    let mixState = { nuclear: 40, renew: 40, fossil: 20 };
+
+    function sumMix(m){
+      return m.nuclear + m.renew + m.fossil;
     }
-  });
-  ui.scene.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    if(S.viewMode === '3d'){
-      const delta = e.deltaY > 0 ? 1.08 : 0.92;
-      S.camDist = clamp(S.camDist * delta, 260, 980);
-    }else{
-      const delta = e.deltaY > 0 ? 1.06 : 0.94;
-      S.sceneTargetZoom = clamp(S.sceneTargetZoom * delta, 0.72, 1.9);
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function normalizeMix(changed){
+      const vals = { ...mixState };
+      let total = sumMix(vals);
+      if (!isFinite(total) || total <= 0){
+        mixState = { nuclear: 40, renew: 40, fossil: 20 };
+        return;
+      }
+
+      const fixed = clamp(vals[changed], 0, 100);
+      const others = ["nuclear", "renew", "fossil"].filter(k => k !== changed);
+      const remaining = 100 - fixed;
+      const otherSum = vals[others[0]] + vals[others[1]];
+
+      vals[changed] = fixed;
+      if (otherSum <= 0){
+        vals[others[0]] = remaining / 2;
+        vals[others[1]] = remaining / 2;
+      } else {
+        vals[others[0]] = remaining * vals[others[0]] / otherSum;
+        vals[others[1]] = remaining * vals[others[1]] / otherSum;
+      }
+
+      vals.nuclear = Math.round(vals.nuclear);
+      vals.renew = Math.round(vals.renew);
+      vals.fossil = 100 - vals.nuclear - vals.renew;
+      if (vals.fossil < 0){
+        vals.fossil = 0;
+        const sum2 = vals.nuclear + vals.renew;
+        if (sum2 > 0){
+          vals.nuclear = Math.round(100 * vals.nuclear / sum2);
+          vals.renew = 100 - vals.nuclear;
+        } else {
+          vals.nuclear = 50; vals.renew = 50;
+        }
+      }
+
+      mixState = vals;
     }
-  }, {passive:false});
 
-  window.addEventListener('resize', resizeCanvas);
+    function computeMixScores(){
+      const n = mixState.nuclear;
+      const r = mixState.renew;
+      const f = mixState.fossil;
 
-  // Start
-  resizeCanvas();
-  setViewMode('2d');
-  setMode('demo');
-  S.expectedNeutrons = S.initialNeutrons;
-  buildInitialPopulation();
+      const stability = Math.round(n*0.95 + r*0.45 + f*0.72);
+      const emission = Math.round(n*0.95 + r*0.88 + f*0.12);
+      const land = Math.round(n*0.85 + r*0.35 + f*0.56);
+      const water = Math.round(n*0.72 + r*0.78 + f*0.46);
 
-  for(let i=0;i<28;i++){
-    S.heatTrail.push(1.0);
-    S.spark.push(285);
-  }
+      mixNuclearLabel.textContent = `${n}%`;
+      mixRenewLabel.textContent = `${r}%`;
+      mixFossilLabel.textContent = `${f}%`;
 
-  requestAnimationFrame(loop);
-})();
-</script>
+      mixStability.textContent = `${clamp(stability,0,100)}/100`;
+      mixEmission.textContent = `${clamp(emission,0,100)}/100`;
+      mixLand.textContent = `${clamp(land,0,100)}/100`;
+      mixWater.textContent = `${clamp(water,0,100)}/100`;
+
+      let insight = "";
+      let conclusion = "";
+      let reason = "";
+      if (f >= 45) {
+        insight = "Mix này vẫn nặng về hóa thạch. Điểm cộng là hệ có thể dễ giữ ổn định hơn, nhưng đổi lại phát thải và rủi ro Net Zero tăng rõ.";
+        conclusion = "Kết luận: đây là mix an toàn ngắn hạn nhưng yếu về mục tiêu dài hạn.";
+        reason = "Lý do: hóa thạch giúp giữ hệ chạy ổn định hơn trong ngắn hạn, nhưng carbon lock-in và áp lực phát thải làm nó không bền nếu nhìn theo Net Zero.";
+      } else if (n >= 35 && r >= 35) {
+        insight = "Mix khá cân bằng: hạt nhân đang đóng vai điện nền, còn tái tạo kéo điểm ít phát thải. Đây là cấu hình tương đối hợp lý cho bài toán hệ thống.";
+        conclusion = "Kết luận: đây là mix cân bằng nhất theo logic hệ thống.";
+        reason = "Lý do: hạt nhân cung cấp nền 24/7, tái tạo kéo phát thải xuống, còn phần hóa thạch đủ nhỏ để không chi phối toàn bộ cấu hình.";
+      } else if (r >= 55 && n < 20) {
+        insight = "Mix này sạch hơn nhưng phụ thuộc nhiều vào thời tiết và lưu trữ. Nếu không có lớp nền đủ mạnh, hệ vẫn khó tự giữ ổn định vào giờ xấu.";
+        conclusion = "Kết luận: mix này đẹp về phát thải nhưng yếu ở độ ổn định.";
+        reason = "Lý do: tái tạo cao làm giảm carbon, nhưng thiếu lớp nền khiến hệ phải dựa nhiều vào thời tiết và lưu trữ để cân bằng.";
+      } else if (n >= 50) {
+        insight = "Mix thiên mạnh về hạt nhân. Điểm mạnh là ổn định, điểm cần cân nhắc là vốn đầu tư và khả năng phối hợp với tái tạo để tránh dư cứng.";
+        conclusion = "Kết luận: mix này mạnh về điện nền nhưng cần ghép thêm phần linh hoạt.";
+        reason = "Lý do: hạt nhân cho ổn định cao, nhưng nếu quá lệch sang hạt nhân thì hệ có thể kém linh hoạt và tốn vốn đầu tư ban đầu.";
+      } else {
+        insight = "Mix đang ở trạng thái trung gian. Muốn kết luận tốt hay xấu cần nhìn thêm bối cảnh lưới, lưu trữ và nhu cầu đỉnh.";
+        conclusion = "Kết luận: mix trung gian chỉ tốt khi đi kèm lưới điện và lưu trữ đủ mạnh.";
+        reason = "Lý do: bản thân cơ cấu nguồn chưa đủ để kết luận, vì độ bền của mix còn phụ thuộc vào cách vận hành hệ thống và nhu cầu đỉnh.";
+      }
+
+      mixInsight.textContent = insight;
+      mixConclusionText.textContent = conclusion;
+      mixReasonText.textContent = reason;
+
+      const baseloadOk = n >= 25 || (n + f >= 45);
+      const renewAbsorbOk = r <= 55 || (n >= 25 || f >= 25);
+
+      mixBaseloadState.textContent = baseloadOk ? "Đủ nền" : "Thiếu nền";
+      mixBaseloadText.textContent = baseloadOk
+        ? "Hệ vẫn có lớp công suất giữ nhịp 24/7 khi thời tiết xấu hoặc phụ tải tăng."
+        : "Lớp nguồn giữ nhịp còn mỏng; hệ dễ chao đảo khi đầu ra tái tạo hụt hoặc phụ tải tăng đột ngột.";
+
+      mixRenewableState.textContent = renewAbsorbOk ? "Trong giới hạn" : "Dễ bị dồn ứ";
+      mixRenewableText.textContent = renewAbsorbOk
+        ? "Tỷ lệ tái tạo vẫn còn nằm trong vùng hệ thống hấp thụ được."
+        : "Công suất tái tạo đang đi nhanh hơn khả năng hấp thụ; nếu không có nguồn nền, lưới hoặc lưu trữ đi cùng thì rất dễ lãng phí.";
+
+      if (!baseloadOk && !renewAbsorbOk) {
+        mixSystemState.textContent = "Căng thẳng";
+        mixSystemText.textContent = "Thiếu điện nền và dư tái tạo cùng lúc.";
+        mixConstraintConclusion.textContent = "Nguy cơ mất ổn định đi cùng lãng phí công suất. Đây là cấu hình nhìn sạch trên giấy nhưng dễ gãy trong vận hành thực tế.";
+        mixConstraintReason.textContent = "Khi nguồn nền không đủ mà tái tạo lại chiếm tỷ trọng quá cao, hệ thống phải gánh đồng thời hai bài toán: giữ nhịp trong giờ xấu và xử lý phần công suất dư trong giờ tốt.";
+      } else if (!baseloadOk) {
+        mixSystemState.textContent = "Nguy cơ mất ổn định";
+        mixSystemText.textContent = "Nguồn nền chưa đủ để đỡ hệ thống.";
+        mixConstraintConclusion.textContent = "Cảnh báo chính ở mix này là thiếu điện nền. Hệ thống vẫn có thể sạch hơn, nhưng độ ổn định sẽ bị thử thách ngay khi điều kiện vận hành xấu đi.";
+        mixConstraintReason.textContent = "Điện nền là phần giữ cho hệ không bị rơi vào trạng thái phụ thuộc hoàn toàn vào thời tiết hoặc vào nguồn linh hoạt đắt đỏ trong giờ căng.";
+      } else if (!renewAbsorbOk) {
+        mixSystemState.textContent = "Lãng phí công suất";
+        mixSystemText.textContent = "Tái tạo đang vượt khả năng hấp thụ.";
+        mixConstraintConclusion.textContent = "Mix này không thiếu tham vọng giảm phát thải, nhưng đang vượt trước khả năng hấp thụ của hệ thống. Phần tái tạo dư có thể bị cắt giảm hoặc chạy kém hiệu quả.";
+        mixConstraintReason.textContent = "Nếu lưới điện, lưu trữ và lớp nguồn nền không đi cùng, công suất tái tạo cao không tự động biến thành điện hữu ích trong mọi thời điểm.";
+      } else if (f >= 45) {
+        mixSystemState.textContent = "Ổn định ngắn hạn";
+        mixSystemText.textContent = "Có nền nhưng còn nặng hóa thạch.";
+        mixConstraintConclusion.textContent = "Hệ vận hành sẽ đỡ căng hơn, nhưng đang đổi sự ổn định ngắn hạn lấy áp lực phát thải và khóa carbon trong dài hạn.";
+        mixConstraintReason.textContent = "Đây là trạng thái 'giữ điện trước đã' chứ chưa phải trạng thái tối ưu chiến lược. Vai trò của SMR trong dài hạn là giúp giảm phụ thuộc vào lớp nền hóa thạch này.";
+      } else {
+        mixSystemState.textContent = "Cân bằng";
+        mixSystemText.textContent = "Có nền và tái tạo chưa vượt ngưỡng hấp thụ.";
+        mixConstraintConclusion.textContent = "Mix này đi gần hơn với logic hệ thống: có điện nền để giữ nhịp, có tái tạo để kéo phát thải xuống, và chưa đẩy lưới vào trạng thái quá tải hấp thụ.";
+        mixConstraintReason.textContent = "Đây là góc nhìn Mục 4 nhấn mạnh: SMR chỉ có ý nghĩa khi được đặt vào vai trò điện nền trong một hệ đa nguồn có ràng buộc vật lý thật.";
+      }
+
+      const segments = [
+        { label: "Hạt nhân", value: n, color: "#60a5fa" },
+        { label: "Tái tạo", value: r, color: "#34d399" },
+        { label: "Hóa thạch", value: f, color: "#94a3b8" }
+      ];
+      mixStacked.innerHTML = segments.map(seg => `<div class="mixSeg" style="width:${seg.value}%; background:${seg.color};">${seg.value > 12 ? `${seg.label} ${seg.value}%` : ""}</div>`).join("");
+    }
+
+    function onMixInput(changed){
+      normalizeMix(changed);
+      mixNuclear.value = mixState.nuclear;
+      mixRenew.value = mixState.renew;
+      mixFossil.value = mixState.fossil;
+      computeMixScores();
+    }
+
+    mixNuclear.addEventListener("input", () => onMixInput("nuclear"));
+    mixRenew.addEventListener("input", () => onMixInput("renew"));
+    mixFossil.addEventListener("input", () => onMixInput("fossil"));
+
+    mixPresetButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const preset = btn.dataset.mix;
+        if (preset === "balanced") mixState = { nuclear: 34, renew: 33, fossil: 33 };
+        else if (preset === "nuclear") mixState = { nuclear: 55, renew: 30, fossil: 15 };
+        else if (preset === "renewables") mixState = { nuclear: 15, renew: 65, fossil: 20 };
+        else if (preset === "fossil") mixState = { nuclear: 20, renew: 20, fossil: 60 };
+        mixNuclear.value = mixState.nuclear;
+        mixRenew.value = mixState.renew;
+        mixFossil.value = mixState.fossil;
+        computeMixScores();
+      });
+    });
+
+    renderControls();
+    buildChart();
+    updateSMR();
+    syncPairComparison();
+    initIdcChart();
+    updateReadiness();
+    computeMixScores();
+  </script>
 </body>
 </html>
- 
