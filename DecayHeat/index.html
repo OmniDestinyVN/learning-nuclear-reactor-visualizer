@@ -1,0 +1,3567 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard 2 — Lo vua tat</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --bg-2: #dfe5e8;
+      --panel: rgba(251, 249, 245, 0.9);
+      --panel-strong: rgba(255, 252, 248, 0.96);
+      --line: rgba(25, 52, 74, 0.14);
+      --text: #163247;
+      --muted: #587188;
+      --accent: #0f6c8a;
+      --accent-2: #d96e2b;
+      --accent-3: #b92020;
+      --heat-soft: #ffbf66;
+      --heat-mid: #ff8c42;
+      --heat-hard: #c83e29;
+      --safe: #2f7f5f;
+      --warn: #b85b17;
+      --danger: #b12929;
+      --shadow: 0 18px 40px rgba(16, 35, 47, 0.12);
+      --radius-xl: 28px;
+      --radius-lg: 20px;
+      --radius-md: 14px;
+      --radius-sm: 10px;
+      --font-display: "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+      --font-body: "Aptos", "Segoe UI Variable", "Segoe UI", sans-serif;
+      --font-mono: "Cascadia Code", "Consolas", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background:
+        radial-gradient(circle at top left, rgba(255, 180, 92, 0.24), transparent 30%),
+        radial-gradient(circle at top right, rgba(15, 108, 138, 0.18), transparent 28%),
+        linear-gradient(160deg, var(--bg), var(--bg-2));
+      color: var(--text);
+      font-family: var(--font-body);
+    }
+
+    body {
+      padding: 28px;
+    }
+
+    .shell {
+      max-width: 1440px;
+      margin: 0 auto;
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .card {
+      background: var(--panel);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.65);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 28px 30px 24px;
+      display: grid;
+      gap: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -35% auto;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(217, 110, 43, 0.18), transparent 66%);
+      pointer-events: none;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.84rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 44px;
+      height: 1px;
+      background: currentColor;
+      opacity: 0.55;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 4vw, 4rem);
+      line-height: 0.98;
+      font-weight: 700;
+      max-width: 11ch;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 66ch;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 1.02rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    .hero-badges,
+    .micro-grid,
+    .control-row,
+    .footer-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge,
+    .control-chip,
+    .status-pill,
+    .metric-tag {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid rgba(21, 50, 73, 0.1);
+      color: var(--text);
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .hero-note {
+      padding: 18px 18px 16px;
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(135deg, rgba(22, 50, 71, 0.93), rgba(10, 82, 104, 0.9));
+      color: rgba(255, 255, 255, 0.94);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-note::after {
+      content: "";
+      position: absolute;
+      inset: auto -14% -50% auto;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 181, 109, 0.4), transparent 62%);
+    }
+
+    .hero-note h2,
+    .card h2 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero-note p {
+      color: rgba(255, 255, 255, 0.86);
+      max-width: unset;
+      font-size: 0.96rem;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.85fr) minmax(320px, 0.95fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .main-stack,
+    .side-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      display: grid;
+      gap: 6px;
+    }
+
+    .card-title h2 {
+      margin: 0;
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .card-title strong {
+      font-size: clamp(1.25rem, 2vw, 1.8rem);
+      line-height: 1.12;
+    }
+
+    .mini-copy {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      margin: 0;
+    }
+
+    .timeline-wrap {
+      display: grid;
+      gap: 18px;
+    }
+
+    .readout-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .readout {
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: var(--panel-strong);
+      border: 1px solid rgba(15, 60, 88, 0.08);
+      min-height: 110px;
+      display: grid;
+      gap: 7px;
+    }
+
+    .readout label,
+    .tech-item label,
+    .risk-row label,
+    .flow-step label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .readout strong {
+      font-size: clamp(1.2rem, 2vw, 2rem);
+      line-height: 1;
+    }
+
+    .readout span {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .readout-grid {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+
+    .chart-note {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .pwr-overview {
+      display: grid;
+      gap: 14px;
+    }
+
+    .pwr-preview {
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+
+    .pwr-preview img {
+      width: 100%;
+      display: block;
+      border-radius: 20px;
+      border: 1px solid rgba(22, 50, 71, 0.1);
+      box-shadow: 0 16px 36px rgba(16, 35, 47, 0.10);
+      background: rgba(255, 255, 255, 0.65);
+    }
+
+    .pwr-preview figcaption {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .static-chain {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .static-step {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(18, 56, 80, 0.08);
+      display: grid;
+      gap: 6px;
+      min-height: 132px;
+      align-content: start;
+    }
+
+    .static-step label {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .static-step strong {
+      font-size: 1.02rem;
+      line-height: 1.25;
+    }
+
+    .static-step span {
+      color: var(--muted);
+      font-size: 0.91rem;
+      line-height: 1.5;
+    }
+
+    .phase-note {
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-style: italic;
+    }
+
+
+    .interaction-locked .control-btn,
+    .interaction-locked .ghost-btn,
+    .interaction-locked .reactor-mode-btn,
+    .interaction-locked .formula-btn,
+    .interaction-locked .chain-action-btn,
+    .interaction-locked .chain-step,
+    .interaction-locked .switch-wrap,
+    .interaction-locked input[type="range"] {
+      pointer-events: none;
+      opacity: 0.76;
+    }
+
+    .simulation-controls,
+    .reactor-mode-group,
+    .chain-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .switch-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+      user-select: none;
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.86);
+    }
+
+    .switch-input {
+      position: absolute;
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    .switch-ui {
+      width: 50px;
+      height: 28px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.22);
+      position: relative;
+      flex: 0 0 auto;
+      transition: background 180ms ease, border-color 180ms ease;
+    }
+
+    .switch-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 180ms ease, background 180ms ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.18);
+    }
+
+    .switch-input:checked + .switch-ui {
+      background: linear-gradient(135deg, rgba(217,110,43,0.92), rgba(185,32,32,0.92));
+      border-color: rgba(255,255,255,0.28);
+    }
+
+    .switch-input:checked + .switch-ui .switch-thumb {
+      transform: translateX(22px);
+      background: #fff6ea;
+    }
+
+    .reactor-mode-btn.active {
+      background: linear-gradient(135deg, var(--accent), #094d63);
+      color: #fff;
+    }
+
+
+    .mode-hint {
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.84);
+      line-height: 1.45;
+      font-size: 0.9rem;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .blackout-panel {
+      margin-top: 10px;
+      padding: 12px 13px;
+      border-radius: 16px;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 10px;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .blackout-panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .blackout-panel-head strong {
+      font-size: 0.92rem;
+      letter-spacing: 0.02em;
+    }
+
+    .blackout-phase {
+      color: rgba(255,255,255,0.86);
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .blackout-meter {
+      position: relative;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+      overflow: hidden;
+    }
+
+    .blackout-meter span {
+      display: block;
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #2f7f5f, #d96e2b, #b12929);
+      transition: width 220ms ease;
+    }
+
+    .blackout-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .blackout-chip {
+      padding: 10px 11px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.12);
+      border: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      gap: 4px;
+      min-height: 64px;
+    }
+
+    .blackout-chip span {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.64);
+    }
+
+    .blackout-chip strong {
+      font-size: 0.92rem;
+      line-height: 1.35;
+      color: rgba(255,255,255,0.95);
+    }
+
+    .coolant-wave {
+      position: absolute;
+      inset: 18% 8% 14% 8%;
+      border-radius: 30px;
+      pointer-events: none;
+      opacity: 0.62;
+      background: linear-gradient(90deg, rgba(15,108,138,0) 0%, rgba(15,108,138,0.35) 50%, rgba(217,110,43,0) 100%);
+      background-size: 240% 100%;
+      animation: coolantDrift 3.6s linear infinite;
+      z-index: 1;
+    }
+
+    .reactor-zone.blackout.pwr .coolant-wave {
+      opacity: 0.24;
+      animation-duration: 7.2s;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(217,110,43,0.24) 50%, rgba(177,41,41,0.22) 100%);
+    }
+
+    .reactor-zone.mode-pwr .core-glow {
+      background: radial-gradient(circle, rgba(255,248,220,0.98) 0%, rgba(255,202,120,0.92) 20%, rgba(255,133,58,0.9) 48%, rgba(195,49,34,0.78) 70%, rgba(195,49,34,0) 100%);
+    }
+
+    .reactor-zone.blackout.pwr .core-glow {
+      animation: blackoutGlow 1.4s ease-in-out infinite;
+      background: radial-gradient(circle, rgba(255,246,224,0.94) 0%, rgba(255,158,75,0.92) 18%, rgba(217,80,43,0.94) 44%, rgba(181,24,24,0.93) 72%, rgba(181,24,24,0) 100%);
+    }
+
+    .formula-shell { margin-top: 12px; display: grid; gap: 10px; }
+    .formula-panel { display: none; padding: 14px 16px; border-radius: 18px; background: rgba(255,255,255,0.84); border: 1px solid rgba(18,56,80,0.08); gap: 12px; }
+    .formula-panel.open { display: grid; }
+    .formula-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+    .formula-card { display: grid; gap: 5px; padding: 12px 13px; border-radius: 16px; background: rgba(244, 241, 234, 0.92); border: 1px solid rgba(22,50,71,0.08); }
+    .formula-card label { font-size: 0.74rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+    .formula-card strong { font-size: 1.02rem; line-height: 1.25; }
+    .formula-card span { color: var(--muted); font-size: 0.9rem; line-height: 1.45; }
+    .formula-equation { font-family: var(--font-mono); font-size: 0.92rem; color: var(--text); background: rgba(15,108,138,0.06); border: 1px solid rgba(15,108,138,0.10); border-radius: 14px; padding: 10px 12px; line-height: 1.55; white-space: pre-line; font-weight: 600; }
+    .formula-live { color: var(--muted); font-size: 0.92rem; line-height: 1.5; }
+    .chain-step.pulse { animation: chainPulse 0.8s ease-out; }
+    @keyframes chainPulse { 0% { transform: scale(1); } 30% { transform: scale(1.02); } 100% { transform: scale(1); } }
+    @keyframes coolantDrift { from { background-position: 0% 50%; } to { background-position: 240% 50%; } }
+    @keyframes blackoutGlow { 0%, 100% { transform: scale(0.96); } 50% { transform: scale(1.02); } }
+    .chart-shell {
+      padding: 18px;
+      border-radius: 24px;
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.68), rgba(246, 241, 234, 0.95));
+      border: 1px solid rgba(16, 47, 69, 0.08);
+      overflow: hidden;
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    svg {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .scrubber {
+      display: grid;
+      gap: 10px;
+    }
+
+    .scrubber-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      appearance: none;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, rgba(15,108,138,0.14), rgba(217,110,43,0.28));
+      outline: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--accent-2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: white;
+      border: 3px solid var(--accent-2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+      cursor: pointer;
+    }
+
+    .control-row {
+      align-items: center;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+      border: 0;
+      transition: transform 160ms ease, background 160ms ease, color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .control-btn {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      color: var(--text);
+      border: 1px solid rgba(20, 50, 70, 0.12);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    .control-btn:hover,
+    .control-btn:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      box-shadow: 0 10px 24px rgba(15, 60, 88, 0.12);
+    }
+
+    .control-btn.active {
+      background: linear-gradient(135deg, var(--accent), #094d63);
+      color: white;
+    }
+
+    .control-btn.auto.active {
+      background: linear-gradient(135deg, var(--accent-2), #af3d21);
+    }
+
+    .ghost-btn {
+      padding: 12px 16px;
+      border-radius: 999px;
+      background: rgba(22, 50, 71, 0.08);
+      color: var(--text);
+    }
+
+    .legend {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .legend .line {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .legend .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 18px;
+    }
+
+    .reactor-zone {
+      padding: 22px;
+      border-radius: 26px;
+      background:
+        linear-gradient(180deg, rgba(12, 34, 49, 0.96), rgba(21, 55, 74, 0.92));
+      color: rgba(255, 255, 255, 0.92);
+      position: relative;
+      overflow: hidden;
+      min-height: 365px;
+    }
+
+    .reactor-zone h3,
+    .sub-card h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+
+    .reactor-zone p {
+      margin: 0 0 16px;
+      line-height: 1.55;
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 46ch;
+    }
+
+    .reactor-zone::before,
+    .reactor-zone::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .reactor-zone::before {
+      inset: auto -10% -34% auto;
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, rgba(255, 167, 88, 0.24), transparent 68%);
+    }
+
+    .reactor-zone::after {
+      inset: -14% auto auto -6%;
+      width: 180px;
+      height: 180px;
+      background: radial-gradient(circle, rgba(52, 146, 187, 0.22), transparent 65%);
+    }
+
+    .core-stage {
+      margin-top: 10px;
+      position: relative;
+      min-height: 250px;
+      display: grid;
+      place-items: center;
+    }
+
+    .containment {
+      width: min(340px, 100%);
+      aspect-ratio: 1;
+      border-radius: 45% 45% 38% 38%;
+      background:
+        linear-gradient(180deg, rgba(189, 207, 220, 0.3), rgba(93, 122, 141, 0.18));
+      border: 2px solid rgba(206, 222, 233, 0.55);
+      box-shadow:
+        inset 0 -24px 40px rgba(0, 0, 0, 0.18),
+        inset 0 18px 30px rgba(255, 255, 255, 0.08);
+      display: grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .containment::before {
+      content: "";
+      position: absolute;
+      inset: 12% 12% 18%;
+      border-radius: 42% 42% 32% 32%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .core-vessel {
+      width: 58%;
+      aspect-ratio: 0.75;
+      border-radius: 42px 42px 26px 26px;
+      background:
+        linear-gradient(180deg, rgba(220, 230, 237, 0.58), rgba(110, 131, 145, 0.36));
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .core-vessel::before,
+    .core-vessel::after {
+      content: "";
+      position: absolute;
+      inset: auto 24% -6% 24%;
+      height: 18%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      filter: blur(4px);
+    }
+
+    .core-glow {
+      width: 58%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      position: relative;
+      background:
+        radial-gradient(circle, rgba(255, 248, 220, 0.98) 0%, rgba(255, 202, 120, 0.92) 20%, rgba(255, 133, 58, 0.9) 48%, rgba(195, 49, 34, 0.78) 70%, rgba(195, 49, 34, 0) 100%);
+      filter: blur(0.4px);
+      transition: transform 220ms ease, opacity 220ms ease;
+    }
+
+    .melt-core {
+      position: absolute;
+      inset: auto 13% 3% 13%;
+      height: 0%;
+      border-radius: 18px 18px 30px 30px;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 18%, rgba(255, 237, 196, 0.9) 0 8%, rgba(255, 176, 74, 0.95) 12%, rgba(201, 74, 38, 0.98) 42%, rgba(139, 29, 22, 0.98) 78%, rgba(92, 14, 14, 0.98) 100%);
+      box-shadow:
+        inset 0 10px 16px rgba(255, 247, 220, 0.2),
+        0 0 24px rgba(201, 74, 38, 0.35);
+      transition: height 240ms ease, opacity 220ms ease, transform 220ms ease, filter 220ms ease;
+      filter: saturate(1.15);
+    }
+
+    .melt-core::before {
+      content: "";
+      position: absolute;
+      left: -18%;
+      right: -18%;
+      top: 0;
+      height: 18%;
+      border-radius: 50%;
+      background: linear-gradient(90deg, rgba(255, 230, 180, 0.2), rgba(255, 244, 214, 0.88), rgba(255, 230, 180, 0.2));
+      box-shadow: 0 0 18px rgba(255, 220, 140, 0.55);
+      animation: meltRipple 1.15s ease-in-out infinite;
+    }
+
+    .melt-core::after {
+      content: "";
+      position: absolute;
+      inset: 12% 10% 18%;
+      border-radius: 20px 20px 28px 28px;
+      background:
+        radial-gradient(circle at 25% 25%, rgba(255,255,255,0.46) 0 2%, transparent 3%),
+        radial-gradient(circle at 72% 18%, rgba(255,255,255,0.36) 0 1.8%, transparent 3%),
+        radial-gradient(circle at 42% 62%, rgba(255,255,255,0.18) 0 1.8%, transparent 4%),
+        radial-gradient(circle at 68% 72%, rgba(255,255,255,0.22) 0 2%, transparent 4%),
+        radial-gradient(circle at 52% 48%, rgba(255,255,255,0.1) 0 5%, transparent 6%);
+      opacity: 0.55;
+      mix-blend-mode: screen;
+      animation: meltBubbles 0.95s ease-in-out infinite;
+    }
+
+    .reactor-zone.meltdown .melt-core {
+      opacity: 1;
+      height: 74%;
+      transform: translateY(2px) scale(1.02);
+    }
+
+    .reactor-zone.meltdown .core-glow {
+      opacity: 0.22;
+      transform: scale(0.72);
+      filter: blur(1.4px) saturate(1.35);
+    }
+
+    .reactor-zone.meltdown .core-ring {
+      opacity: 0.22;
+      border-style: solid;
+      border-color: rgba(255, 170, 84, 0.35);
+      animation-duration: 1.2s;
+    }
+
+    .reactor-zone.meltdown .coolant-level {
+      opacity: 0.55;
+    }
+
+    .reactor-zone.meltdown .coolant-wave {
+      opacity: 0.88;
+      background: linear-gradient(90deg, rgba(255, 230, 172, 0) 0%, rgba(255, 188, 92, 0.35) 50%, rgba(177, 41, 41, 0.55) 100%);
+      animation-duration: 1.7s;
+    }
+
+    .reactor-zone.meltdown .containment {
+      border-color: rgba(255, 170, 84, 0.42);
+      box-shadow:
+        inset 0 -24px 40px rgba(0, 0, 0, 0.22),
+        inset 0 18px 30px rgba(255, 170, 84, 0.10),
+        0 0 0 1px rgba(201, 74, 38, 0.12);
+    }
+
+    @keyframes meltRipple {
+      0%, 100% { transform: translateY(0) scaleY(1); opacity: 0.82; }
+      50% { transform: translateY(-2px) scaleY(1.08); opacity: 1; }
+    }
+
+    @keyframes meltBubbles {
+      0%, 100% { transform: translateY(0); filter: brightness(1); }
+      50% { transform: translateY(-2px); filter: brightness(1.08); }
+    }
+
+    .core-ring {
+      position: absolute;
+      width: 86%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      border: 1px dashed rgba(255, 255, 255, 0.22);
+      opacity: 0.65;
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(0.98); opacity: 0.4; }
+      50% { transform: scale(1.04); opacity: 0.78; }
+    }
+
+    .zone-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .zone-grid .metric-tag {
+      display: grid;
+      gap: 4px;
+      border-radius: 16px;
+      padding: 12px 14px;
+      white-space: normal;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.94);
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .zone-grid strong {
+      font-size: 1.08rem;
+    }
+
+    .sub-stack {
+      display: grid;
+      gap: 18px;
+    }
+
+    .sub-card {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(22, 50, 71, 0.08);
+    }
+
+    .sub-card p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .chain-controller {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .chain-stepper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .chain-step-btn {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      border: 1px solid rgba(18, 56, 80, 0.12);
+      background: rgba(255, 255, 255, 0.82);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+    }
+
+    .chain-step-btn.active {
+      background: linear-gradient(135deg, var(--accent), #094d63);
+      color: white;
+      border-color: transparent;
+    }
+
+    .chain-detail {
+      padding: 16px 16px 14px;
+      border-radius: 18px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 241, 234, 0.98));
+      border: 1px solid rgba(18, 56, 80, 0.08);
+      display: grid;
+      gap: 8px;
+    }
+
+    .chain-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .chain-detail strong {
+      font-size: 1.08rem;
+      line-height: 1.25;
+    }
+
+    .chain-detail p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .chain-bar {
+      height: 8px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(15, 108, 138, 0.12);
+      border: 1px solid rgba(15, 108, 138, 0.08);
+    }
+
+    .chain-bar span {
+      display: block;
+      height: 100%;
+      width: 25%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      transition: width 180ms ease;
+    }
+
+        .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .flow-step {
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.74);
+      border: 1px solid rgba(18, 56, 80, 0.08);
+      min-height: 140px;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      width: 100%;
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .flow-step:hover,
+    .flow-step:focus-visible {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 24px rgba(15, 60, 88, 0.08);
+      outline: none;
+    }
+
+    .flow-step.active {
+      border-color: rgba(15, 108, 138, 0.32);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(223, 240, 246, 0.98));
+      box-shadow: 0 14px 28px rgba(15, 60, 88, 0.10);
+    }
+
+    .flow-step strong {
+      font-size: 1.04rem;
+      line-height: 1.3;
+    }
+
+    .flow-step span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.55;
+    }
+
+    .tech-grid {
+      display: grid;
+      gap: 10px;
+    }
+
+    .tech-item,
+    .risk-row {
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: var(--panel-strong);
+      border: 1px solid rgba(17, 53, 75, 0.08);
+      display: grid;
+      gap: 6px;
+    }
+
+    .tech-item strong,
+    .risk-row strong {
+      font-size: 1.04rem;
+    }
+
+    .tech-item span,
+    .risk-row span {
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 0.92rem;
+    }
+
+    .risk-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .risk-row[data-level="high"] {
+      border-color: rgba(177, 41, 41, 0.16);
+      background: rgba(255, 245, 243, 0.96);
+    }
+
+    .risk-row[data-level="medium"] {
+      border-color: rgba(184, 91, 23, 0.16);
+      background: rgba(255, 249, 242, 0.96);
+    }
+
+    .risk-row[data-level="low"] {
+      border-color: rgba(47, 127, 95, 0.16);
+      background: rgba(245, 251, 247, 0.96);
+    }
+
+
+    .formula-glossary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .formula-term { display: grid; gap: 4px; padding: 12px 13px; border-radius: 16px; background: rgba(244, 241, 234, 0.92); border: 1px solid rgba(22, 50, 71, 0.08); }
+    .formula-term span { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); }
+    .formula-term strong { font-size: 1rem; line-height: 1.25; }
+    .formula-term small { color: var(--muted); font-size: 0.86rem; line-height: 1.45; }
+    .formula-note { color: var(--muted); font-size: 0.86rem; line-height: 1.55; }
+
+    .blackout-overlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(185, 41, 41, 0.18), rgba(6, 8, 14, 0.74) 52%, rgba(2, 2, 4, 0.94) 100%),
+        linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.42));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 260ms ease;
+      z-index: 32;
+    }
+
+    .blackout-overlay.show { opacity: 1; }
+
+    .meltdown-crash {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at center, rgba(255, 92, 92, 0.28), rgba(13, 4, 6, 0.92) 38%, rgba(3, 2, 5, 0.98) 100%),
+        linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.86));
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 90;
+    }
+
+    .meltdown-crash.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .meltdown-crash-panel {
+      width: min(760px, 100%);
+      padding: 28px 26px 24px;
+      border-radius: 26px;
+      border: 1px solid rgba(255, 130, 130, 0.26);
+      background: linear-gradient(180deg, rgba(34, 10, 12, 0.95), rgba(10, 7, 11, 0.98));
+      color: rgba(255, 241, 238, 0.96);
+      box-shadow: 0 30px 90px rgba(0, 0, 0, 0.55);
+      animation: crashPanelJolt 0.38s ease, meltdownPulse 0.9s ease-in-out infinite;
+    }
+
+    .meltdown-crash-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 0.8rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(255, 187, 187, 0.92);
+    }
+
+    .meltdown-crash-panel h2 {
+      margin: 16px 0 10px;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 0.94;
+      color: #fff4f1;
+      letter-spacing: 0.01em;
+    }
+
+    .meltdown-crash-panel p {
+      margin: 0;
+      color: rgba(255, 226, 221, 0.86);
+      line-height: 1.65;
+      font-size: 1rem;
+    }
+
+    .meltdown-crash-cta {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 1rem;
+      color: #fff8f4;
+    }
+
+    body.meltdown-crashed {
+      overflow: hidden;
+    }
+
+    body.meltdown-crashed .shell {
+      filter: blur(2px) brightness(0.28) saturate(0.75);
+      transform: scale(1.01);
+      transition: filter 160ms ease, transform 160ms ease;
+    }
+
+    body.blackout-mode {
+      background:
+        radial-gradient(circle at top left, rgba(185, 41, 41, 0.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(9, 76, 99, 0.08), transparent 24%),
+        linear-gradient(160deg, #12141a, #08090d);
+    }
+
+    body.blackout-mode .shell {
+      filter: brightness(0.62) saturate(0.82) contrast(1.05);
+    }
+
+    #appShell.collapse {
+      animation: blackoutCollapse 1.1s ease-in-out forwards;
+    }
+
+    #appShell.collapse .card,
+    #appShell.collapse .hero {
+      box-shadow: 0 12px 28px rgba(2, 6, 12, 0.38);
+    }
+
+    #appShell.collapse .reactor-zone.pwr .core-glow {
+      animation: meltdownPulse 0.95s ease-in-out infinite;
+    }
+
+    .blackout-panel.collapsed {
+      border-color: rgba(177, 41, 41, 0.28);
+      background: rgba(177, 41, 41, 0.12);
+    }
+
+    .chain-card {
+      display: grid;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .chain-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .chain-status {
+      background: rgba(15, 108, 138, 0.10);
+    }
+
+    .chain-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .chain-action-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(22, 50, 71, 0.08);
+      color: var(--text);
+      border: 1px solid rgba(20, 50, 70, 0.12);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.04);
+    }
+
+    .chain-action-btn:hover,
+    .chain-action-btn:focus-visible {
+      transform: translateY(-1px);
+      outline: none;
+      box-shadow: 0 10px 22px rgba(15, 60, 88, 0.12);
+    }
+
+    .chain-steps {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .chain-step {
+      position: relative;
+      display: grid;
+      gap: 6px;
+      min-height: 144px;
+      padding: 14px 14px 16px;
+      text-align: left;
+      border-radius: 18px;
+      border: 1px solid rgba(22, 50, 71, 0.08);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(246, 241, 234, 0.92));
+      box-shadow: 0 8px 18px rgba(16, 35, 47, 0.05);
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease, opacity 180ms ease;
+      cursor: pointer;
+    }
+
+    .chain-step::after {
+      content: "→";
+      position: absolute;
+      top: 10px;
+      right: 12px;
+      color: rgba(15, 108, 138, 0.34);
+      font-size: 1rem;
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+
+    .chain-step:hover {
+      transform: translateY(-2px);
+    }
+
+    .chain-step.active {
+      border-color: rgba(15, 108, 138, 0.30);
+      box-shadow: 0 12px 26px rgba(15, 108, 138, 0.12);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 1), rgba(231, 247, 251, 0.92));
+      opacity: 1;
+    }
+
+    .chain-step.done {
+      background: linear-gradient(180deg, rgba(241, 247, 250, 0.96), rgba(226, 243, 247, 0.90));
+      opacity: 0.96;
+    }
+
+    .chain-step.stopped {
+      border-color: rgba(185, 41, 41, 0.24);
+      box-shadow: 0 0 0 1px rgba(185, 41, 41, 0.08), 0 14px 28px rgba(185, 41, 41, 0.10);
+    }
+
+    .chain-step.residual {
+      border-color: rgba(217, 110, 43, 0.24);
+    }
+
+    .chain-step .chain-icon {
+      font-size: 1.28rem;
+      line-height: 1;
+    }
+
+    .chain-step strong {
+      font-size: 1.03rem;
+      line-height: 1.25;
+    }
+
+    .chain-step span {
+      color: var(--muted);
+      line-height: 1.45;
+      font-size: 0.9rem;
+    }
+
+    .chain-track {
+      position: relative;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(15, 108, 138, 0.08);
+      overflow: hidden;
+    }
+
+    .chain-track-fill {
+      width: 0%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #0f6c8a 0%, #d96e2b 58%, #c83e29 100%);
+      background-size: 220% 100%;
+      transition: width 260ms ease;
+      animation: chainFlow 3s linear infinite;
+    }
+
+    .chain-track-dot {
+      position: absolute;
+      top: 50%;
+      left: 0%;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: #fff6ea;
+      border: 3px solid #c83e29;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.16);
+      transition: left 260ms ease;
+    }
+
+    .chain-detail {
+      display: grid;
+      gap: 6px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(22, 50, 71, 0.08);
+    }
+
+    .chain-detail strong {
+      font-size: 1.02rem;
+    }
+
+    .chain-detail p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .chain-card[data-phase="scram"] .chain-status {
+      background: rgba(185, 41, 41, 0.10);
+      color: #8f1515;
+    }
+
+    @keyframes chainPulse { 0% { transform: scale(1); } 30% { transform: scale(1.02); } 100% { transform: scale(1); } }
+    @keyframes chainFlow { from { background-position: 0% 50%; } to { background-position: 220% 50%; } }
+    @keyframes blackoutCollapse {
+      0% { transform: scale(1); filter: none; }
+      38% { transform: scale(0.997); }
+      100% { transform: scale(0.992); filter: saturate(0.78) brightness(0.85); }
+    }
+    @keyframes meltdownPulse {
+      0%, 100% { transform: scale(0.98); }
+      50% { transform: scale(1.12); }
+    }
+    @keyframes crashPanelJolt {
+      0% { transform: scale(0.94) translateY(16px); opacity: 0; }
+      45% { transform: scale(1.02) translateY(-3px); opacity: 1; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+
+    .guide-overlay {
+      position: fixed;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+      background: rgba(7, 12, 18, 0.58);
+      backdrop-filter: blur(8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 34;
+    }
+
+    .guide-overlay.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .guide-card {
+      width: min(760px, 100%);
+      border-radius: 26px;
+      background: rgba(251, 249, 245, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      box-shadow: 0 26px 70px rgba(8, 16, 24, 0.28);
+      padding: 22px;
+      color: var(--text);
+    }
+
+    .guide-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 14px;
+    }
+
+    .guide-kicker {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .guide-card h2 {
+      margin: 0;
+      font-size: 1.45rem;
+      line-height: 1.15;
+    }
+
+    .guide-lead {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .guide-item {
+      padding: 14px 15px;
+      border-radius: 18px;
+      background: rgba(244, 241, 234, 0.95);
+      border: 1px solid rgba(22, 50, 71, 0.08);
+      display: grid;
+      gap: 6px;
+    }
+
+    .guide-item strong {
+      font-size: 1rem;
+    }
+
+    .guide-item span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.45;
+    }
+
+    .guide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 6px;
+    }
+
+    .guide-note {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .guide-close {
+      padding: 11px 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--accent), #094d63);
+      color: #fff;
+      border: 0;
+      box-shadow: 0 10px 24px rgba(15, 60, 88, 0.16);
+    }
+
+    body.guide-open {
+      overflow: hidden;
+    }
+
+    .warning-toast {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: min(560px, calc(100vw - 28px));
+      max-width: 560px;
+      padding: 18px 20px;
+      border-radius: 22px;
+      background: rgba(177, 41, 41, 0.96);
+      color: white;
+      box-shadow: 0 22px 54px rgba(84, 16, 16, 0.32);
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(0.96);
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;
+      z-index: 50;
+      text-align: center;
+      line-height: 1.5;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .warning-toast.show {
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    .shake {
+      animation: shake 420ms ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20% { transform: translateX(-5px); }
+      40% { transform: translateX(5px); }
+      60% { transform: translateX(-4px); }
+      80% { transform: translateX(4px); }
+    }
+
+    .footer-strip {
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .coal-box {
+      display: grid;
+      gap: 12px;
+    }
+
+    .coal-box .big {
+      font-size: clamp(1.8rem, 3vw, 3rem);
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .small-note {
+      font-size: 0.84rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+
+    .timeline-flag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(15, 60, 88, 0.1);
+      color: var(--text);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 1120px) {
+      .layout,
+      .hero-grid,
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+
+      .readout-grid,
+      .flow-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 14px;
+      }
+
+      .hero,
+      .card {
+        border-radius: 22px;
+      }
+
+      .readout-grid,
+      .flow-grid,
+      .zone-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card-header,
+      .legend,
+      .footer-strip {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .scrubber-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* ── Blackout 5-stage physical progression track ── */
+    .bstage-track {
+      display: flex;
+      align-items: flex-start;
+      margin-top: 10px;
+      padding: 11px 10px 9px;
+      border-radius: 14px;
+      background: rgba(0,0,0,0.12);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .bstage {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      flex: 1 1 0;
+      min-width: 0;
+    }
+    .bstage-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.14);
+      border: 2px solid rgba(255,255,255,0.18);
+      transition: background 350ms, border-color 350ms, transform 300ms, box-shadow 300ms;
+      flex-shrink: 0;
+    }
+    .bstage.past .bstage-dot {
+      background: rgba(217,110,43,0.45);
+      border-color: rgba(217,110,43,0.65);
+    }
+    .bstage.active .bstage-dot {
+      background: #d96e2b;
+      border-color: #ffa462;
+      transform: scale(1.5);
+      box-shadow: 0 0 0 3px rgba(217,110,43,0.22);
+      animation: bstagePulse 1.3s ease-in-out infinite;
+    }
+    .bstage.critical .bstage-dot {
+      background: #b92020;
+      border-color: #ff5555;
+      transform: scale(1.5);
+      box-shadow: 0 0 0 3px rgba(185,32,32,0.28);
+      animation: bstagePulse 0.75s ease-in-out infinite;
+    }
+    .bstage-name {
+      font-size: 0.60rem;
+      text-align: center;
+      letter-spacing: 0.03em;
+      color: rgba(255,255,255,0.40);
+      line-height: 1.3;
+      max-width: 56px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      word-break: break-word;
+      hyphens: auto;
+      transition: color 300ms;
+    }
+    .bstage.past .bstage-name { color: rgba(255,255,255,0.60); }
+    .bstage.active .bstage-name,
+    .bstage.critical .bstage-name { color: rgba(255,255,255,0.93); font-weight: 600; }
+    .bstage-conn {
+      height: 2px;
+      flex: 0 0 14px;
+      background: rgba(255,255,255,0.10);
+      border-radius: 999px;
+      margin-top: 5px;
+      transition: background 350ms;
+    }
+    .bstage-conn.filled { background: rgba(217,110,43,0.40); }
+    .bstage-desc {
+      margin-top: 9px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.78);
+      line-height: 1.5;
+      min-height: 2.8em;
+    }
+    .bstage-desc.danger { color: rgba(255,105,105,0.93); }
+    @keyframes bstagePulse {
+      0%, 100% { box-shadow: 0 0 0 2px rgba(217,110,43,0.18); }
+      50%       { box-shadow: 0 0 0 7px rgba(217,110,43,0.00); }
+    }
+
+    /* ── Coolant level inside core-vessel ── */
+    .coolant-level {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      border-radius: 0 0 16px 16px;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      transition: height 3s cubic-bezier(0.34, 0.1, 0.22, 1);
+    }
+    .cl-fill {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg,
+        rgba(15,108,138,0.04) 0%,
+        rgba(15,108,138,0.26) 46%,
+        rgba(15,108,138,0.52) 100%
+      );
+      transition: background 1.8s ease;
+    }
+    .cl-surface {
+      position: absolute;
+      top: 0;
+      left: -40%;
+      right: -40%;
+      height: 3px;
+      background: rgba(15,108,138,0.55);
+      border-radius: 999px;
+      animation: clSurface 3.4s ease-in-out infinite;
+      transition: background 1.8s ease;
+    }
+    .reactor-zone.blackout .cl-fill {
+      background: linear-gradient(180deg,
+        rgba(217,110,43,0.05) 0%,
+        rgba(217,110,43,0.22) 46%,
+        rgba(177,41,41,0.40) 100%
+      );
+    }
+    .reactor-zone.blackout .cl-surface {
+      background: rgba(217,110,43,0.52);
+      animation-duration: 5.2s;
+    }
+    @keyframes clSurface {
+      0%, 100% { transform: translateX(0)    scaleX(1.00); opacity: 0.68; }
+      35%       { transform: translateX(4%)   scaleX(1.03); opacity: 1.00; }
+      68%       { transform: translateX(-3%)  scaleX(0.98); opacity: 0.78; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell" id="appShell">
+    <section class="hero">
+      <div class="eyebrow">Dashboard 2</div>
+      <div class="hero-grid">
+        <div>
+          <h1>Lò vừa tắt</h1>
+          <p>Phản ứng đã dừng. Nhiệt chưa dừng. Dashboard này chỉ nhìn vào khoảnh khắc hậu shutdown của một lò PWR kiểu AP1000: đường cong nhiệt dư, nhu cầu làm mát liên tục và lý do vì sao “SCRAM” chưa bao giờ là dấu chấm hết của bài toán an toàn.</p>
+          <div class="hero-badges">
+            <span class="badge">0 giây → 1 năm</span>
+            <span class="badge">Decay heat bám mục 2.4 & 2.5</span>
+            <span class="badge">PWR hai vòng • nước nhẹ</span>
+            <span class="badge">3415 MWth • 1200 MWe</span>
+          </div>
+        </div>
+        <aside class="hero-note">
+          <h2>Trọng tâm học tập</h2>
+          <p>Nhiệt dư giảm rất nhanh lúc đầu, nhưng không biến mất ngay. Nếu mất làm mát, rủi ro vẫn tồn tại dù phản ứng dây chuyền đã dừng. Đó là “nút thắt” vật lý cốt lõi của điện hạt nhân sau shutdown.</p>
+        </aside>
+      </div>
+    </section>
+
+    <section class="layout">
+      <div class="main-stack">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Timeline nhiệt dư</h2>
+              <strong>Từ nóng khẩn cấp sang nóng dai dẳng</strong>
+            </div>
+            <div class="timeline-flag" id="modeLabel">Đang dừng ở mốc hiện tại</div>
+          </div>
+
+          <div class="timeline-wrap">
+            <div class="readout-grid">
+              <div class="readout">
+                <label>Thời điểm sau shutdown</label>
+                <strong id="timeLabel">0 giây</strong>
+                <span id="timeSummary">Thanh điều khiển đã chèn hoàn toàn, nhưng lõi vẫn còn rất nóng.</span>
+              </div>
+              <div class="readout">
+                <label>Nhiệt dư hiện tại</label>
+                <strong id="heatPercentLabel">7,00%</strong>
+                <span id="heatMwLabel">~239 MWth còn phải được mang đi.</span>
+              </div>
+              <div class="readout">
+                <label>Mức cảnh giác</label>
+                <strong id="severityLabel">Rất cao</strong>
+                <span id="severityCopy">Mất làm mát ngay lúc này vẫn có thể dẫn đến hư hại lõi.</span>
+              </div>
+              <div class="readout">
+                <label id="tempReadoutLabel">Nhiệt độ sơ cấp (hot-leg)</label>
+                <strong id="tempLabel">321,1°C / 594,3 K</strong>
+                <span id="tempCopy">Ước lượng minh hoạ theo xu hướng nhiệt dư, không phải số đo đầu dò.</span>
+              </div>
+              <div class="readout">
+                <label>Tương đương than</label>
+                <strong id="coalLabel">29,9 tấn/giờ</strong>
+                <span id="heaterLabel">Cỡ hàng nghìn thiết bị sưởi công nghiệp lớn.</span>
+              </div>
+            </div>
+
+            <div class="chart-shell">
+              <svg viewBox="0 0 1000 430" aria-labelledby="chartTitle chartDesc" role="img">
+                <title id="chartTitle">Decay heat sau shutdown trên thang log-log từ 0 giây đến 1 năm, với phần đường đang xem được làm nổi bật</title>
+                <desc id="chartDesc">Trục thời gian và trục nhiệt dư đều dùng thang log để làm rõ giai đoạn đầu và đuôi dài; phần đường đang xem đổi theo timeline.</desc>
+                <defs>
+                  <linearGradient id="areaFill" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="rgba(217, 110, 43, 0.55)"></stop>
+                    <stop offset="100%" stop-color="rgba(217, 110, 43, 0.02)"></stop>
+                  </linearGradient>
+                  <linearGradient id="lineStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#c83e29"></stop>
+                    <stop offset="65%" stop-color="#d96e2b"></stop>
+                    <stop offset="100%" stop-color="#0f6c8a"></stop>
+                  </linearGradient>
+                </defs>
+                <text x="74" y="34" fill="#587188" font-size="13">Nhiệt dư (%) — thang log</text>
+                <text x="952" y="376" fill="#587188" font-size="13" text-anchor="end">Thời gian — thang log</text>
+                <g id="chartGrid"></g>
+                <path id="areaPath" fill="url(#areaFill)" opacity="0.92"></path>
+                <path id="curvePath" fill="none" stroke="rgba(15, 108, 138, 0.16)" stroke-width="5" stroke-linecap="round"></path>
+                <path id="activePath" fill="none" stroke="url(#lineStroke)" stroke-width="6" stroke-linecap="round"></path>
+                <g id="milestoneLayer"></g>
+                <g id="playheadLayer">
+                  <line id="playheadLine" y1="46" y2="352" stroke="#163247" stroke-width="2" stroke-dasharray="6 6" opacity="0.6"></line>
+                  <circle id="playheadDot" r="8" fill="#fff7ee" stroke="#c83e29" stroke-width="4"></circle>
+                </g>
+              </svg>
+              <div class="chart-labels">
+                <span>0 giây</span>
+                <span>vài phút</span>
+                <span>1 giờ</span>
+                <span>1 ngày</span>
+                <span>1 tháng</span>
+                <span>1 năm</span>
+              </div>
+            </div>
+
+            <div class="scrubber">
+              <div class="scrubber-row">
+                <span>Điều hướng thời gian</span>
+                <input id="timelineSlider" type="range" min="0" max="1000" value="0" step="1" aria-label="Trượt timeline hậu shutdown" />
+                <span id="speedReadout">Tốc độ hiện tại: 0</span>
+              </div>
+              <div class="control-row" id="controlRow">
+                <button class="control-btn active" data-speed="1">x1</button>
+                <button class="control-btn" data-speed="10">x10</button>
+                <button class="control-btn" data-speed="100">x100</button>
+                <button class="control-btn" data-speed="1000">x1k</button>
+                <button class="control-btn auto" data-auto="true">Auto</button>
+                <button class="ghost-btn" id="pauseBtn" type="button">Tạm dừng</button>
+                <button class="ghost-btn" id="jumpBtn" type="button">Nhảy tới mốc tiếp theo</button>
+              </div>
+              <div class="legend">
+                <div class="line"><span class="dot" style="background:#d96e2b"></span> Đường cam-xanh: xu hướng nhiệt dư trên thang log-log; phần cam đậm là đoạn đang xem, phần xanh nhạt là phần chưa tới</div>
+                <div class="line"><span class="dot" style="background:#0f6c8a"></span> Các chấm xanh: mốc thời gian tham chiếu</div>
+              </div>
+              <div class="chart-note">Đường cong cam-xanh trông gần thẳng là do biểu đồ hiển thị theo thang log-log; chấm xanh chỉ là các mốc thời gian tham chiếu, còn phần cam đậm sẽ chạy theo thời điểm đang xem.</div>
+              <div class="formula-shell">
+                <button type="button" class="formula-btn" id="formulaBtn">Hiện công thức & tính toán</button>
+                <div class="formula-panel" id="formulaPanel" aria-live="polite">
+                  <div class="formula-equation" id="formulaEquation">P_decay(t) = P₀ × f(t)
+f(t) = P_decay(t) / P₀  (không thứ nguyên)
+T_coolant(t) = nhiệt độ nước làm mát / lõi</div>
+                  <div class="formula-grid">
+                    <div class="formula-card"><label>Decay heat</label><strong id="formulaHeat">~7,00%</strong><span id="formulaHeatSub">P_decay(t) là công suất nhiệt còn lại; đơn vị MWth.</span></div>
+                    <div class="formula-card"><label>Nhiệt độ lõi</label><strong id="formulaTemp">~321,1°C / 594,3 K</strong><span id="formulaTempSub">T_coolant(t) dùng °C hoặc K; đổi đơn vị: K = °C + 273,15.</span></div>
+                    <div class="formula-card"><label>Biến thay đổi</label><strong id="formulaVars">t, P_decay(t), f(t), T_coolant(t)</strong><span id="formulaVarsSub">t có đơn vị giây/phút/giờ/ngày; f(t) không có đơn vị; T có đơn vị °C hoặc K.</span></div>
+                  </div>
+                  <div class="formula-glossary">
+                    <div class="formula-term"><span>P₀</span><strong id="formulaP0">3415 MWth</strong><small>Công suất nhiệt danh định tại thời điểm SCRAM.</small></div>
+                    <div class="formula-term"><span>f(t)</span><strong id="formulaFraction">0,0700</strong><small>Tỷ phần nhiệt dư còn lại; không có đơn vị.</small></div>
+                    <div class="formula-term"><span>P(t)</span><strong id="formulaPower">~239,0 MWth</strong><small>Công suất nhiệt còn lại ở thời điểm đang xem.</small></div>
+                    <div class="formula-term"><span>T(t)</span><strong id="formulaTempDetail">~321,1°C / 594,3 K</strong><small>Nhiệt độ nước làm mát hoặc lõi; tăng nếu mất làm mát.</small></div>
+                  </div>
+                  <div class="formula-note">Có làm mát: P_decay(t) giảm thì T_coolant(t) cũng giảm. Mất làm mát: P_decay(t) vẫn giảm, nhưng T_coolant(t) có thể tăng nếu bơm dừng.</div>
+                  <div class="formula-live" id="formulaSummary">Bật công thức để xem P_decay(t), f(t) và T_coolant(t) liên hệ với nhau theo thời gian.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Nhìn bằng trực giác</h2>
+              <strong>Tắt phản ứng không xóa được nhiệt còn lại</strong>
+            </div>
+            <p class="mini-copy">Phần nhìn này cố tình giống mô hình học tập: rõ, gọn, có nhiệt sắc đỏ/cam, nhưng không làm lõi lò thành đạo cụ khoa học viễn tưởng.</p>
+          </div>
+          <div class="grid-2">
+            <section class="reactor-zone" id="hotZone" tabindex="0" aria-label="Vùng lõi nóng, giữ chuột hoặc chạm lâu để hiện cảnh báo">
+              <h3>Lõi và vùng bao chứa sau shutdown</h3>
+              <p id="hotZoneCopy">Ngay sau khi dừng phản ứng, lõi vẫn phát ra nhiệt dư lớn từ các sản phẩm phân hạch đang phân rã beta và gamma. Vẫn phải tản nhiệt liên tục.</p>
+              <div class="simulation-controls">
+                <label class="switch-wrap" for="blackoutToggle">
+                  <input class="switch-input" type="checkbox" id="blackoutToggle" />
+                  <span class="switch-ui" aria-hidden="true"><span class="switch-thumb"></span></span>
+                  <span>Giả lập Mất điện (Station Blackout)</span>
+                </label>
+                <div class="reactor-mode-group">
+                  <button type="button" class="reactor-mode-btn active" data-mode="pwr">Lò PWR cũ</button>
+                  <span class="status-pill" title="Mở rộng ở phase sau">Mở rộng phase sau</span>
+                </div>
+              </div>
+              <div class="mode-hint" id="modeHint">Bản này đang bám PWR cũ: khi mất điện, bơm cưỡng bức là tuyến phòng thủ chính. Phần mở rộng an toàn thụ động để phase sau.</div>
+              <div class="blackout-panel" id="blackoutPanel">
+                <div class="blackout-panel-head">
+                  <strong id="blackoutHeadline">Nguồn ngoài: ON</strong>
+                  <span class="status-pill" id="blackoutTag">Bơm cưỡng bức hoạt động</span>
+                </div>
+                <div class="blackout-phase" id="blackoutPhase">Lưới còn cấp điện cho hệ bơm; lõi tiếp tục được làm mát chủ động và nhiệt dư đi xuống.</div>
+                <div class="blackout-meter" aria-hidden="true"><span id="blackoutMeterFill"></span></div>
+                <div class="bstage-track" id="bstageTrack">
+                  <div class="bstage" id="bstage1"><div class="bstage-dot"></div><div class="bstage-name">Bơm dừng</div></div>
+                  <div class="bstage-conn" id="bconn1"></div>
+                  <div class="bstage" id="bstage2"><div class="bstage-dot"></div><div class="bstage-name">Nước sôi</div></div>
+                  <div class="bstage-conn" id="bconn2"></div>
+                  <div class="bstage" id="bstage3"><div class="bstage-dot"></div><div class="bstage-name">Mực nước giảm</div></div>
+                  <div class="bstage-conn" id="bconn3"></div>
+                  <div class="bstage" id="bstage4"><div class="bstage-dot"></div><div class="bstage-name">Lộ lõi</div></div>
+                  <div class="bstage-conn" id="bconn4"></div>
+                  <div class="bstage" id="bstage5"><div class="bstage-dot"></div><div class="bstage-name">Hư hại lõi</div></div>
+                </div>
+                <div class="bstage-desc" id="bstageDesc">Bật mất điện để xem tiến trình sự cố vật lí.</div>
+                <div class="blackout-grid">
+                  <div class="blackout-chip"><span>Trạng thái bơm</span><strong id="blackoutPumpLabel">Đang chạy</strong></div>
+                  <div class="blackout-chip"><span>Xu hướng lõi</span><strong id="blackoutCoreLabel">Ổn định</strong></div>
+                  <div class="blackout-chip"><span>Ngưỡng giới hạn</span><strong id="blackoutLimitLabel">Còn trong vùng an toàn</strong></div>
+                </div>
+              </div>
+              <div class="core-stage">
+                <div class="coolant-wave" id="coolantWave" aria-hidden="true"></div>
+                <div class="containment">
+                  <div class="core-vessel">
+                    <div class="coolant-level" id="coolantLevel" style="height:100%"><div class="cl-fill"></div><div class="cl-surface"></div></div>
+                    <div class="core-ring"></div>
+                    <div class="core-glow" id="coreGlow"></div>
+                    <div class="melt-core" id="meltCore" aria-hidden="true"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="zone-grid">
+                <div class="metric-tag">
+                  <label>Mức nhiệt còn lại</label>
+                  <strong id="zoneHeatLabel">239 MWth</strong>
+                </div>
+                <div class="metric-tag">
+                  <label>Chế độ làm mát</label>
+                  <strong id="coolingLabel">Bơm + tản nhiệt khẩn cấp</strong>
+                </div>
+                <div class="metric-tag">
+                  <label>Nếu mất làm mát</label>
+                  <strong id="lossLabel">Rủi ro tăng rất nhanh</strong>
+                </div>
+              </div>
+            </section>
+
+            <div class="sub-stack">
+              <section class="sub-card chain-card" id="chainCard">
+                <div class="chain-card-head">
+                  <h3>Chuỗi chuyển hoá năng lượng</h3>
+                  <span class="status-pill chain-status" id="chainStatus">Phase 2 · bấm một bước để chạy</span>
+                </div>
+                <div class="chain-actions">
+                  <button type="button" class="chain-action-btn" id="scramBtn">SCRAM (Dừng lò)</button>
+                  <button type="button" class="chain-action-btn" id="chainResetBtn">Reset chuỗi</button>
+                </div>
+                <p>Bấm từng bước để xem chuỗi 4 lớp. Khi animation chạy, các nút khác vẫn mở; chỉ riêng chuỗi đang chạy sẽ tự chặn lặp lại.</p>
+                <div class="chain-steps" id="chainSteps">
+                  <button type="button" class="chain-step active" data-step="1"><span class="chain-icon">⚛️</span><strong>Phân hạch → sinh nhiệt</strong><span>Hạt nhân tách ra và giải phóng nhiệt trong vùng hoạt.</span></button>
+                  <button type="button" class="chain-step" data-step="2"><span class="chain-icon">💧</span><strong>Nhiệt → tạo hơi nước</strong><span>Nhiệt truyền sang mạch thứ cấp qua steam generator.</span></button>
+                  <button type="button" class="chain-step" data-step="3"><span class="chain-icon">🌫️</span><strong>Hơi → quay turbine</strong><span>Hơi áp suất cao làm cánh turbine quay nhanh.</span></button>
+                  <button type="button" class="chain-step" data-step="4"><span class="chain-icon">⚡</span><strong>Turbine → phát điện</strong><span>Máy phát đổi chuyển động quay thành điện năng cho lưới.</span></button>
+                </div>
+                <div class="chain-track" aria-hidden="true"><div class="chain-track-fill" id="chainTrackFill"></div><div class="chain-track-dot" id="chainTrackDot"></div></div>
+                <div class="chain-detail"><strong id="chainTitle">Phân hạch → sinh nhiệt</strong><p id="chainCopy">Bấm vào một bước để xem chuỗi chuyển hoá chạy từ đầu đến cuối.</p></div>
+                <div class="phase-note">Mỗi bước chỉ giữ một ý, để đúng vật lí mà không biến dashboard thành giáo trình.</div>
+              </section>
+              <section class="sub-card coal-box">
+                <h3>So với than ở cùng thời điểm</h3>
+                <div class="big" id="coalBig">29,9 tấn than/giờ</div>
+                <p id="coalCopy">Ngay sau shutdown, phần nhiệt còn lại vẫn lớn như đang tiếp tục đốt hàng chục tấn than mỗi giờ trong lõi nếu ta quy đổi theo mật độ năng lượng than đá ~8 kWh/kg.</p>
+                <div class="small-note">Điểm cần thấy là: “7%” nghe nhỏ, nhưng 7% của một lò công suất nhiệt cỡ hàng nghìn MW vẫn là một lượng nhiệt rất lớn.</div>
+              </section>
+            </div>
+          </div>
+        </article>
+      </div>
+
+      <aside class="side-stack">
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Panel kỹ thuật</h2>
+              <strong>Một PWR giống lò thật hơn</strong>
+            </div>
+          </div>
+          <div class="tech-grid" id="techGrid"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Nút thắt vật lý</h2>
+              <strong>Không phải nhiệt mới, mà là nhiệt còn lại</strong>
+            </div>
+          </div>
+          <p class="mini-copy">Khi chuỗi phản ứng đã dừng, các sản phẩm phân hạch vẫn tiếp tục phân rã phóng xạ. Chính chúng tạo ra decay heat, và vì thế bài toán an toàn hậu shutdown là bài toán duy trì tản nhiệt.</p>
+          <div class="risk-list" id="riskList"></div>
+        </article>
+
+        <article class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <h2>Bài học thực tế</h2>
+              <strong>Fukushima nhắc điều gì?</strong>
+            </div>
+          </div>
+          <p class="mini-copy">Năm 2011, phản ứng dây chuyền ở các lò đã dừng sau động đất. Nhưng khi sóng thần làm hỏng nguồn điện dự phòng, hệ bơm làm mát không còn hoạt động bình thường. Nhiệt dư tích tụ, nước sôi cạn dần và lõi bị nóng chảy. Shutdown không đồng nghĩa với hết nguy hiểm.</p>
+          <div class="footer-strip">
+            <span class="status-pill">Natural circulation • gravity • convection</span>
+            <span class="status-pill">AP1000 coping ~72 giờ sau station blackout</span>
+          </div>
+        </article>
+      </aside>
+    </section>
+  </div>
+
+
+  <div class="guide-overlay" id="guideOverlay" aria-hidden="true">
+    <div class="guide-card" role="dialog" aria-modal="true" aria-labelledby="guideTitle">
+      <div class="guide-head">
+        <div>
+          <div class="guide-kicker">Hướng dẫn nhanh</div>
+          <h2 id="guideTitle">Cách đọc dashboard này</h2>
+        </div>
+        <button class="guide-close" id="guideCloseBtn" type="button">Đã hiểu</button>
+      </div>
+      <p class="guide-lead">Dashboard này chỉ tập trung vào hậu shutdown của lò PWR: nhiệt dư, blackout, chuỗi chuyển hoá và công thức. Phần khó hơn như mô hình vật lí sâu hoặc mở rộng SMR sẽ để phase sau.</p>
+      <div class="guide-grid">
+        <div class="guide-item"><strong>Timeline nhiệt dư</strong><span>Kéo thanh trượt để xem nhiệt giảm từ vài giây đến một năm.</span></div>
+        <div class="guide-item"><strong>Blackout 5 giai đoạn</strong><span>Bật mất điện để xem tiến trình vật lí: bơm dừng → sôi → mực nước hạ → lộ lõi → hư hại.</span></div>
+        <div class="guide-item"><strong>Chuỗi 4 bước</strong><span>Bấm từng bước để xem phân hạch → nhiệt → hơi → điện.</span></div>
+        <div class="guide-item"><strong>Công thức</strong><span>Mở panel để xem P_decay(t), f(t) và T_coolant(t) cùng đơn vị.</span></div>
+      </div>
+      <div class="guide-footer">
+        <span class="status-pill">Phase 1 · PWR hậu shutdown</span>
+        <span class="guide-note">Có thể đóng bảng này và mở lại bằng cách tải lại trang.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-toast" id="warningToast">Vùng này vẫn còn rất nóng. Tắt phản ứng không có nghĩa là hết nhiệt, nên làm mát không được dừng lại.</div>
+  <div class="blackout-overlay" id="blackoutOverlay" aria-hidden="true"></div>
+  <div class="meltdown-crash" id="meltdownCrash" aria-hidden="true">
+    <div class="meltdown-crash-panel" role="alert" aria-live="assertive">
+      <div class="meltdown-crash-label">Khẩn cấp mức cuối</div>
+      <h2>Hư hại lõi đã vượt ngưỡng kiểm soát</h2>
+      <p>Lõi đã bị hư hại quá lâu trong trạng thái blackout. Dashboard này được khóa lại để nhấn mạnh rằng tiến trình sự cố không còn có thể tiếp tục “học thử” như bình thường nữa.</p>
+      <div class="meltdown-crash-cta">Nhấn <strong>F5</strong> để nạp lại trang và bắt đầu lại mô phỏng.</div>
+    </div>
+  </div>
+
+  <script>
+    const FULL_POWER_MWTH = 3415;
+    const TOTAL_TIME_SECONDS = 365 * 24 * 3600;
+    const AUTO_TARGET_DURATION_SECONDS = 12 * 60;
+    const AUTO_LAMBDA = 7.2;
+    const SLIDER_MAX = 1000;
+    const COAL_KWH_PER_KG = 8;
+    const INDUSTRIAL_HEATER_MW = 0.1;
+
+    const anchors = [
+      { t: 0, heat: 7.0 },
+      { t: 60, heat: 6.0 },
+      { t: 10 * 60, heat: 3.8 },
+      { t: 60 * 60, heat: 1.5 },
+      { t: 24 * 60 * 60, heat: 0.4 },
+      { t: 7 * 24 * 60 * 60, heat: 0.22 },
+      { t: 30 * 24 * 60 * 60, heat: 0.12 },
+      { t: TOTAL_TIME_SECONDS, heat: 0.06 }
+    ];
+
+    const milestoneSpec = [
+      { label: "0 giây", time: 0 },
+      { label: "30 giây", time: 30 },
+      { label: "5 phút", time: 5 * 60 },
+      { label: "1 giờ", time: 60 * 60 },
+      { label: "1 ngày", time: 24 * 60 * 60 },
+      { label: "1 tháng", time: 30 * 24 * 60 * 60 },
+      { label: "1 năm", time: TOTAL_TIME_SECONDS }
+    ];
+
+    const techItems = [
+      {
+        label: "Loại lò",
+        value: "PWR hai vòng, nước nhẹ",
+        note: "Coolant và moderator đều là nước nhẹ; hơi được tạo ở mạch thứ hai."
+      },
+      {
+        label: "Thermal power",
+        value: "3415 MWth",
+        note: "Công suất nhiệt danh định kiểu AP1000."
+      },
+      {
+        label: "Electric output",
+        value: "1200 MWe",
+        note: "Xấp xỉ công suất điện thuần của AP1000."
+      },
+      {
+        label: "Primary pressure",
+        value: "15,5 MPa",
+        note: "Giữ nước sơ cấp ở trạng thái lỏng để nâng hiệu quả mang nhiệt."
+      },
+      {
+        label: "Primary temperature",
+        value: "Hot-leg tối đa ~321,1°C ≈ 594,3 K",
+        note: "Vùng tham chiếu PWR/LWR thường quanh 302–345°C."
+      },
+      {
+        label: "Fuel type",
+        value: "UO2",
+        note: "Nhiên liệu oxide uranium dùng phổ biến trong LWR."
+      },
+      {
+        label: "Fuel enrichment",
+        value: "~4,5% U-235",
+        note: "Nằm trong dải điển hình của LWR: khoảng 3% đến dưới 5%."
+      },
+      {
+        label: "Fuel cycle",
+        value: "18 tháng",
+        note: "Chu kỳ tham chiếu của AP1000."
+      },
+      {
+        label: "Design life",
+        value: "60 năm",
+        note: "Tuổi thọ thiết kế tham chiếu."
+      },
+      {
+        label: "Decay-heat status",
+        value: "",
+        note: "Cập nhật theo thời điểm đang xem."
+      },
+      {
+        label: "Coolant status",
+        value: "",
+        note: "Làm mát liên tục vẫn là điều kiện bắt buộc sau shutdown."
+      },
+      {
+        label: "Safety status",
+        value: "",
+        note: "An toàn hậu shutdown phụ thuộc vào khả năng duy trì tản nhiệt."
+      }
+    ];
+
+    const riskTemplate = [
+      {
+        label: "Nhiệt dư",
+        note: "Không đến từ phân hạch mới, mà từ các sản phẩm phân hạch đang phân rã."
+      },
+      {
+        label: "Mất làm mát",
+        note: "Nếu nhiệt không được mang đi, nước có thể sôi cạn và lõi sẽ quá nhiệt."
+      },
+      {
+        label: "Nhiên liệu đã dùng",
+        note: "Ngay cả sau thời gian dài, nhiên liệu vẫn cần bể nước làm mát và che chắn."
+      }
+    ];
+
+    const state = {
+      time: 0,
+      mode: "paused",
+      fixedSpeed: 1,
+      autoSMax: 1,
+      autoHoldShown: false,
+      hotHoldTimer: null,
+      toastTimer: null,
+      chainRunning: false,
+      chainStep: 1,
+      chainTimer: null,
+      chainRunId: 0,
+      blackout: false,
+      blackoutTimer: null,
+      blackoutCollapse: false,
+      blackoutStartTime: null,
+      lastBlackoutStage: 0,
+      audioCtx: null,
+      reactorMode: "pwr",
+      formulaOpen: false,
+      uiLocked: false,
+      meltdownCrashTimer: null,
+      meltdownCrashTriggered: false,
+    };
+
+    const refs = {
+      modeLabel: document.getElementById("modeLabel"),
+      timeLabel: document.getElementById("timeLabel"),
+      timeSummary: document.getElementById("timeSummary"),
+      heatPercentLabel: document.getElementById("heatPercentLabel"),
+      heatMwLabel: document.getElementById("heatMwLabel"),
+      severityLabel: document.getElementById("severityLabel"),
+      severityCopy: document.getElementById("severityCopy"),
+      tempLabel: document.getElementById("tempLabel"),
+      tempCopy: document.getElementById("tempCopy"),
+      coalLabel: document.getElementById("coalLabel"),
+      heaterLabel: document.getElementById("heaterLabel"),
+      coalBig: document.getElementById("coalBig"),
+      coalCopy: document.getElementById("coalCopy"),
+      coreGlow: document.getElementById("coreGlow"),
+      meltCore: document.getElementById("meltCore"),
+      hotZone: document.getElementById("hotZone"),
+      hotZoneCopy: document.getElementById("hotZoneCopy"),
+      zoneHeatLabel: document.getElementById("zoneHeatLabel"),
+      coolingLabel: document.getElementById("coolingLabel"),
+      lossLabel: document.getElementById("lossLabel"),
+      speedReadout: document.getElementById("speedReadout"),
+      timelineSlider: document.getElementById("timelineSlider"),
+      pauseBtn: document.getElementById("pauseBtn"),
+      jumpBtn: document.getElementById("jumpBtn"),
+      warningToast: document.getElementById("warningToast"),
+      guideOverlay: document.getElementById("guideOverlay"),
+      guideCloseBtn: document.getElementById("guideCloseBtn"),
+      techGrid: document.getElementById("techGrid"),
+      riskList: document.getElementById("riskList"),
+      controlButtons: Array.from(document.querySelectorAll(".control-btn")),
+      chartGrid: document.getElementById("chartGrid"),
+      milestoneLayer: document.getElementById("milestoneLayer"),
+      curvePath: document.getElementById("curvePath"),
+      activePath: document.getElementById("activePath"),
+      areaPath: document.getElementById("areaPath"),
+      playheadLine: document.getElementById("playheadLine"),
+      playheadDot: document.getElementById("playheadDot"),
+      appShell: document.getElementById("appShell"),
+      blackoutOverlay: document.getElementById("blackoutOverlay"),
+      meltdownCrash: document.getElementById("meltdownCrash"),
+      reactorZone: document.getElementById("hotZone"),
+      blackoutToggle: document.getElementById("blackoutToggle"),
+      blackoutPanel: document.getElementById("blackoutPanel"),
+      blackoutHeadline: document.getElementById("blackoutHeadline"),
+      blackoutTag: document.getElementById("blackoutTag"),
+      blackoutPhase: document.getElementById("blackoutPhase"),
+      blackoutMeterFill: document.getElementById("blackoutMeterFill"),
+      blackoutPumpLabel: document.getElementById("blackoutPumpLabel"),
+      blackoutCoreLabel: document.getElementById("blackoutCoreLabel"),
+      blackoutLimitLabel: document.getElementById("blackoutLimitLabel"),
+      reactorModeButtons: Array.from(document.querySelectorAll(".reactor-mode-btn")),
+      modeHint: document.getElementById("modeHint"),
+      formulaBtn: document.getElementById("formulaBtn"),
+      formulaPanel: document.getElementById("formulaPanel"),
+      formulaEquation: document.getElementById("formulaEquation"),
+      formulaHeat: document.getElementById("formulaHeat"),
+      formulaHeatSub: document.getElementById("formulaHeatSub"),
+      formulaTemp: document.getElementById("formulaTemp"),
+      formulaTempSub: document.getElementById("formulaTempSub"),
+      formulaVars: document.getElementById("formulaVars"),
+      formulaVarsSub: document.getElementById("formulaVarsSub"),
+      formulaSummary: document.getElementById("formulaSummary"),
+      formulaP0: document.getElementById("formulaP0"),
+      formulaFraction: document.getElementById("formulaFraction"),
+      formulaPower: document.getElementById("formulaPower"),
+      formulaTempDetail: document.getElementById("formulaTempDetail"),
+      chainCard: document.getElementById("chainCard"),
+      chainStatus: document.getElementById("chainStatus"),
+      chainSteps: Array.from(document.querySelectorAll(".chain-step")),
+      chainTrackFill: document.getElementById("chainTrackFill"),
+      chainTrackDot: document.getElementById("chainTrackDot"),
+      chainTitle: document.getElementById("chainTitle"),
+      chainCopy: document.getElementById("chainCopy"),
+      scramBtn: document.getElementById("scramBtn"),
+      chainResetBtn: document.getElementById("chainResetBtn"),
+      tempReadoutLabel: document.getElementById("tempReadoutLabel"),
+      coolantLevel: document.getElementById("coolantLevel"),
+      bstageDesc: document.getElementById("bstageDesc"),
+      bstages: [null,
+        document.getElementById("bstage1"),
+        document.getElementById("bstage2"),
+        document.getElementById("bstage3"),
+        document.getElementById("bstage4"),
+        document.getElementById("bstage5")
+      ],
+      bconns: [null,
+        document.getElementById("bconn1"),
+        document.getElementById("bconn2"),
+        document.getElementById("bconn3"),
+        document.getElementById("bconn4")
+      ]
+    };
+
+    function clamp(value, min, max) {
+      return Math.min(max, Math.max(min, value));
+    }
+
+    function sleep(ms) {
+      return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
+    function mapTimeToX(time) {
+      const width = 880;
+      const left = 72;
+      const ratio = Math.log1p(time) / Math.log1p(TOTAL_TIME_SECONDS);
+      return left + ratio * width;
+    }
+
+    function mapHeatToY(heatPercent) {
+      const top = 52;
+      const height = 300;
+      const maxHeat = 7.2;
+      const minHeat = 0.04;
+      const norm = (Math.log10(heatPercent) - Math.log10(minHeat)) / (Math.log10(maxHeat) - Math.log10(minHeat));
+      return top + (1 - clamp(norm, 0, 1)) * height;
+    }
+
+    function getHeatPercentAt(time) {
+      if (time <= anchors[0].t) {
+        return anchors[0].heat;
+      }
+      for (let i = 0; i < anchors.length - 1; i += 1) {
+        const a = anchors[i];
+        const b = anchors[i + 1];
+        if (time >= a.t && time <= b.t) {
+          const xa = Math.log1p(a.t);
+          const xb = Math.log1p(b.t);
+          const ya = Math.log(a.heat);
+          const yb = Math.log(b.heat);
+          const x = Math.log1p(time);
+          const ratio = (x - xa) / (xb - xa || 1);
+          return Math.exp(ya + (yb - ya) * ratio);
+        }
+      }
+      return anchors[anchors.length - 1].heat;
+    }
+
+    function heatMwAt(time) {
+      return FULL_POWER_MWTH * getHeatPercentAt(time) / 100;
+    }
+
+    function formatNumberVi(value, digits = 1) {
+      return new Intl.NumberFormat("vi-VN", {
+        minimumFractionDigits: digits,
+        maximumFractionDigits: digits
+      }).format(value);
+    }
+
+    function formatWholeVi(value) {
+      return new Intl.NumberFormat("vi-VN").format(Math.round(value));
+    }
+
+    function formatDurationVi(seconds) {
+      if (seconds < 60) {
+        return `${formatWholeVi(seconds)} giây`;
+      }
+      if (seconds < 3600) {
+        const minutes = Math.floor(seconds / 60);
+        return `${formatWholeVi(minutes)} phút`;
+      }
+      if (seconds < 86400) {
+        const hours = seconds / 3600;
+        return `${formatNumberVi(hours, hours < 10 ? 1 : 0)} giờ`;
+      }
+      if (seconds < 30 * 86400) {
+        const days = seconds / 86400;
+        return `${formatNumberVi(days, days < 10 ? 1 : 0)} ngày`;
+      }
+      if (seconds < 365 * 86400) {
+        const months = seconds / (30 * 86400);
+        return `${formatNumberVi(months, months < 10 ? 1 : 0)} tháng`;
+      }
+      const years = seconds / (365 * 86400);
+      return `${formatNumberVi(years, years < 10 ? 1 : 0)} năm`;
+    }
+
+    function getTimeSummary(time) {
+      if (state.blackout) {
+        if (time < 3600) return "Mất điện ngoài lưới: bơm dừng, nhiệt dư vẫn còn và cần làm mát ngay.";
+        if (time < 86400) return "Mất điện kéo dài làm nhiệt tích tụ; nếu không khôi phục làm mát, rủi ro tăng mạnh.";
+        return "Mất điện ở giai đoạn muộn nguy hiểm chậm hơn, nhưng vẫn phải theo dõi mực nước và che chắn.";
+      }
+      if (time < 60) return "Chuỗi phản ứng đã dừng, nhưng lõi vẫn đang ở pha phải làm mát khẩn cấp ngay lập tức.";
+      if (time < 3600) return "Nhiệt dư lao dốc nhanh, nhưng vẫn ở mức đủ lớn để phá hỏng lõi nếu mất nước làm mát.";
+      if (time < 86400) return "Sau nhiều giờ, công suất còn lại đã giảm mạnh nhưng vẫn là hàng chục MW nhiệt.";
+      if (time < 30 * 86400) return "Giai đoạn đuôi dài bắt đầu lộ rõ: nhiệt tiếp tục giảm, song không biến mất.";
+      return "Ngay cả sau nhiều tháng đến một năm, nhiên liệu đã dùng vẫn cần được ngâm và che chắn.";
+    }
+
+    function getSeverity(time) {
+      const heat = getHeatPercentAt(time);
+      if (state.blackout) {
+        if (heat >= 1.5) {
+          return {
+            label: "Nguy cấp",
+            level: "high",
+            copy: "Bơm dừng khi nhiệt dư còn cao; nhiệt tích tụ rất nhanh nếu không khôi phục làm mát.",
+            cooling: "Bơm ngừng hoạt động",
+            loss: "Nguy cơ nóng chảy lõi",
+            status: "Station blackout đang đẩy nhiệt độ lõi lên mức khẩn cấp.",
+            safety: "Thiếu bơm cưỡng bức và nguồn điện ngoài là điểm yếu lớn nhất của PWR cổ điển."
+          };
+        }
+        if (heat >= 0.2) {
+          return {
+            label: "Cảnh báo cao",
+            level: "high",
+            copy: "Mất làm mát sẽ làm nước sôi cạn dần; cần phục hồi điện dự phòng càng sớm càng tốt.",
+            cooling: "Mất bơm tuần hoàn",
+            loss: "Rủi ro quá nhiệt",
+            status: "Decay heat đã giảm, nhưng vẫn có thể đun sôi cạn nước làm mát.",
+            safety: "Thời gian đối phó dài hơn lúc đầu, nhưng vẫn là tình huống nguy hiểm."
+          };
+        }
+        return {
+          label: "Kiểm soát chậm",
+          level: "medium",
+          copy: "Nhiệt dư thấp hơn nhiều; mất điện không gây sụp đổ tức thì, nhưng vẫn phải giám sát.",
+          cooling: "Bơm ngừng",
+          loss: "Bay hơi nước chậm",
+          status: "Có nhiều thời gian hơn để xử lý trước khi lõi bị lộ ra.",
+          safety: "Rủi ro thấp hơn nhờ năng lượng phân rã đã xuống thấp."
+        };
+      }
+      if (heat >= 1.5) return { label: "Rất cao", level: "high", copy: "Mất làm mát lúc này có thể đẩy lõi vào vùng quá nhiệt rất nhanh.", cooling: "Bơm + tản nhiệt khẩn cấp", loss: "Nguy cơ tăng rất nhanh", status: "Decay heat vẫn ở mức khẩn cấp cao.", safety: "Shutdown an toàn chỉ khi vẫn còn đường mang nhiệt ra ngoài." };
+      if (heat >= 0.4) return { label: "Cao", level: "high", copy: "Công suất đã thấp hơn nhiều so với lúc đầu, nhưng vẫn đủ gây hư hại nặng nếu làm mát thất bại.", cooling: "Tản nhiệt liên tục", loss: "Vẫn có thể làm hỏng lõi", status: "Decay heat đã giảm mạnh nhưng chưa rời vùng nguy hiểm.", safety: "An toàn phụ thuộc trực tiếp vào coolant, mực nước và khả năng đối lưu." };
+      if (heat >= 0.1) return { label: "Đáng theo dõi", level: "medium", copy: "Lõi không còn ở pha đầu, nhưng nhiệt dư vẫn đòi hỏi loại bỏ liên tục bằng nước và che chắn.", cooling: "Làm mát duy trì", loss: "Rủi ro tích lũy", status: "Decay heat đang đi vào đuôi dài, giảm chậm hơn về sau.", safety: "Không còn khẩn cấp như lúc đầu, nhưng không thể coi là 'nguội'." };
+      return { label: "Dài hạn", level: "low", copy: "Nhiệt đã xuống thấp hơn nhiều, song nhiên liệu vẫn chưa thể xem là vô hại và vẫn cần bể nước làm mát.", cooling: "Bể nước làm mát", loss: "Rủi ro thấp hơn, chưa hết", status: "Decay heat nhỏ nhưng dai dẳng; spent fuel vẫn cần ngâm nước.", safety: "Trạng thái ổn định dài hạn, nhưng vẫn trong phạm vi kiểm soát hạt nhân." };
+    }
+
+
+    // ── Physical blackout progression model (5 stages) ─────────────────────
+    // Stage 1: Pump stop / natural circulation   (t < T1)
+    // Stage 2: Water boiling, pressure drop       (T1 ≤ t < T2)
+    // Stage 3: Coolant level dropping             (T2 ≤ t < T3)
+    // Stage 4: Core uncovery, Zr oxidation ~1200°C(T3 ≤ t < T4)
+    // Stage 5: Core meltdown, UO₂ → liquid       (t ≥ T4)
+    //
+    // Transition times scale inversely with heat fraction so that
+    // a 7% decay heat drives the sequence ~4× faster than 1.5%.
+    function getPhysicalBlackoutInfo(time) {
+      if (!state.blackout) return { stage: 0 };
+      const elapsed = state.blackoutStartTime == null ? 0 : Math.max(0, time - state.blackoutStartTime);
+      const heat    = getHeatPercentAt(time);
+      const amp     = getMeltdownTimeAmp(time);
+      const scaledElapsed = elapsed * amp;
+
+      // Speed multiplier: the higher the playback speed, the faster the visible failure timeline.
+      // It keeps the physical order intact while compressing the real-time wait for the learner.
+      const hFactor = clamp(heat / 1.5, 0.04, 5.0);
+      const T1 = 480  / hFactor;   // → boiling       (~8 min at ref)
+      const T2 = 2400 / hFactor;   // → level drop    (~40 min at ref)
+      const T3 = 6600 / hFactor;   // → core uncovery (~110 min at ref)
+      const T4 = 18000 / hFactor;  // → core damage   (~5 h at ref)
+
+      // Below this threshold natural circulation is sufficient — no escalation.
+      const tooLow = heat < 0.12;
+
+      function fmtNext(remaining) {
+        return remaining > 60 ? ` Còn ~${formatDurationVi(remaining)} đến giai đoạn tiếp theo.` : "";
+      }
+
+      if (tooLow || scaledElapsed < T1) {
+        const p = tooLow ? 0 : clamp(scaledElapsed / T1, 0, 1);
+        return {
+          stage: 1, elapsed, elapsedAmp: scaledElapsed, amp, heat, T1, T2, T3, T4, tooLow,
+          phaseFill: p * 20,
+          name: "Bơm dừng",
+          desc: tooLow
+            ? "Nhiệt dư quá thấp để thúc đẩy sự cố. Đối lưu tự nhiên vẫn có thể duy trì làm mát đủ."
+            : `Bơm cưỡng bức dừng. Đối lưu tự nhiên kém hiệu quả hơn. Hot-leg đang tăng nhiệt chậm.${fmtNext(T1 - scaledElapsed)}`
+        };
+      }
+      if (scaledElapsed < T2) {
+        const p = clamp((scaledElapsed - T1) / (T2 - T1), 0, 1);
+        return {
+          stage: 2, elapsed, elapsedAmp: scaledElapsed, amp, heat, T1, T2, T3, T4,
+          phaseFill: 20 + p * 25,
+          name: "Nước sôi",
+          desc: `Nhiệt tích lũy đủ để nước đạt nhiệt độ bão hoà. Hơi nước hình thành, áp suất mạch sơ cấp dao động.${fmtNext(T2 - scaledElapsed)}`
+        };
+      }
+      if (scaledElapsed < T3) {
+        const p = clamp((scaledElapsed - T2) / (T3 - T2), 0, 1);
+        return {
+          stage: 3, elapsed, elapsedAmp: scaledElapsed, amp, heat, T1, T2, T3, T4,
+          phaseFill: 45 + p * 25,
+          name: "Mực nước giảm",
+          desc: `Hơi thoát ra làm giảm thể tích nước lỏng. Mực nước đang hạ dần về phía đỉnh vùng hoạt.${fmtNext(T3 - scaledElapsed)}`
+        };
+      }
+      if (scaledElapsed < T4) {
+        const p = clamp((scaledElapsed - T3) / (T4 - T3), 0, 1);
+        return {
+          stage: 4, elapsed, elapsedAmp: scaledElapsed, amp, heat, T1, T2, T3, T4,
+          phaseFill: 70 + p * 25,
+          name: "Lộ lõi",
+          desc: `Vùng hoạt bị lộ ra ngoài nước. Vỏ Zircaloy tiếp cận ~1200°C và bắt đầu oxy hoá. Nguy cơ sinh Hydrogen.${fmtNext(T4 - scaledElapsed)}`
+        };
+      }
+      const p2 = clamp((scaledElapsed - T4) / 7200, 0, 1);
+      return {
+        stage: 5, elapsed, elapsedAmp: scaledElapsed, amp, heat, T1, T2, T3, T4,
+        phaseFill: 100,
+        name: "Hư hại lõi",
+        desc: `Nhiên liệu UO₂ tiếp cận nhiệt độ nóng chảy (>2800°C). Cấu trúc lõi sụp đổ — nguy cơ phá vỡ vỏ chứa rất cao.`
+      };
+    }
+
+    function getCoolantLevelPct(info) {
+      if (!state.blackout || !info || info.stage === 0) return 100;
+      if (info.stage <= 2) return 100;
+      const elapsed = info.elapsedAmp ?? info.elapsed ?? 0;
+      if (info.stage === 3) {
+        const p = clamp((elapsed - info.T2) / (info.T3 - info.T2), 0, 1);
+        return 100 - 62 * p;   // 100 % → 38 %
+      }
+      if (info.stage === 4) {
+        const p = clamp((elapsed - info.T3) / (info.T4 - info.T3), 0, 1);
+        return 38 - 38 * p;    // 38 % → 0 %
+      }
+      return 0;
+    }
+
+    function updateBlackoutStages(info) {
+      if (!refs.bstages || !refs.bstages[1]) return;
+      if (!state.blackout || !info || info.stage === 0) {
+        for (let i = 1; i <= 5; i++) refs.bstages[i].className = "bstage";
+        for (let i = 1; i <= 4; i++) refs.bconns[i].className  = "bstage-conn";
+        if (refs.bstageDesc) {
+          refs.bstageDesc.textContent = "Bật mất điện để xem tiến trình sự cố vật lí.";
+          refs.bstageDesc.className   = "bstage-desc";
+        }
+        return;
+      }
+      const s = info.stage;
+      for (let i = 1; i <= 5; i++) {
+        refs.bstages[i].className = "bstage" +
+          (i <  s ? " past"     :
+           i === s ? (s === 5 ? " critical" : " active") : "");
+      }
+      for (let i = 1; i <= 4; i++) {
+        refs.bconns[i].className = "bstage-conn" + (i < s ? " filled" : "");
+      }
+      if (refs.bstageDesc) {
+        refs.bstageDesc.textContent = info.desc || "";
+        refs.bstageDesc.className   = "bstage-desc" + (s === 5 ? " danger" : "");
+      }
+    }
+
+    function getBlackoutStage(time) {
+      if (!state.blackout) {
+        return {
+          headline: "Nguồn ngoài: ON",
+          tag: "Bơm cưỡng bức hoạt động",
+          phase: "Lưới còn cấp điện cho hệ bơm; lõi tiếp tục được làm mát chủ động và nhiệt dư đi xuống.",
+          fill: 0,
+          pump: "Đang chạy",
+          core: "Ổn định",
+          limit: "Còn trong vùng an toàn"
+        };
+      }
+
+      const info      = getPhysicalBlackoutInfo(time);
+      const stageNames = ["", "Bơm dừng", "Nước sôi", "Mực nước giảm", "Lộ lõi", "Hư hại lõi"];
+      const s          = info.stage;
+      const elText     = formatDurationVi(info.elapsed);
+
+      const pumpMap   = ["", "Ngừng hoạt động", "Đã dừng", "Đã dừng", "Đã dừng", "Đã dừng"];
+      const coreMap   = ["", info.tooLow ? "Tăng rất chậm" : "Tăng chậm",
+                             "Đang sôi", "Mực nước giảm", "Lộ ra ngoài", "Đang nóng chảy"];
+      const limitMap  = ["",
+        "Cửa sổ can thiệp còn mở",
+        "Cần phục hồi làm mát ngay",
+        "Rủi ro tăng cao — mực nước đang hạ",
+        `Blackout ${elText} • vượt ngưỡng an toàn`,
+        "Mất kiểm soát lõi nhiên liệu"
+      ];
+
+      return {
+        headline: `Nguồn ngoài: OFF — Giai đoạn ${s}/5`,
+        tag:      `${stageNames[s]}`,
+        phase:    info.desc,
+        fill:     Math.round(info.phaseFill),
+        pump:     pumpMap[s]  || "Đã dừng",
+        core:     coreMap[s]  || "Không xác định",
+        limit:    limitMap[s] || "—"
+      };
+    }
+
+    function coalTonsPerHour(mwth) {
+      const kwhPerHour = mwth * 1000;
+      const kgPerHour = kwhPerHour / COAL_KWH_PER_KG;
+      return kgPerHour / 1000;
+    }
+
+    function heaterEquivalent(mwth) {
+      return Math.round(mwth / INDUSTRIAL_HEATER_MW);
+    }
+
+    function paceText(multiplier) {
+      if (multiplier < 60) {
+        return `${formatNumberVi(multiplier, multiplier < 10 ? 1 : 0)} giây vật lý / giây thực`;
+      }
+      if (multiplier < 3600) {
+        return `${formatNumberVi(multiplier / 60, 1)} phút vật lý / giây thực`;
+      }
+      if (multiplier < 86400) {
+        return `${formatNumberVi(multiplier / 3600, 1)} giờ vật lý / giây thực`;
+      }
+      return `${formatNumberVi(multiplier / 86400, 1)} ngày vật lý / giây thực`;
+    }
+
+    function getMeltdownTimeAmp(time) {
+      if (state.mode === "fixed") {
+        return clamp(Math.pow(state.fixedSpeed, 0.42), 1, 3.5);
+      }
+      if (state.mode === "auto") {
+        return clamp(Math.pow(speedFactorForAuto(time), 0.42), 1, 3.5);
+      }
+      return 1;
+    }
+
+    function speedFactorForAuto(time) {
+      const u = clamp(time / TOTAL_TIME_SECONDS, 0, 1);
+      return 1 + (state.autoSMax - 1) * ((Math.exp(AUTO_LAMBDA * u) - 1) / (Math.exp(AUTO_LAMBDA) - 1));
+    }
+
+    function solveAutoSMax() {
+      const lambda = AUTO_LAMBDA;
+      const expLambda = Math.exp(lambda);
+
+      function durationForSmax(sMax) {
+        const s = Math.max(1.000001, sMax);
+        if (Math.abs(lambda) < 1e-9) {
+          return TOTAL_TIME_SECONDS * Math.log(s) / (s - 1);
+        }
+        const b = (expLambda - s) / (expLambda - 1);
+        return TOTAL_TIME_SECONDS * (lambda - Math.log(s)) / (lambda * b);
+      }
+
+      let low = 1.000001;
+      let high = 1e10;
+      for (let i = 0; i < 120; i += 1) {
+        const mid = Math.sqrt(low * high);
+        const duration = durationForSmax(mid);
+        if (duration > AUTO_TARGET_DURATION_SECONDS) {
+          low = mid;
+        } else {
+          high = mid;
+        }
+      }
+      return high;
+    }
+
+    function sliderValueFromTime(time) {
+      const ratio = Math.log1p(time) / Math.log1p(TOTAL_TIME_SECONDS);
+      return Math.round(ratio * SLIDER_MAX);
+    }
+
+    function timeFromSliderValue(value) {
+      const ratio = value / SLIDER_MAX;
+      return Math.expm1(ratio * Math.log1p(TOTAL_TIME_SECONDS));
+    }
+
+    function estimateCoolantTempC(heatPercent, time = state.time) {
+      // Normal operation: coolant temp tracks decay heat
+      const baseHot  = 321.1;
+      const baseCool = 60;
+      const norm = clamp(heatPercent / 7, 0, 1);
+      const cooledTemp = baseCool + (baseHot - baseCool) * Math.pow(norm, 0.45);
+
+      if (!state.blackout) return cooledTemp;
+
+      const info = getPhysicalBlackoutInfo(time);
+      if (!info || info.stage === 0 || info.tooLow) return cooledTemp;
+
+      // Stage 1 → gradual rise toward boiling (100°C at hot-leg pressure ~344°C)
+      if (info.stage === 1) {
+        const p = info.T1 > 0 ? clamp(info.elapsed / info.T1, 0, 1) : 1;
+        return clamp(cooledTemp + (344 - cooledTemp) * p * 0.5, cooledTemp, 344);
+      }
+      // Stage 2 → water boiling: primary temp locked near saturation ~344°C
+      if (info.stage === 2) {
+        const p = clamp((info.elapsed - info.T1) / (info.T2 - info.T1), 0, 1);
+        return clamp(344 + 120 * Math.pow(p, 1.4), 344, 464);
+      }
+      // Stage 3 → level dropping: temp climbs toward fuel cladding limit
+      if (info.stage === 3) {
+        const p = clamp((info.elapsed - info.T2) / (info.T3 - info.T2), 0, 1);
+        return clamp(464 + 736 * Math.pow(p, 1.2), 464, 1200);
+      }
+      // Stage 4 → core uncovery: Zircaloy oxidation, exothermic, ~1200°C → 2800°C
+      if (info.stage === 4) {
+        const p = clamp((info.elapsed - info.T3) / (info.T4 - info.T3), 0, 1);
+        return clamp(1200 + 1600 * Math.pow(p, 0.9), 1200, 2800);
+      }
+      // Stage 5 → core melt: UO₂ melting point ~2840°C
+      return clamp(2800 + 200 * clamp((info.elapsed - info.T4) / 7200, 0, 1), 2800, 3000);
+    }
+
+
+    const MELTDOWN_CRASH_DELAY_MS = 4200;
+
+    function updateControlLockState() {
+      refs.appShell.classList.toggle("interaction-locked", state.uiLocked);
+    }
+
+    function setUiLocked(locked) {
+      state.uiLocked = Boolean(locked);
+      updateControlLockState();
+    }
+
+    function clearMeltdownCrashTimer() {
+      clearTimeout(state.meltdownCrashTimer);
+      state.meltdownCrashTimer = null;
+    }
+
+    function triggerMeltdownCrash() {
+      if (state.meltdownCrashTriggered) return;
+      state.meltdownCrashTriggered = true;
+      clearMeltdownCrashTimer();
+      pausePlayback();
+      setUiLocked(true);
+      hideGuide();
+      clearTimeout(state.chainTimer);
+      state.chainTimer = null;
+      refs.warningToast.classList.remove("show");
+      if (refs.blackoutToggle) refs.blackoutToggle.checked = true;
+      document.body.classList.add("meltdown-crashed");
+      if (refs.meltdownCrash) {
+        refs.meltdownCrash.classList.add("show");
+        refs.meltdownCrash.setAttribute("aria-hidden", "false");
+      }
+      playBlackoutAlarm(5);
+    }
+
+    function monitorMeltdownCrash(info) {
+      if (state.meltdownCrashTriggered) return;
+      if (!state.blackout || !info || info.stage < 5) {
+        clearMeltdownCrashTimer();
+        return;
+      }
+      if (state.meltdownCrashTimer) return;
+      state.meltdownCrashTimer = setTimeout(() => {
+        if (!state.blackout || state.meltdownCrashTriggered) return;
+        const latestInfo = getPhysicalBlackoutInfo(state.time);
+        if (latestInfo && latestInfo.stage >= 5) {
+          triggerMeltdownCrash();
+        } else {
+          clearMeltdownCrashTimer();
+        }
+      }, MELTDOWN_CRASH_DELAY_MS);
+    }
+
+    function setReactorMode(mode) {
+      state.reactorMode = "pwr";
+      refs.reactorModeButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.mode === state.reactorMode);
+      });
+      refs.reactorZone.classList.toggle("mode-pwr", true);
+      refs.modeHint.textContent = "Bản này đang bám PWR cũ: khi mất điện, bơm cưỡng bức là tuyến phòng thủ chính.";
+      if (state.blackout) {
+        applyBlackoutVisuals();
+        queueBlackoutSequence();
+      }
+      updateUi();
+    }
+
+    function clearBlackoutTimer() {
+      clearTimeout(state.blackoutTimer);
+      state.blackoutTimer = null;
+    }
+
+    function applyBlackoutVisuals() {
+      document.body.classList.toggle("blackout-mode", state.blackout);
+      if (refs.blackoutOverlay) {
+        refs.blackoutOverlay.classList.toggle("show", state.blackout);
+      }
+      refs.appShell.classList.toggle("collapse", state.blackout && state.blackoutCollapse && state.reactorMode === "pwr");
+      refs.reactorZone.classList.toggle("blackout", state.blackout);
+      refs.reactorZone.classList.toggle("pwr", state.reactorMode === "pwr");
+      refs.reactorZone.classList.toggle("collapse", state.blackout && state.blackoutCollapse && state.reactorMode === "pwr");
+      if (refs.blackoutPanel) {
+        refs.blackoutPanel.classList.toggle("collapsed", state.blackout && state.blackoutCollapse && state.reactorMode === "pwr");
+      }
+      if (!state.blackout) {
+        refs.warningToast.classList.remove("show");
+      }
+    }
+
+    function queueBlackoutSequence() {
+      clearBlackoutTimer();
+      state.blackoutCollapse = false;
+      applyBlackoutVisuals();
+      if (!state.blackout) return;
+
+      const heat    = getHeatPercentAt(state.time);
+      const info    = getPhysicalBlackoutInfo(state.time);
+      state.lastBlackoutStage = info?.stage || 0;
+      const warning = info && !info.tooLow
+        ? `Mất điện: bơm dừng. Nhiệt dư còn ${formatNumberVi(heat, 2)}%. Giai đoạn: ${info.name} — ${info.desc}`
+        : `Mất điện muộn: nhiệt dư ${formatNumberVi(heat, 2)}% — đối lưu tự nhiên có thể đủ.`;
+      showWarning(warning, 1500);
+    }
+
+    function setBlackout(nextState) {
+      if (state.meltdownCrashTriggered) return;
+      state.blackout = Boolean(nextState);
+      if (state.blackout) {
+        state.blackoutStartTime = state.time;
+        state.blackoutCollapse = false;
+        state.lastBlackoutStage = 0;
+      } else {
+        state.blackoutStartTime = null;
+        state.blackoutCollapse = false;
+        state.lastBlackoutStage = 0;
+        clearMeltdownCrashTimer();
+      }
+      if (refs.blackoutToggle) refs.blackoutToggle.checked = state.blackout;
+      applyBlackoutVisuals();
+      if (state.blackout) {
+        queueBlackoutSequence();
+      } else {
+        clearBlackoutTimer();
+      }
+      updateUi();
+    }
+
+    function updateFormulaPanel() {
+      const time = clamp(state.time, 0, TOTAL_TIME_SECONDS);
+      const heatPercent = getHeatPercentAt(time);
+      const heatFraction = heatPercent / 100;
+      const mwth = heatMwAt(time);
+      const tempC = estimateCoolantTempC(heatPercent, time);
+      const tempK = tempC + 273.15;
+      const modeLabel = state.blackout
+        ? "Mất điện ngoài lưới"
+        : "Làm mát cưỡng bức vẫn hoạt động";
+      refs.formulaEquation.textContent = "P_decay(t) = P₀ × f(t)\nf(t) = P_decay(t) / P₀  (không thứ nguyên)\nT_coolant(t) = nhiệt độ nước làm mát / lõi";
+      refs.formulaHeat.textContent = `~${formatNumberVi(heatPercent, 2)}% • ~${formatNumberVi(mwth, 1)} MWth`;
+      refs.formulaHeatSub.textContent = "P_decay(t) là công suất nhiệt còn lại; đơn vị MWth.";
+      refs.formulaTemp.textContent = `${formatNumberVi(tempC, 1)}°C / ${formatNumberVi(tempK, 1)} K`;
+      refs.formulaTempSub.textContent = state.blackout
+        ? "Bơm dừng, nên T_coolant(t) có thể tăng nếu nhiệt dư còn cao."
+        : "Có làm mát, nhiệt độ đi xuống cùng quỹ đạo nhiệt dư.";
+      refs.formulaVars.textContent = `t, P_decay(t), f(t), T_coolant(t)`;
+      refs.formulaVarsSub.textContent = "t có đơn vị giây/phút/giờ/ngày; f(t) là tỷ phần không thứ nguyên; T_coolant(t) dùng °C hoặc K.";
+      if (refs.formulaP0) refs.formulaP0.textContent = `${formatNumberVi(FULL_POWER_MWTH, 0)} MWth`;
+      if (refs.formulaFraction) refs.formulaFraction.textContent = `${formatNumberVi(heatFraction, 4)}`;
+      if (refs.formulaPower) refs.formulaPower.textContent = `~${formatNumberVi(mwth, 1)} MWth`;
+      if (refs.formulaTempDetail) refs.formulaTempDetail.textContent = `${formatNumberVi(tempC, 1)}°C / ${formatNumberVi(tempK, 1)} K`;
+      refs.formulaSummary.textContent = state.blackout
+        ? "PWR mất bơm làm mát: nhiệt dư vẫn giảm, nhưng nhiệt độ lõi có thể tăng rất nhanh."
+        : "Khi làm mát còn hoạt động, nhiệt dư giảm và nhiệt độ cũng hạ theo.";
+      refs.formulaSummary.dataset.mode = modeLabel;
+    }
+
+
+    function toggleFormulaPanel(forceOpen = null) {
+      state.formulaOpen = forceOpen == null ? !state.formulaOpen : Boolean(forceOpen);
+      refs.formulaPanel.classList.toggle("open", state.formulaOpen);
+      refs.formulaBtn.textContent = state.formulaOpen ? "Ẩn công thức & tính toán" : "Hiện công thức & tính toán";
+      updateFormulaPanel();
+    }
+
+    function setChainStatusSafe() {
+      state.chainStep = 1;
+      state.chainRunning = false;
+      refs.chainCard.dataset.phase = "idle";
+      refs.chainStatus.textContent = "Sẵn sàng • Bấm một bước để chạy";
+      refs.chainSteps.forEach((button, index) => {
+        button.classList.toggle("active", index === 0);
+        button.classList.toggle("done", false);
+        button.classList.remove("pulse", "stopped", "residual");
+        button.disabled = false;
+        button.setAttribute("aria-pressed", index === 0 ? "true" : "false");
+      });
+      refs.chainTrackFill.style.width = "0%";
+      refs.chainTrackDot.style.left = "0%";
+      refs.chainTitle.textContent = "Phân hạch → sinh nhiệt";
+      refs.chainCopy.textContent = "Bấm vào một bước để xem chuỗi chuyển hoá chạy từ đầu đến cuối.";
+    }
+
+    function setChainStep(stepIndex, running = false) {
+      const safeIndex = clamp(stepIndex, 1, 4);
+      state.chainStep = safeIndex;
+      state.chainRunning = Boolean(running);
+      refs.chainCard.dataset.phase = running ? "flow" : "idle";
+      refs.chainSteps.forEach((button, index) => {
+        button.classList.toggle("active", index === safeIndex - 1);
+        button.classList.toggle("done", index < safeIndex - 1);
+        button.classList.remove("pulse");
+        button.disabled = false;
+        button.setAttribute("aria-pressed", index === safeIndex - 1 ? "true" : "false");
+      });
+      const progress = 100 * (safeIndex - 1) / 3;
+      refs.chainTrackFill.style.width = `${progress}%`;
+      refs.chainTrackDot.style.left = `${progress}%`;
+      const stepMeta = [
+        {
+          title: "Phân hạch → sinh nhiệt",
+          copy: "Hạt nhân tách ra, năng lượng biến thành nhiệt trong vùng hoạt."
+        },
+        {
+          title: "Nhiệt → tạo hơi nước",
+          copy: "Nhiệt truyền sang mạch thứ cấp qua steam generator."
+        },
+        {
+          title: "Hơi → quay turbine",
+          copy: "Hơi áp suất cao làm cánh turbine quay nhanh."
+        },
+        {
+          title: "Turbine → phát điện",
+          copy: "Máy phát đổi chuyển động quay thành điện năng cho lưới."
+        }
+      ];
+      refs.chainTitle.textContent = stepMeta[safeIndex - 1].title;
+      refs.chainCopy.textContent = stepMeta[safeIndex - 1].copy;
+      refs.chainStatus.textContent = running ? `Đang chạy • Bước ${safeIndex}/4` : `Sẵn sàng • Bước ${safeIndex}/4`;
+    }
+
+    async function playChainAnimation(targetIndex, scram = false) {
+      const safeTarget = clamp(targetIndex, 1, 4);
+      state.chainRunId = (state.chainRunId || 0) + 1;
+      const runId = state.chainRunId;
+      state.chainRunning = true;
+      // No pausePlayback, no chainRunning guard — chain runs freely alongside timeline
+      clearTimeout(state.chainTimer);
+      state.chainTimer = null;
+      refs.chainCard.dataset.phase = scram ? "scram" : "flow";
+
+      try {
+        if (scram) {
+          setChainStep(1, true);
+          refs.chainSteps[0].classList.add("pulse", "stopped");
+          await sleep(240);
+          if (state.chainRunId !== runId) return;
+
+          setChainStep(2, true);
+          refs.chainSteps[1].classList.add("pulse", "residual");
+          await sleep(900);
+          if (state.chainRunId !== runId) return;
+
+          refs.chainStatus.textContent = "SCRAM xong • Phân hạch dừng, nhưng decay heat vẫn còn.";
+          refs.chainTitle.textContent = "SCRAM → nhiệt dư còn lại";
+          refs.chainCopy.textContent = "Bước 1 đã dừng, nhưng bước 2 vẫn chớp đỏ để nhắc rằng nhiệt dư tiếp tục đun nước.";
+          refs.chainSteps[0].classList.add("done", "stopped");
+          refs.chainSteps[1].classList.add("active", "residual");
+        } else {
+          for (let i = 1; i <= safeTarget; i += 1) {
+            if (state.chainRunId !== runId) return;
+            setChainStep(i, true);
+            refs.chainSteps[i - 1].classList.add("pulse");
+            await sleep(i === 1 ? 260 : 680);
+          }
+          if (state.chainRunId !== runId) return;
+          refs.chainStatus.textContent = `Hoàn tất • Bước ${safeTarget}/4`;
+          setChainStep(safeTarget, false);
+        }
+      } finally {
+        if (state.chainRunId !== runId) return;
+        state.chainTimer = setTimeout(() => {
+          if (state.chainRunId !== runId) return;
+          state.chainRunning = false;
+          state.chainTimer = null;
+        }, scram ? 1100 : 520);
+      }
+    }
+
+    function triggerScram() {
+      playChainAnimation(2, true);
+    }
+
+    function buildCurvePath(includeUpToTime = null) {
+      const limitTime = includeUpToTime == null ? TOTAL_TIME_SECONDS : clamp(includeUpToTime, 0, TOTAL_TIME_SECONDS);
+      const points = [];
+      const addPoint = (t) => {
+        const heat = getHeatPercentAt(t);
+        points.push([mapTimeToX(t), mapHeatToY(heat)]);
+      };
+
+      addPoint(anchors[0].t);
+
+      for (let i = 0; i < anchors.length - 1; i += 1) {
+        const start = anchors[i];
+        const end = anchors[i + 1];
+        if (limitTime <= start.t) {
+          break;
+        }
+
+        const segmentEnd = Math.min(end.t, limitTime);
+        const segmentSpan = end.t - start.t || 1;
+        const steps = Math.max(3, Math.ceil(14 * (segmentEnd - start.t) / segmentSpan));
+
+        for (let s = 1; s <= steps; s += 1) {
+          const t = start.t + (segmentEnd - start.t) * (s / steps);
+          addPoint(t);
+        }
+
+        if (limitTime <= end.t) {
+          break;
+        }
+      }
+
+      return points;
+    }
+
+
+
+    function buildChart() {
+      const fullPoints = buildCurvePath(TOTAL_TIME_SECONDS);
+      const lineD = fullPoints.map((point, index) => `${index === 0 ? "M" : "L"} ${point[0].toFixed(2)} ${point[1].toFixed(2)}`).join(" ");
+      const areaD = `${lineD} L ${mapTimeToX(TOTAL_TIME_SECONDS)} 352 L ${mapTimeToX(0)} 352 Z`;
+      refs.curvePath.setAttribute("d", lineD);
+      refs.areaPath.setAttribute("d", areaD);
+
+  const gridLines = [
+    { y: mapHeatToY(7), label: "7%" },
+    { y: mapHeatToY(1), label: "1%" },
+    { y: mapHeatToY(0.1), label: "0,1%" }
+  ];
+  refs.chartGrid.innerHTML = "";
+  gridLines.forEach((line) => {
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const rule = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    rule.setAttribute("x1", "72");
+    rule.setAttribute("x2", "952");
+    rule.setAttribute("y1", line.y.toFixed(2));
+    rule.setAttribute("y2", line.y.toFixed(2));
+    rule.setAttribute("stroke", "rgba(22, 50, 71, 0.12)");
+    rule.setAttribute("stroke-width", "1");
+    rule.setAttribute("stroke-dasharray", "5 7");
+    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    label.setAttribute("x", "20");
+    label.setAttribute("y", (line.y + 4).toFixed(2));
+    label.setAttribute("fill", "#587188");
+    label.setAttribute("font-size", "13");
+    label.textContent = line.label;
+    group.append(rule, label);
+    refs.chartGrid.appendChild(group);
+  });
+
+  refs.milestoneLayer.innerHTML = "";
+  milestoneSpec.forEach((milestone) => {
+    const x = mapTimeToX(milestone.time);
+    const y = mapHeatToY(getHeatPercentAt(milestone.time));
+    const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    line.setAttribute("x1", x.toFixed(2));
+    line.setAttribute("x2", x.toFixed(2));
+    line.setAttribute("y1", "52");
+    line.setAttribute("y2", "352");
+    line.setAttribute("stroke", "rgba(15, 108, 138, 0.10)");
+    line.setAttribute("stroke-width", "1");
+    const dot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    dot.setAttribute("cx", x.toFixed(2));
+    dot.setAttribute("cy", y.toFixed(2));
+    dot.setAttribute("r", "5");
+    dot.setAttribute("fill", "#0f6c8a");
+    const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+    text.setAttribute("x", clamp(x - 26, 72, 900).toFixed(2));
+    text.setAttribute("y", (y - 12).toFixed(2));
+    text.setAttribute("fill", "#163247");
+    text.setAttribute("font-size", "12");
+    text.textContent = milestone.label;
+    group.append(line, dot, text);
+    refs.milestoneLayer.appendChild(group);
+  });
+}
+
+function buildTechGrid() {
+
+      refs.techGrid.innerHTML = "";
+      techItems.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "tech-item";
+        div.dataset.techLabel = item.label;
+        div.innerHTML = `
+          <label>${item.label}</label>
+          <strong>${item.value || ""}</strong>
+          <span>${item.note}</span>
+        `;
+        refs.techGrid.appendChild(div);
+      });
+    }
+
+    function buildRiskList(time) {
+      const severity = getSeverity(time);
+      refs.riskList.innerHTML = "";
+      riskTemplate.forEach((row) => {
+        const div = document.createElement("div");
+        const rowLevel = row.label === "Nhiệt dư"
+          ? severity.level
+          : row.label === "Mất làm mát"
+            ? severity.level
+            : time > 20 * 24 * 3600
+              ? "low"
+              : "medium";
+        let value = "";
+        if (row.label === "Nhiệt dư") {
+          value = `${formatNumberVi(getHeatPercentAt(time), 2)}% • ${formatNumberVi(heatMwAt(time), 1)} MWth`;
+        } else if (row.label === "Mất làm mát") {
+          value = severity.copy;
+        } else {
+          value = time < 86400
+            ? "Ngay cả nhiên liệu vừa dừng cũng chưa thể coi là an toàn thụ động."
+            : "Spent fuel vẫn cần ngâm nước, che chắn và kiểm soát dài hạn.";
+        }
+        div.className = "risk-row";
+        div.dataset.level = rowLevel;
+        div.innerHTML = `
+          <label>${row.label}</label>
+          <strong>${value}</strong>
+          <span>${row.note}</span>
+        `;
+        refs.riskList.appendChild(div);
+      });
+    }
+
+    function updateDynamicTech(time) {
+      const severity = getSeverity(time);
+      const dynamicMap = {
+        "Decay-heat status": severity.status,
+        "Coolant status": severity.cooling,
+        "Safety status": severity.safety
+      };
+      Array.from(refs.techGrid.children).forEach((node) => {
+        const label = node.dataset.techLabel;
+        if (dynamicMap[label]) {
+          node.querySelector("strong").textContent = dynamicMap[label];
+        }
+      });
+    }
+
+    function updateUi() {
+      const time = clamp(state.time, 0, TOTAL_TIME_SECONDS);
+      const heatPercent = getHeatPercentAt(time);
+      const mwth = heatMwAt(time);
+      const severity = getSeverity(time);
+      const tonsCoal = coalTonsPerHour(mwth);
+      const heaters = heaterEquivalent(mwth);
+      const x = mapTimeToX(time);
+      const y = mapHeatToY(heatPercent);
+      const tempC = estimateCoolantTempC(heatPercent, time);
+      const tempK = tempC + 273.15;
+      const blackoutBoost = state.blackout && state.reactorMode === "pwr"
+        ? clamp((tempC - 321.1) / 220, 0, 1)
+        : 0;
+
+      refs.timeLabel.textContent = formatDurationVi(time);
+      refs.timeSummary.textContent = getTimeSummary(time);
+      refs.heatPercentLabel.textContent = `${formatNumberVi(heatPercent, 2)}%`;
+      refs.heatMwLabel.textContent = `~${formatNumberVi(mwth, 1)} MWth còn phải được mang đi.`;
+      refs.severityLabel.textContent = severity.label;
+      refs.severityCopy.textContent = severity.copy;
+      refs.tempLabel.textContent = `${formatNumberVi(tempC, 1)}°C / ${formatNumberVi(tempK, 1)} K`;
+      // Dynamic temp readout label
+      if (refs.tempReadoutLabel) {
+        const physInfo = state.blackout ? getPhysicalBlackoutInfo(time) : null;
+        if (physInfo && physInfo.stage >= 3) {
+          const stageMap = { 3: "Nhiệt độ Zircaloy (vỏ nhiên liệu)", 4: "Nhiệt độ lõi (vùng hoạt)", 5: "Nhiệt độ nóng chảy UO₂" };
+          refs.tempReadoutLabel.textContent = stageMap[physInfo.stage] || "Nhiệt độ lõi";
+        } else {
+          refs.tempReadoutLabel.textContent = "Nhiệt độ sơ cấp (hot-leg)";
+        }
+      }
+      refs.tempCopy.textContent = state.blackout
+        ? "Nhiệt độ tăng vì nhiệt dư không còn được mang đi bằng bơm cưỡng bức."
+        : "Ước lượng minh hoạ theo xu hướng nhiệt dư, không phải số đo đầu dò.";
+      refs.coalLabel.textContent = `${formatNumberVi(tonsCoal, tonsCoal < 10 ? 1 : 0)} tấn/giờ`;
+      refs.heaterLabel.textContent = `Xấp xỉ ${formatWholeVi(heaters)} bộ gia nhiệt công nghiệp 100 kW.`;
+      refs.coalBig.textContent = `${formatNumberVi(tonsCoal, tonsCoal < 10 ? 1 : 0)} tấn than/giờ`;
+      refs.coalCopy.textContent = `Tại thời điểm này, lượng nhiệt còn lại vẫn tương đương việc phải xử lý phần nhiệt do đốt khoảng ${formatNumberVi(tonsCoal, tonsCoal < 10 ? 1 : 0)} tấn than mỗi giờ.`;
+      refs.zoneHeatLabel.textContent = `${formatNumberVi(mwth, 1)} MWth`;
+      refs.coolingLabel.textContent = severity.cooling;
+      refs.lossLabel.textContent = severity.loss;
+      refs.hotZoneCopy.textContent = state.blackout
+        ? `PWR cổ điển mất điện: bơm dừng, nhiệt dư vẫn còn đó và lõi có thể tăng nhiệt nhanh. Ở mốc ${formatDurationVi(time)}, nhiệt dư còn khoảng ${formatNumberVi(heatPercent, 2)}% công suất nhiệt ban đầu.`
+        : `Các sản phẩm phân hạch vẫn tiếp tục phân rã và thải nhiệt. Ở mốc ${formatDurationVi(time)}, phần nhiệt này còn khoảng ${formatNumberVi(heatPercent, 2)}% công suất nhiệt ban đầu.`;
+      const blackoutStage = getBlackoutStage(time);
+      if (refs.blackoutHeadline) refs.blackoutHeadline.textContent = blackoutStage.headline;
+      if (refs.blackoutTag) refs.blackoutTag.textContent = blackoutStage.tag;
+      if (refs.blackoutPhase) refs.blackoutPhase.textContent = blackoutStage.phase;
+      if (refs.blackoutMeterFill) refs.blackoutMeterFill.style.width = `${blackoutStage.fill}%`;
+      if (refs.blackoutPumpLabel) refs.blackoutPumpLabel.textContent = blackoutStage.pump;
+      if (refs.blackoutCoreLabel) refs.blackoutCoreLabel.textContent = blackoutStage.core;
+      if (refs.blackoutLimitLabel) refs.blackoutLimitLabel.textContent = blackoutStage.limit;
+
+      // 5-stage physical progression track
+      const physInfo = getPhysicalBlackoutInfo(time);
+      if (state.blackout) {
+        if (physInfo.stage > 0 && physInfo.stage !== state.lastBlackoutStage) {
+          showBlackoutStageAlert(physInfo);
+          state.lastBlackoutStage = physInfo.stage;
+        }
+      } else {
+        state.lastBlackoutStage = 0;
+      }
+      updateBlackoutStages(physInfo);
+      monitorMeltdownCrash(physInfo);
+
+      // Coolant level visual
+      if (refs.coolantLevel) {
+        const lvPct = getCoolantLevelPct(physInfo);
+        refs.coolantLevel.style.height = `${lvPct}%`;
+        // tint the cl-surface red when very low
+        const fill = refs.coolantLevel.querySelector(".cl-fill");
+        if (fill && physInfo && physInfo.stage >= 4) {
+          fill.style.background = "linear-gradient(180deg, rgba(185,32,32,0.05) 0%, rgba(185,32,32,0.30) 46%, rgba(185,32,32,0.55) 100%)";
+        } else if (fill) {
+          fill.style.background = "";
+        }
+      }
+      refs.timelineSlider.value = sliderValueFromTime(time);
+      refs.playheadLine.setAttribute("x1", x.toFixed(2));
+      refs.playheadLine.setAttribute("x2", x.toFixed(2));
+      refs.playheadDot.setAttribute("cx", x.toFixed(2));
+      refs.playheadDot.setAttribute("cy", y.toFixed(2));
+
+      const activePoints = buildCurvePath(time);
+      const activeD = activePoints.map((point, index) => `${index === 0 ? "M" : "L"} ${point[0].toFixed(2)} ${point[1].toFixed(2)}`).join(" ");
+      refs.activePath.setAttribute("d", activeD);
+      refs.activePath.setAttribute("opacity", clamp(0.55 + heatPercent / 12, 0.6, 1).toFixed(2));
+
+      const glowScale = clamp(0.72 + heatPercent / 7.5, 0.76, 1.66);
+      const glowOpacity = clamp(0.18 + heatPercent / 7.2, 0.16, 1);
+      refs.coreGlow.style.transform = `scale(${glowScale})`;
+      refs.coreGlow.style.opacity = glowOpacity.toFixed(2);
+      refs.coreGlow.style.filter = `blur(${clamp(2.5 - heatPercent / 3.5, 0.8, 2.4)}px) saturate(${clamp(1.1 + heatPercent / 5, 1.1, 2.1)})`;
+
+      const meltdown = state.blackout && physInfo.stage >= 5;
+      if (refs.meltCore) {
+        refs.meltCore.style.opacity = meltdown ? "1" : "0";
+        refs.meltCore.style.height = meltdown ? "74%" : "0%";
+      }
+
+      refs.reactorZone.classList.toggle("mode-pwr", state.reactorMode === "pwr");
+      refs.reactorZone.classList.toggle("pwr", state.reactorMode === "pwr");
+      refs.reactorZone.classList.toggle("blackout", state.blackout);
+      refs.reactorZone.classList.toggle("meltdown", meltdown);
+
+      updateDynamicTech(time);
+      buildRiskList(time);
+      updateFormulaPanel();
+      updateControlLockState();
+
+      let currentSpeed = 0;
+      if (state.mode === "fixed") currentSpeed = state.fixedSpeed;
+      else if (state.mode === "auto") currentSpeed = speedFactorForAuto(time);
+
+      refs.speedReadout.textContent = `Tốc độ hiện tại: ${currentSpeed === 0 ? "0" : paceText(currentSpeed)}`;
+      document.body.classList.toggle("blackout-mode", state.blackout);
+      if (refs.blackoutOverlay) refs.blackoutOverlay.classList.toggle("show", state.blackout);
+      refs.modeLabel.textContent = state.mode === "auto"
+        ? "Auto đang tăng tốc dần để nén 1 năm vào khoảng 12 phút"
+        : state.mode === "fixed"
+          ? `Đang phát với tốc độ cố định ${paceText(state.fixedSpeed)}`
+          : "Đang dừng ở mốc hiện tại";
+      refs.formulaPanel.classList.toggle("open", state.formulaOpen);
+      refs.formulaBtn.textContent = state.formulaOpen ? "Ẩn công thức & tính toán" : "Hiện công thức & tính toán";
+      refs.blackoutToggle.checked = state.blackout;
+    }
+    function setActiveButton(target) {
+      refs.controlButtons.forEach((button) => {
+        button.classList.remove("active");
+      });
+      if (target) {
+        target.classList.add("active");
+      }
+    }
+
+    function pausePlayback() {
+      state.mode = "paused";
+      setActiveButton(null);
+      updateUi();
+    }
+
+    function startFixedPlayback(speed, button) {
+      if (state.meltdownCrashTriggered) return;
+      state.mode = "fixed";
+      state.fixedSpeed = speed;
+      setActiveButton(button);
+      updateUi();
+    }
+
+    function startAutoPlayback(button) {
+      if (state.meltdownCrashTriggered) return;
+      state.mode = "auto";
+      setActiveButton(button);
+      updateUi();
+    }
+
+    function stepToNextMilestone() {
+      if (state.meltdownCrashTriggered) return;
+      const next = milestoneSpec.find((item) => item.time > state.time + 1);
+      state.time = next ? next.time : TOTAL_TIME_SECONDS;
+      updateUi();
+    }
+
+    function tick(deltaSeconds) {
+      if (state.mode === "paused" || state.meltdownCrashTriggered) {
+        return;
+      }
+      let speed = 0;
+      if (state.mode === "fixed") {
+        speed = state.fixedSpeed;
+      } else if (state.mode === "auto") {
+        speed = speedFactorForAuto(state.time);
+      }
+      state.time = clamp(state.time + deltaSeconds * speed, 0, TOTAL_TIME_SECONDS);
+      if (state.time >= TOTAL_TIME_SECONDS) {
+        pausePlayback();
+      } else {
+        updateUi();
+      }
+    }
+
+    function showWarning(message = "Vùng này vẫn còn rất nóng. Tắt phản ứng không có nghĩa là hết nhiệt, nên làm mát không được dừng lại.", duration = 2600) {
+      refs.warningToast.textContent = message;
+      refs.warningToast.classList.add("show");
+      refs.appShell.classList.remove("shake");
+      void refs.appShell.offsetWidth;
+      refs.appShell.classList.add("shake");
+      clearTimeout(state.toastTimer);
+      state.toastTimer = setTimeout(() => {
+        refs.warningToast.classList.remove("show");
+      }, duration);
+    }
+
+    function ensureAudioContext() {
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return null;
+      if (!state.audioCtx) {
+        state.audioCtx = new AudioCtor();
+      }
+      if (state.audioCtx.state === "suspended") {
+        state.audioCtx.resume().catch(() => {});
+      }
+      return state.audioCtx;
+    }
+
+    function playBlackoutAlarm(stage) {
+      const ctx = ensureAudioContext();
+      if (!ctx) return;
+      const now = ctx.currentTime;
+      const base = stage >= 5 ? 120 : stage === 4 ? 190 : stage === 3 ? 260 : stage === 2 ? 340 : 440;
+      const peak = stage >= 5 ? 65 : stage === 4 ? 130 : stage === 3 ? 190 : stage === 2 ? 260 : 320;
+      const pulseCount = stage >= 5 ? 3 : stage >= 4 ? 2 : 1;
+      for (let i = 0; i < pulseCount; i += 1) {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        const start = now + i * 0.16;
+        osc.type = stage >= 4 ? "sawtooth" : "triangle";
+        osc.frequency.setValueAtTime(base, start);
+        osc.frequency.exponentialRampToValueAtTime(peak, start + 0.28);
+        gain.gain.setValueAtTime(0.0001, start);
+        gain.gain.exponentialRampToValueAtTime(stage >= 5 ? 0.18 : 0.11, start + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.42);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(start);
+        osc.stop(start + 0.45);
+      }
+    }
+
+    function showBlackoutStageAlert(info) {
+      if (!info || !state.blackout || info.stage <= 0) return;
+      const stageLabel = info.stage >= 5 ? "CẢNH BÁO CẤP 5" : `CẢNH BÁO CẤP ${info.stage}`;
+      const text = `${stageLabel} — ${info.name}. ${info.desc}`;
+      showWarning(text, info.stage >= 5 ? 1800 : 1400);
+      playBlackoutAlarm(info.stage);
+    }
+
+
+    function showGuide() {
+      if (!refs.guideOverlay) return;
+      refs.guideOverlay.classList.add("show");
+      refs.guideOverlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("guide-open");
+    }
+
+    function hideGuide() {
+      if (!refs.guideOverlay) return;
+      refs.guideOverlay.classList.remove("show");
+      refs.guideOverlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("guide-open");
+    }
+
+    function beginHotHold() {
+      clearTimeout(state.hotHoldTimer);
+      state.hotHoldTimer = setTimeout(showWarning, 3000);
+    }
+
+    function cancelHotHold() {
+      clearTimeout(state.hotHoldTimer);
+    }
+
+    function bindEvents() {
+      refs.controlButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (button.dataset.auto) {
+            startAutoPlayback(button);
+            return;
+          }
+          startFixedPlayback(Number(button.dataset.speed), button);
+        });
+      });
+
+      refs.pauseBtn.addEventListener("click", pausePlayback);
+      refs.jumpBtn.addEventListener("click", stepToNextMilestone);
+
+      refs.blackoutToggle.addEventListener("change", (event) => {
+        if (state.meltdownCrashTriggered) {
+          event.target.checked = true;
+          return;
+        }
+        setBlackout(event.target.checked);
+      });
+      refs.reactorModeButtons.forEach((button) => button.addEventListener("click", () => setReactorMode(button.dataset.mode)));
+      refs.formulaBtn.addEventListener("click", () => toggleFormulaPanel());
+      refs.scramBtn.addEventListener("click", () => triggerScram());
+      refs.chainResetBtn.addEventListener("click", () => {
+        state.chainRunId = (state.chainRunId || 0) + 1;
+        clearTimeout(state.chainTimer);
+        state.chainTimer = null;
+        state.chainRunning = false;
+        setChainStatusSafe();
+        refs.chainCard.dataset.phase = "idle";
+        updateControlLockState();
+      });
+
+      refs.timelineSlider.addEventListener("input", (event) => {
+        state.time = timeFromSliderValue(Number(event.target.value));
+        pausePlayback();
+        updateUi();
+      });
+
+      refs.chainSteps.forEach((button) => {
+        button.addEventListener("click", () => {
+          if (state.meltdownCrashTriggered) return;
+          const target = Number(button.dataset.step || 1);
+          state.chainStep = target;
+          playChainAnimation(target);
+        });
+      });
+
+      if (refs.guideCloseBtn) {
+        refs.guideCloseBtn.addEventListener("click", hideGuide);
+      }
+      if (refs.guideOverlay) {
+        refs.guideOverlay.addEventListener("click", (event) => {
+          if (event.target === refs.guideOverlay) hideGuide();
+        });
+      }
+
+      refs.hotZone.addEventListener("pointerenter", beginHotHold);
+      refs.hotZone.addEventListener("pointerleave", cancelHotHold);
+      refs.hotZone.addEventListener("pointerdown", beginHotHold);
+      refs.hotZone.addEventListener("pointerup", cancelHotHold);
+      refs.hotZone.addEventListener("pointercancel", cancelHotHold);
+      refs.hotZone.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") beginHotHold();
+      });
+      refs.hotZone.addEventListener("keyup", cancelHotHold);
+      refs.hotZone.addEventListener("blur", cancelHotHold);
+    }
+
+    function boot() {
+      state.autoSMax = solveAutoSMax();
+      buildChart();
+      buildTechGrid();
+      setReactorMode("pwr");
+      setBlackout(false);
+      setChainStatusSafe();
+      toggleFormulaPanel(false);
+      updateFormulaPanel();
+      bindEvents();
+      showGuide();
+      updateUi();
+
+      let lastTs = performance.now();
+      function frame(now) {
+        const delta = (now - lastTs) / 1000;
+        lastTs = now;
+        tick(delta);
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    }
+
+    boot();
+  </script>
+</body>
+</html>
