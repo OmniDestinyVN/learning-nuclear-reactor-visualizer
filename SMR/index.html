@@ -806,6 +806,462 @@
       .hero, .card{padding:16px}
       .compareBar{grid-template-columns: 58px 1fr 48px;}
     }
+  
+
+    /* NEW CSS — Lắp ráp SMR theo module */
+    .legoSection .legoHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+
+    .legoSection .legoTitleWrap h2{
+      margin:0 0 6px;
+    }
+
+    .legoSection .legoMeta{
+      max-width:980px;
+      line-height:1.55;
+      font-size:13px;
+    }
+
+    .legoSection .legoResetBtn{
+      border:1px solid rgba(251,191,36,.22);
+      background: rgba(251,191,36,.10);
+      color: var(--text);
+      border-radius:999px;
+      padding:9px 14px;
+      cursor:pointer;
+      font-size:13px;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04);
+    }
+
+    .legoSection .legoResetBtn:hover{
+      transform: translateY(-1px);
+      background: rgba(251,191,36,.14);
+      border-color: rgba(251,191,36,.34);
+    }
+
+    .legoSection .legoPanel{
+      padding:16px;
+      border-radius:20px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+
+    .legoSection .legoGrid{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap:10px;
+    }
+
+    .legoSection .legoCell{
+      position:relative;
+      aspect-ratio:1 / 1;
+      min-height:80px;
+      border-radius:18px;
+      border:1.5px dashed rgba(158,178,203,.34);
+      background: linear-gradient(180deg, rgba(6,16,29,.98), rgba(10,20,34,.92));
+      color: var(--text);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:10px;
+      overflow:hidden;
+      cursor:pointer;
+      user-select:none;
+      transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease, background .15s ease, opacity .15s ease;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+
+    .legoSection .legoCell:hover{
+      border-color: rgba(125,211,252,.30);
+      transform: translateY(-1px);
+    }
+
+    .legoSection .legoCell:focus-visible{
+      outline:2px solid rgba(125,211,252,.55);
+      outline-offset:2px;
+    }
+
+    .legoSection .legoCell.is-filled{
+      border-style:solid;
+      border-color: rgba(255,255,255,.10);
+      background: linear-gradient(135deg, rgba(192,132,252,.98), rgba(96,165,250,.96));
+      color:#08131f;
+      box-shadow:
+        0 14px 34px rgba(96,165,250,.18),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 0 24px rgba(192,132,252,.14);
+    }
+
+    .legoSection .legoCell.is-filled:hover{
+      transform: translateY(-1px) scale(1.01);
+    }
+
+    .legoSection .legoCellBody{
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      text-align:center;
+    }
+
+    .legoSection .legoPlus{
+      font-size:30px;
+      line-height:1;
+      font-weight:800;
+      color: rgba(234,242,255,.9);
+    }
+
+    .legoSection .legoEmptyLabel{
+      position:absolute;
+      left:10px;
+      right:10px;
+      bottom:10px;
+      font-size:12px;
+      color: var(--muted);
+      text-align:center;
+    }
+
+    .legoSection .legoBadge{
+      position:absolute;
+      top:8px;
+      right:8px;
+      z-index:2;
+      display:inline-flex;
+      align-items:center;
+      padding:4px 7px;
+      border-radius:999px;
+      font-size:10px;
+      letter-spacing:.01em;
+      background: rgba(7,17,31,.24);
+      color:#f8fbff;
+      border:1px solid rgba(255,255,255,.18);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 18px rgba(0,0,0,.10);
+    }
+
+    .legoSection .legoModuleNum{
+      font-size:13px;
+      font-weight:800;
+      letter-spacing:.01em;
+      color:#07111f;
+      text-shadow: 0 1px 0 rgba(255,255,255,.16);
+    }
+
+    .legoSection .legoModulePwr{
+      font-size:12px;
+      font-weight:700;
+      color:#07111f;
+      opacity:.95;
+    }
+
+    .legoSection .legoCell.installing{
+      animation: legoInstall .2s ease-out;
+    }
+
+    .legoSection .legoCell.removing{
+      animation: legoRemove .15s ease-in forwards;
+      pointer-events:none;
+    }
+
+    .legoSection .legoCell.shake{
+      animation: legoShake .28s ease-in-out;
+    }
+
+    .legoSection .legoStats{
+      margin-top:14px;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .legoSection .legoInsight{
+      margin-top:14px;
+    }
+
+    .legoSection .legoCallout{
+      margin-top:12px;
+      border-color: rgba(251,191,36,.18);
+      background: linear-gradient(180deg, rgba(251,191,36,.08), rgba(255,255,255,.03));
+    }
+
+    .legoSection .legoCallout h3{
+      margin:0 0 8px;
+      font-size:15px;
+    }
+
+    .legoSection .legoCallout p{
+      margin:0;
+      color: var(--muted);
+      line-height:1.6;
+      font-size:13px;
+    }
+
+    @keyframes legoInstall{
+      0%{transform:scale(.86)}
+      60%{transform:scale(1.06)}
+      100%{transform:scale(1)}
+    }
+
+    @keyframes legoRemove{
+      0%{opacity:1; transform:scale(1)}
+      100%{opacity:0; transform:scale(.82)}
+    }
+
+    @keyframes legoShake{
+      0%,100%{transform:translateX(0)}
+      25%{transform:translateX(-4px)}
+      50%{transform:translateX(4px)}
+      75%{transform:translateX(-2px)}
+    }
+
+    @media (max-width: 980px){
+      .legoSection .legoStats{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px){
+      .legoSection .legoGrid{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap:8px;
+      }
+
+      .legoSection .legoCell{
+        min-height:60px;
+      }
+
+      .legoSection .legoStats{
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 640px){
+      .legoSection .legoStats{
+        grid-template-columns: 1fr;
+      }
+
+      .legoSection .legoResetBtn{
+        width:100%;
+      }
+    }
+
+  
+    /* NEW CSS — Crisis Stress Test */
+    .stressSection .stressHeader{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:16px;
+    }
+    .stressSection .stressTitleWrap h2{
+      margin:0 0 6px;
+    }
+    .stressSection .stressMeta{
+      max-width:980px;
+      line-height:1.55;
+      font-size:13px;
+    }
+    .stressSection .stressScenarioGrid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .stressSection .stressScenarioBtn{
+      width:100%;
+      text-align:left;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius:18px;
+      padding:14px;
+      color:var(--text);
+      cursor:pointer;
+      transition: transform .15s ease, background .15s ease, border-color .15s ease;
+      min-height:112px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.03);
+    }
+    .stressSection .stressScenarioBtn:hover{
+      transform: translateY(-1px);
+      background: rgba(255,255,255,.05);
+      border-color: rgba(125,211,252,.22);
+    }
+    .stressSection .stressScenarioBtn.active{
+      background: linear-gradient(180deg, rgba(125,211,252,.10), rgba(255,255,255,.03));
+      border-color: rgba(125,211,252,.30);
+      box-shadow: 0 12px 28px rgba(0,0,0,.16);
+    }
+    .stressSection .stressScenarioTag{
+      display:inline-flex;
+      align-items:center;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:11px;
+      letter-spacing:.02em;
+      background: rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.08);
+      margin-bottom:8px;
+    }
+    .stressSection .stressScenarioBtn h3{
+      margin:0 0 6px;
+      font-size:15px;
+    }
+    .stressSection .stressScenarioBtn p{
+      margin:0;
+      color:var(--muted);
+      font-size:12.5px;
+      line-height:1.55;
+    }
+    .stressSection .stressPanel{
+      padding:16px;
+      border-radius:20px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .stressSection .stressTop{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .stressSection .stressKicker{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:4px;
+    }
+    .stressSection .stressScenarioTitle{
+      margin:0;
+      font-size:20px;
+    }
+    .stressSection .stressOutcomeBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 11px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .stressSection .stressOutcomeBadge.good{
+      border-color: rgba(52,211,153,.25);
+      background: rgba(52,211,153,.10);
+    }
+    .stressSection .stressOutcomeBadge.warn{
+      border-color: rgba(251,191,36,.24);
+      background: rgba(251,191,36,.10);
+    }
+    .stressSection .stressOutcomeBadge.bad{
+      border-color: rgba(251,113,133,.24);
+      background: rgba(251,113,133,.10);
+    }
+    .stressSection .stressDesc{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:13px;
+    }
+    .stressSection .stressViz{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:12px;
+      margin-top:12px;
+      align-items:start;
+    }
+    .stressSection .stressBars,
+    .stressSection .stressNote{
+      padding:12px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .stressSection .stressBarsTitle,
+    .stressSection .stressNoteTitle{
+      font-weight:700;
+      margin-bottom:10px;
+      font-size:14px;
+    }
+    .stressSection .stressBarRow{
+      display:grid;
+      grid-template-columns:76px 1fr 48px;
+      gap:8px;
+      align-items:center;
+      font-size:12px;
+      margin-bottom:8px;
+    }
+    .stressSection .stressBarRow:last-child{margin-bottom:0}
+    .stressSection .stressBarTrack{
+      height:10px;
+      border-radius:999px;
+      overflow:hidden;
+      background: rgba(255,255,255,.08);
+    }
+    .stressSection .stressBarFill{
+      height:100%;
+      border-radius:999px;
+      width:0%;
+      transition: width .35s ease;
+    }
+    .stressSection .stressBarFill.nuclear{background: linear-gradient(90deg, #60a5fa, #c4b5fd);}
+    .stressSection .stressBarFill.renew{background: linear-gradient(90deg, #34d399, #86efac);}
+    .stressSection .stressBarFill.fossil{background: linear-gradient(90deg, #fbbf24, #fb7185);}
+    .stressSection .stressNote p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:13px;
+    }
+    .stressSection .stressStats{
+      margin-top:12px;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+    }
+    .stressSection .stressStats .mini{
+      min-height:86px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+    }
+    .stressSection .stressInsight{
+      margin-top:12px;
+    }
+    .stressSection .stressCallout{
+      margin-top:12px;
+      border-color: rgba(251,191,36,.18);
+      background: linear-gradient(180deg, rgba(251,191,36,.08), rgba(255,255,255,.03));
+    }
+    .stressSection .stressCallout h3{
+      margin:0 0 8px;
+      font-size:15px;
+    }
+    .stressSection .stressCallout p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.6;
+      font-size:13px;
+    }
+    @media (max-width: 980px){
+      .stressSection .stressViz{grid-template-columns:1fr;}
+      .stressSection .stressStats{grid-template-columns:repeat(2,minmax(0,1fr));}
+    }
+    @media (max-width: 768px){
+      .stressSection .stressScenarioGrid{grid-template-columns:1fr;}
+    }
+    @media (max-width: 640px){
+      .stressSection .stressStats{grid-template-columns:1fr;}
+    }
+
   </style>
 </head>
 <body>
@@ -1363,6 +1819,131 @@
         Score hiển thị đã được chuẩn hóa theo hướng “cao hơn = tốt hơn”. Riêng trục cost/land/water: thấp thực tế hơn thì score tốt hơn.
       </div>
     </section>
+  <section class="card tableCard legoSection" id="legoSection">
+    <div class="legoHeader">
+      <div class="legoTitleWrap">
+        <h2>Lắp ráp SMR theo module</h2>
+        <div class="legoMeta muted">
+          Ghép từng module như Lego: chỉ có thể mở khóa ô tiếp theo theo thứ tự, không được nhảy cóc.
+        </div>
+      </div>
+      <button class="legoResetBtn" id="legoResetBtn" type="button">Tháo hết</button>
+    </div>
+
+    <div class="legoPanel">
+      <div class="legoGrid" id="legoGrid" aria-label="Lưới lắp ráp SMR theo module"></div>
+
+      <div class="miniGrid legoStats" aria-live="polite">
+        <div class="mini">Tổng công suất<strong id="legoTotalMW">0 MW</strong></div>
+        <div class="mini">Vốn đầu tư pha này<strong id="legoCapex">0.0 tỷ USD</strong></div>
+        <div class="mini">% so với PWR 1000MW<strong id="legoRatio">0.0%</strong></div>
+        <div class="mini">Giai đoạn<strong id="legoPhase">🧱 Chưa khởi động</strong></div>
+      </div>
+
+      <div class="insightBox legoInsight" id="legoInsightBox">
+        <h3>Insight</h3>
+        <p id="legoInsightText">Nhấp vào ô đầu tiên để lắp module đầu tiên.</p>
+      </div>
+
+      <div class="insightBox legoCallout" id="legoCalloutBox">
+        <h3>So với PWR cùng thời điểm</h3>
+        <p id="legoCompareText">
+          Để đạt 0 MW bằng một lò PWR truyền thống, toàn bộ $20 tỷ USD phải được cam kết ngay từ đầu — không có doanh thu trung gian trong 10-15 năm xây dựng.
+        </p>
+      </div>
+    </div>
+  </section>
+
+
+<section class="card tableCard stressSection" id="stressSection">
+  <div class="stressHeader">
+    <div class="stressTitleWrap">
+      <h2>Crisis Stress Test — Phép thử khủng hoảng</h2>
+      <div class="stressMeta muted">
+        Chọn một cú sốc thực tế, rồi áp nó lên bộ trộn hệ thống đang mở. Kết quả cho thấy mix hiện tại có đứng vững hay không khi mất một trụ đỡ.
+      </div>
+    </div>
+  </div>
+
+  <div class="stressScenarioGrid" id="stressScenarioGrid" role="tablist" aria-label="Chọn kịch bản khủng hoảng">
+    <button class="stressScenarioBtn active" type="button" data-scenario="elnino">
+      <span class="stressScenarioTag">Bám sát Chương 1</span>
+      <h3>El Niño 2023</h3>
+      <p>Khô hạn kéo dài, thủy điện suy yếu mạnh, nhiều hồ chứa xuống rất thấp hoặc gần mực nước chết.</p>
+    </button>
+    <button class="stressScenarioBtn" type="button" data-scenario="windlull">
+      <span class="stressScenarioTag">Mô phỏng</span>
+      <h3>Lặng gió 3 ngày</h3>
+      <p>Gió gần như bằng 0, mặt trời không phát điện ban đêm; phần tái tạo bị rút mất khả năng đỡ tải tức thời.</p>
+    </button>
+    <button class="stressScenarioBtn" type="button" data-scenario="summerpeak">
+      <span class="stressScenarioTag">Mô phỏng</span>
+      <h3>Đỉnh phụ tải mùa hè</h3>
+      <p>Nhu cầu tăng vọt khoảng 30%, lưới bị ép đúng lúc mọi nguồn đều đang phải chạy căng nhất.</p>
+    </button>
+  </div>
+
+  <div class="stressPanel" aria-live="polite">
+    <div class="stressTop">
+      <div>
+        <div class="stressKicker">Kịch bản đang chọn</div>
+        <h3 class="stressScenarioTitle" id="stressScenarioTitle">El Niño 2023</h3>
+      </div>
+      <div class="stressOutcomeBadge good" id="stressOutcomeBadge">🟢 Sống sót</div>
+    </div>
+
+    <p class="stressDesc" id="stressScenarioDesc">
+      Khô hạn kéo dài làm thủy điện suy yếu; đây là bài kiểm tra trực diện cho một hệ thống phải có nguồn điện nền đủ mạnh.
+    </p>
+
+    <div class="stressViz">
+      <div class="stressBars">
+        <div class="stressBarsTitle">Độ đỡ của từng nguồn trong kịch bản này</div>
+        <div class="stressBarRow">
+          <span>Hạt nhân</span>
+          <div class="stressBarTrack"><div class="stressBarFill nuclear" id="stressBarNuclear"></div></div>
+          <strong id="stressBarNuclearLabel">0%</strong>
+        </div>
+        <div class="stressBarRow">
+          <span>Tái tạo</span>
+          <div class="stressBarTrack"><div class="stressBarFill renew" id="stressBarRenew"></div></div>
+          <strong id="stressBarRenewLabel">0%</strong>
+        </div>
+        <div class="stressBarRow">
+          <span>Hóa thạch</span>
+          <div class="stressBarTrack"><div class="stressBarFill fossil" id="stressBarFossil"></div></div>
+          <strong id="stressBarFossilLabel">0%</strong>
+        </div>
+      </div>
+
+      <div class="stressNote">
+        <div class="stressNoteTitle">Diễn giải nhanh</div>
+        <p id="stressWhyText">Điểm số sẽ đổi theo mix hiện tại ở Bộ trộn hệ thống. Hạt nhân thường giữ vai trò neo lưới; tái tạo chịu rủi ro thời tiết; hóa thạch giữ vai trò đệm ngắn hạn nhưng làm tăng phát thải.</p>
+      </div>
+    </div>
+
+    <div class="miniGrid stressStats">
+      <div class="mini">Điểm chống sốc<strong id="stressScore">0</strong></div>
+      <div class="mini">Nguồn đỡ chính<strong id="stressLeader">—</strong></div>
+      <div class="mini">Phần tái tạo<strong id="stressRenewShare">0%</strong></div>
+      <div class="mini">Kết luận<strong id="stressConclusion">Chưa kiểm tra</strong></div>
+    </div>
+
+    <div class="insightBox stressInsight" id="stressInsightBox">
+      <h3>Insight</h3>
+      <p id="stressInsightText">Chọn một kịch bản để xem mix hiện tại chịu được cú sốc đến đâu.</p>
+    </div>
+
+    <div class="insightBox stressCallout">
+      <h3>Ghi chú số liệu</h3>
+      <p>
+        Kịch bản El Niño bám sát hiện tượng khô hạn 2023–2024 được EVN và Reuters ghi nhận; hai kịch bản còn lại là mô phỏng giáo dục để thử độ bền hệ thống.
+      </p>
+    </div>
+  </div>
+</section>
+
+
   </div>
 
   <script>
@@ -2164,5 +2745,366 @@
     updateReadiness();
     computeMixScores();
   </script>
+
+  <script>
+    (() => {
+      const legoSection = document.getElementById("legoSection");
+      if (!legoSection) return;
+
+      const grid = document.getElementById("legoGrid");
+      const resetBtn = document.getElementById("legoResetBtn");
+      const totalMWEl = document.getElementById("legoTotalMW");
+      const capexEl = document.getElementById("legoCapex");
+      const ratioEl = document.getElementById("legoRatio");
+      const phaseEl = document.getElementById("legoPhase");
+      const insightEl = document.getElementById("legoInsightText");
+      const compareEl = document.getElementById("legoCompareText");
+
+      const TOTAL_SLOTS = 12;
+      const MODULE_MW = 77;
+      const PWR_MW = 1000;
+      const FOAK_COST_MUSD = 400;
+
+      const slots = Array.from({ length: TOTAL_SLOTS }, () => false);
+      const cells = [];
+      let resetting = false;
+
+      function formatBillions(musd) {
+        return `$${(musd / 1000).toFixed(1)} tỷ USD`;
+      }
+
+      function getCount() {
+        return slots.reduce((sum, state) => sum + (state ? 1 : 0), 0);
+      }
+
+      function getNextEmptyIndex() {
+        return slots.indexOf(false);
+      }
+
+      function getPhase(count) {
+        if (count === 0) return "🧱 Chưa khởi động";
+        if (count <= 2) return "🧪 Thử nghiệm";
+        if (count <= 5) return "🔧 Mở rộng";
+        if (count <= 9) return "⚡ Thương mại";
+        return "🏭 Quy mô lớn";
+      }
+
+      function getInsight(count) {
+        if (count === 0) {
+          return "Nhấp vào ô đầu tiên để lắp module đầu tiên.";
+        }
+        if (count <= 2) {
+          return "Giai đoạn thử nghiệm: rủi ro vốn thấp nhất, phù hợp kiểm tra công nghệ trước khi cam kết dài hạn.";
+        }
+        if (count <= 5) {
+          return "Mở rộng theo pha: doanh thu từ module đầu có thể tài trợ module tiếp theo — đây là lợi thế tài chính cốt lõi của SMR.";
+        }
+        if (count <= 9) {
+          return "Quy mô thương mại: lúc này SMR đã đạt ngưỡng có thể gánh vai trò điện nền khu vực.";
+        }
+        return "Tiệm cận lò lớn về công suất, nhưng vẫn giữ được tính triển khai theo pha và không phải chịu cú nhảy vốn ban đầu của PWR.";
+      }
+
+      function createMarkup(index, filled) {
+        if (filled) {
+          return `
+            <span class="legoBadge">🟢 Online</span>
+            <span class="legoCellBody">
+              <span class="legoModuleNum">Module ${index + 1}</span>
+              <span class="legoModulePwr">77 MW</span>
+            </span>
+          `;
+        }
+
+        return `
+          <span class="legoPlus" aria-hidden="true">+</span>
+          <span class="legoEmptyLabel">Ô ${index + 1}</span>
+        `;
+      }
+
+      function syncCell(index) {
+        const cell = cells[index];
+        const filled = slots[index];
+
+        cell.classList.toggle("is-filled", filled);
+        cell.setAttribute(
+          "aria-label",
+          filled ? `Module ${index + 1} đang online, 77 MW` : `Ô trống ${index + 1}`
+        );
+        cell.innerHTML = createMarkup(index, filled);
+      }
+
+      function updateStats() {
+        const count = getCount();
+        const totalMW = count * MODULE_MW;
+        const capexMUSD = count * FOAK_COST_MUSD;
+        const ratio = ((totalMW / PWR_MW) * 100).toFixed(1);
+        const compareMW = Math.min(totalMW, PWR_MW);
+
+        totalMWEl.textContent = `${totalMW} MW`;
+        capexEl.textContent = formatBillions(capexMUSD);
+        ratioEl.textContent = `${ratio}%`;
+        phaseEl.textContent = getPhase(count);
+        insightEl.textContent = getInsight(count);
+        compareEl.textContent = `Để đạt ${compareMW} MW bằng một lò PWR truyền thống, toàn bộ $20 tỷ USD phải được cam kết ngay từ đầu — không có doanh thu trung gian trong 10-15 năm xây dựng.`;
+      }
+
+      function shakeCell(cell) {
+        cell.classList.remove("shake");
+        void cell.offsetWidth;
+        cell.classList.add("shake");
+        window.setTimeout(() => cell.classList.remove("shake"), 320);
+      }
+
+      function installAt(index) {
+        const cell = cells[index];
+        slots[index] = true;
+        syncCell(index);
+        updateStats();
+
+        requestAnimationFrame(() => {
+          cell.classList.add("installing");
+          window.setTimeout(() => cell.classList.remove("installing"), 200);
+        });
+      }
+
+      function removeAt(index) {
+        const cell = cells[index];
+        cell.classList.add("removing");
+
+        window.setTimeout(() => {
+          slots[index] = false;
+          cell.classList.remove("removing");
+          syncCell(index);
+          updateStats();
+        }, 150);
+      }
+
+      function handleCellClick(index) {
+        if (resetting) return;
+
+        if (slots[index]) {
+          const lastFilled = slots.lastIndexOf(true);
+          if (index !== lastFilled) {
+            shakeCell(cells[index]);
+            return;
+          }
+          removeAt(index);
+          return;
+        }
+
+        const nextIndex = getNextEmptyIndex();
+        if (index !== nextIndex) {
+          shakeCell(cells[index]);
+          return;
+        }
+
+        installAt(index);
+      }
+
+      function resetAll() {
+        if (resetting) return;
+
+        const occupied = [];
+        for (let i = TOTAL_SLOTS - 1; i >= 0; i -= 1) {
+          if (slots[i]) occupied.push(i);
+        }
+
+        if (!occupied.length) return;
+
+        resetting = true;
+
+        occupied.forEach((index, step) => {
+          window.setTimeout(() => {
+            const cell = cells[index];
+            cell.classList.add("removing");
+
+            window.setTimeout(() => {
+              slots[index] = false;
+              cell.classList.remove("removing");
+              syncCell(index);
+              updateStats();
+            }, 150);
+          }, step * 50);
+        });
+
+        window.setTimeout(() => {
+          resetting = false;
+        }, occupied.length * 50 + 180);
+      }
+
+      for (let i = 0; i < TOTAL_SLOTS; i += 1) {
+        const cell = document.createElement("button");
+        cell.type = "button";
+        cell.className = "legoCell";
+        cell.dataset.index = String(i);
+        cell.addEventListener("click", () => handleCellClick(i));
+        grid.appendChild(cell);
+        cells.push(cell);
+        syncCell(i);
+      }
+
+      resetBtn.addEventListener("click", resetAll);
+      updateStats();
+    })();
+  </script>
+
+
+<script>
+(() => {
+  const stressSection = document.getElementById('stressSection');
+  if (!stressSection) return;
+
+  const scenarioButtons = Array.from(stressSection.querySelectorAll('[data-scenario]'));
+  const titleEl = document.getElementById('stressScenarioTitle');
+  const descEl = document.getElementById('stressScenarioDesc');
+  const badgeEl = document.getElementById('stressOutcomeBadge');
+  const scoreEl = document.getElementById('stressScore');
+  const leaderEl = document.getElementById('stressLeader');
+  const renewShareEl = document.getElementById('stressRenewShare');
+  const conclusionEl = document.getElementById('stressConclusion');
+  const insightEl = document.getElementById('stressInsightText');
+  const whyEl = document.getElementById('stressWhyText');
+  const barNuclear = document.getElementById('stressBarNuclear');
+  const barRenew = document.getElementById('stressBarRenew');
+  const barFossil = document.getElementById('stressBarFossil');
+  const barNuclearLabel = document.getElementById('stressBarNuclearLabel');
+  const barRenewLabel = document.getElementById('stressBarRenewLabel');
+  const barFossilLabel = document.getElementById('stressBarFossilLabel');
+
+  const nuclearInput = document.getElementById('mixNuclear');
+  const renewInput = document.getElementById('mixRenew');
+  const fossilInput = document.getElementById('mixFossil');
+
+  if (!nuclearInput || !renewInput || !fossilInput) return;
+
+  const scenarios = {
+    elnino: {
+      title: 'El Niño 2023',
+      desc: 'Khô hạn kéo dài làm thủy điện suy yếu mạnh. Đây là bài test cho một hệ thống phải còn điện nền khi nguồn nước bị rút khỏi lưới.',
+      weights: { nuclear: 1.18, renew: 0.42, fossil: 0.86 },
+      penalty: 0,
+      note: 'Nuclear là trụ đỡ ổn định; tái tạo bị phạt vì phụ thuộc nước; hóa thạch là đệm ngắn hạn.'
+    },
+    windlull: {
+      title: 'Lặng gió 3 ngày',
+      desc: 'Gió gần như bằng 0, mặt trời không phát điện ban đêm. Kịch bản này bóc đúng điểm yếu của nguồn gián đoạn.',
+      weights: { nuclear: 1.22, renew: 0.16, fossil: 0.88 },
+      penalty: 10,
+      note: 'Nếu mix quá nghiêng về tái tạo, cú sốc này sẽ kéo điểm xuống rất nhanh.'
+    },
+    summerpeak: {
+      title: 'Đỉnh phụ tải mùa hè',
+      desc: 'Nhu cầu tăng vọt khoảng 30% trong vài ngày nóng đỉnh điểm. Cả lưới bị ép khi mọi nguồn đều đang chạy căng.',
+      weights: { nuclear: 1.00, renew: 0.55, fossil: 0.78 },
+      penalty: 15,
+      note: 'Tình huống này thử khả năng giữ điện nền lẫn dự phòng của toàn hệ thống.'
+    }
+  };
+
+  let activeScenario = 'elnino';
+
+  function readMix() {
+    return {
+      nuclear: Math.max(0, Math.min(100, Number(nuclearInput.value) || 0)),
+      renew: Math.max(0, Math.min(100, Number(renewInput.value) || 0)),
+      fossil: Math.max(0, Math.min(100, Number(fossilInput.value) || 0))
+    };
+  }
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function formatPercent(n) {
+    return `${Math.round(n)}%`;
+  }
+
+  function labelFromScore(score) {
+    if (score >= 75) {
+      return {
+        key: 'good',
+        badge: '🟢 Sống sót',
+        conclusion: 'Ổn',
+        insight: 'Hệ thống còn dư địa. Nguồn điện nền đang đủ mạnh để hấp thụ cú sốc mà không làm rã lưới.'
+      };
+    }
+    if (score >= 60) {
+      return {
+        key: 'warn',
+        badge: '🟠 Căng thẳng',
+        conclusion: 'Giáp ranh',
+        insight: 'Hệ thống chưa gãy nhưng đang tiến sát vùng rủi ro. Cần thêm nguồn nền hoặc lưu trữ để tăng biên an toàn.'
+      };
+    }
+    return {
+      key: 'bad',
+      badge: '🔴 Sụp tải',
+      conclusion: 'Không đạt',
+      insight: 'Mix hiện tại không đủ bền trước cú sốc này. Muốn sống sót, phải tăng phần điện nền hoặc giảm phụ thuộc vào nguồn gián đoạn.'
+    };
+  }
+
+  function updateScenarioUI() {
+    const scenario = scenarios[activeScenario];
+    const mix = readMix();
+
+    const contributions = {
+      nuclear: mix.nuclear * scenario.weights.nuclear,
+      renew: mix.renew * scenario.weights.renew,
+      fossil: mix.fossil * scenario.weights.fossil
+    };
+
+    const rawScore = contributions.nuclear + contributions.renew + contributions.fossil - scenario.penalty;
+    const score = clamp(Math.round(rawScore), 0, 100);
+    const verdict = labelFromScore(score);
+
+    const total = contributions.nuclear + contributions.renew + contributions.fossil || 1;
+    const nuclearShare = contributions.nuclear / total * 100;
+    const renewShare = contributions.renew / total * 100;
+    const fossilShare = contributions.fossil / total * 100;
+    const leader = Object.entries(contributions).sort((a, b) => b[1] - a[1])[0][0];
+    const leaderMap = { nuclear: 'Hạt nhân', renew: 'Tái tạo', fossil: 'Hóa thạch' };
+
+    titleEl.textContent = scenario.title;
+    descEl.textContent = scenario.desc;
+    badgeEl.textContent = verdict.badge;
+    badgeEl.classList.remove('good', 'warn', 'bad');
+    badgeEl.classList.add(verdict.key);
+    scoreEl.textContent = String(score);
+    leaderEl.textContent = leaderMap[leader];
+    renewShareEl.textContent = formatPercent(mix.renew);
+    conclusionEl.textContent = verdict.conclusion;
+    insightEl.textContent = verdict.insight;
+    whyEl.textContent = scenario.note;
+
+    barNuclear.style.width = `${nuclearShare}%`;
+    barRenew.style.width = `${renewShare}%`;
+    barFossil.style.width = `${fossilShare}%`;
+
+    barNuclearLabel.textContent = formatPercent(nuclearShare);
+    barRenewLabel.textContent = formatPercent(renewShare);
+    barFossilLabel.textContent = formatPercent(fossilShare);
+
+    scenarioButtons.forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.scenario === activeScenario);
+    });
+  }
+
+  scenarioButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeScenario = btn.dataset.scenario;
+      updateScenarioUI();
+    });
+  });
+
+  [nuclearInput, renewInput, fossilInput].forEach((input) => {
+    input.addEventListener('input', updateScenarioUI);
+  });
+
+  updateScenarioUI();
+})();
+</script>
+
 </body>
 </html>
