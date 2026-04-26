@@ -1,0 +1,2168 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard 3 — SMR vs các công nghệ</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root{
+      --bg:#07111f;
+      --panel:#0d1b2a;
+      --panel2:#10253b;
+      --line:#1f3550;
+      --text:#eaf2ff;
+      --muted:#9eb2cb;
+      --accent:#7dd3fc;
+      --accent2:#c4b5fd;
+      --good:#34d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --shadow: 0 20px 50px rgba(0,0,0,.35);
+      --radius: 22px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(125,211,252,.12), transparent 24%),
+        radial-gradient(circle at top right, rgba(196,181,253,.12), transparent 24%),
+        linear-gradient(180deg, #04101c 0%, #08131f 100%);
+      color:var(--text);
+    }
+    .wrap{max-width:1400px; margin:0 auto; padding:24px;}
+    .hero{
+      background: linear-gradient(135deg, rgba(16,37,59,.88), rgba(9,19,33,.88));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 26px 26px 22px;
+      margin-bottom: 18px;
+    }
+    .eyebrow{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:6px 12px;
+      border-radius:999px;
+      background:rgba(125,211,252,.09);
+      color:#bfeaff;
+      border:1px solid rgba(125,211,252,.15);
+      font-size:13px;
+      margin-bottom:12px;
+    }
+    h1{margin:0 0 8px; font-size: clamp(28px, 3.2vw, 44px); line-height:1.06}
+    .sub{
+      color:var(--muted);
+      font-size:15px;
+      max-width: 1040px;
+      line-height:1.6;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .section{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:18px;
+      margin-bottom:18px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(16,37,59,.84), rgba(10,20,34,.84));
+      border:1px solid rgba(255,255,255,.08);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:18px;
+    }
+    .card h2{
+      margin:0 0 12px;
+      font-size:20px;
+    }
+    .muted{color:var(--muted)}
+    .controls{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-bottom:14px;
+    }
+    .chip{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      padding:10px 12px;
+      border:1px solid rgba(255,255,255,.1);
+      border-radius:999px;
+      background: rgba(255,255,255,.03);
+      cursor:pointer;
+      user-select:none;
+      transition:.15s ease;
+      font-size:14px;
+    }
+    .chip:hover{transform: translateY(-1px); background: rgba(255,255,255,.05)}
+    .swatch{
+      width:12px; height:12px; border-radius:50%;
+      box-shadow: 0 0 0 2px rgba(255,255,255,.08);
+    }
+    .top-row{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:12px;
+      margin-bottom:14px;
+    }
+    .stat{
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      border-radius:18px;
+      padding:14px;
+    }
+    .stat .k{font-size:12px; color:var(--muted); margin-bottom:6px}
+    .stat .v{font-size:24px; font-weight:700}
+    .stat .s{font-size:12px; color:var(--muted); margin-top:4px; line-height:1.45}
+    canvas{max-height:460px}
+    .presetBar{display:flex; flex-wrap:wrap; gap:8px; margin:12px 0 10px;}
+    .presetBtn{
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+      font-size:13px;
+      transition:.15s ease;
+    }
+    .presetBtn:hover{transform: translateY(-1px); background: rgba(255,255,255,.07)}
+    .decisionBox{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .decisionTitle{font-weight:700; margin-bottom:10px; font-size:15px}
+    .decisionGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px}
+    .decisionItem{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.06);
+      min-height:72px;
+    }
+    .miniK{font-size:12px; color:var(--muted); margin-bottom:6px}
+    .miniV{font-size:18px; font-weight:700}
+    .decisionHint{margin-top:10px; color:var(--muted); font-size:13px; line-height:1.55}
+    .build{display:grid; gap:14px;}
+    .sliderBox{
+      display:grid;
+      gap:10px;
+      padding:16px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    input[type="range"]{width:100%}
+    .barWrap{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; margin-top:8px;}
+    .barCard{
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+      border-radius:18px;
+      padding:14px;
+    }
+    .barHead{
+      display:flex; justify-content:space-between; align-items:center; gap:10px;
+      margin-bottom:10px;
+    }
+    .barTitle{font-weight:700}
+    .bar{
+      height:14px;
+      border-radius:999px;
+      background: rgba(255,255,255,.08);
+      overflow:hidden;
+      position:relative;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      border-radius:999px;
+      transition: width .35s ease;
+    }
+    .fill.smr{background: linear-gradient(90deg, #60a5fa, #c4b5fd);}
+    .fill.pwr{background: linear-gradient(90deg, #f59e0b, #fb7185);}
+    .notes{display:grid; grid-template-columns: 1fr 1fr; gap:12px;}
+    .note{
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      min-height:118px;
+    }
+    .note h3{margin:0 0 8px; font-size:15px}
+    .note p{margin:0; color:var(--muted); line-height:1.6; font-size:13px}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.08);
+      background: rgba(255,255,255,.03);
+    }
+    th, td{
+      padding:12px 12px;
+      text-align:left;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      vertical-align:top;
+      font-size:13px;
+      line-height:1.5;
+    }
+    th{color:#cfe5ff; background: rgba(255,255,255,.04); font-size:13px;}
+    tr:last-child td{border-bottom:none}
+    .tableCard{margin-bottom:18px;}
+    .footer{color:var(--muted); font-size:12px; line-height:1.6; padding: 2px 2px 0;}
+    .miniGrid{
+      display:grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    .mini{
+      padding:10px 8px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .mini strong{
+      display:block;
+      color:var(--text);
+      font-size:16px;
+      margin-top:4px;
+    }
+    .subCard{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .subTitle{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-bottom:10px;
+      font-weight:700;
+    }
+    .warningList{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap:10px;
+    }
+    .warningItem{
+      position:relative;
+      overflow:hidden;
+      padding:12px;
+      border-radius:16px;
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border:1px solid rgba(255,255,255,.12);
+      min-height:104px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 24px rgba(0,0,0,.12);
+    }
+    .warningItem::before{
+      content:"";
+      position:absolute;
+      inset:0 auto auto 0;
+      width:100%;
+      height:3px;
+      background: linear-gradient(90deg, rgba(125,211,252,.75), rgba(196,181,253,.75));
+    }
+    .warningList .warningItem:nth-child(2)::before{background: linear-gradient(90deg, rgba(251,191,36,.8), rgba(251,113,133,.8));}
+    .warningList .warningItem:nth-child(3)::before{background: linear-gradient(90deg, rgba(52,211,153,.8), rgba(96,165,250,.8));}
+    .warningItem .tag{
+      display:inline-flex;
+      padding:5px 8px;
+      border-radius:999px;
+      font-size:11px;
+      letter-spacing:.02em;
+      background: rgba(255,255,255,.10);
+      margin-bottom:8px;
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .warningItem h4{margin:0 0 6px; font-size:14px}
+    .warningItem p{margin:0; color:var(--muted); font-size:13px; line-height:1.55}
+    .compareWrap{display:grid; gap:10px;}
+    .compareHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .select{
+      background: rgba(255,255,255,.05);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+    }
+    .compareRows{display:grid; gap:10px;}
+    .compareRow{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .compareLabel{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:10px;
+      font-size:13px;
+      color:#dbe8f8;
+    }
+    .compareBars{display:grid; gap:8px;}
+    .compareBar{
+      display:grid;
+      grid-template-columns: 72px 1fr 58px;
+      gap:8px;
+      align-items:center;
+      font-size:12px;
+    }
+    .tinyBar{
+      height:10px;
+      background: rgba(255,255,255,.08);
+      border-radius:999px;
+      overflow:hidden;
+    }
+    .tinyFill{height:100%; border-radius:999px;}
+    .tinyFill.solar{background: linear-gradient(90deg,#fbbf24,#fde68a)}
+    .tinyFill.other{background: linear-gradient(90deg,#60a5fa,#c4b5fd)}
+    .metricTag{font-size:11px; color:var(--muted); margin-left:6px;}
+    .mixGrid{display:grid; gap:10px;}
+    .mixRow{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mixRow .label{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      font-size:13px;
+      margin-bottom:8px;
+    }
+    .mixReadout{
+      display:grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap:8px;
+      margin-top:8px;
+    }
+    .pill{
+      padding:10px 8px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      text-align:center;
+      font-size:12px;
+      color:var(--muted);
+    }
+    .pill strong{
+      display:block;
+      color:var(--text);
+      font-size:16px;
+      margin-top:4px;
+    }
+    .insightBox{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(125,211,252,.18);
+      background: linear-gradient(180deg, rgba(125,211,252,.08), rgba(255,255,255,.03));
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+    }
+    .insightBox h3{margin:0 0 8px; font-size:15px;}
+    .insightBox p{margin:0; color:var(--muted); line-height:1.6; font-size:13px;}
+
+    .timelineBox{
+      margin-top:16px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .timelineGrid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .timelineCol{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(16,37,59,.5);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .timelineHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      font-weight:700;
+      margin-bottom:10px;
+    }
+    .timelineRail{
+      display:flex;
+      gap:6px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .timelineStep{
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      background: rgba(255,255,255,.03);
+    }
+    .timelineStep.active{
+      color:var(--text);
+      border-color: rgba(125,211,252,.28);
+      background: rgba(125,211,252,.11);
+    }
+    .pairCard{
+      margin-top:14px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mixStacked{
+      display:flex;
+      width:100%;
+      height:18px;
+      overflow:hidden;
+      border-radius:999px;
+      margin:10px 0 12px;
+      background: rgba(255,255,255,.06);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .mixSeg{
+      height:100%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:11px;
+      font-weight:700;
+      color:#08131f;
+      min-width:0;
+      white-space:nowrap;
+      overflow:hidden;
+    }
+    .mixPresetBar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin:8px 0 12px;
+    }
+    .mixPresetBtn{
+      padding:9px 11px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+    }
+    .mixPresetBtn:hover{border-color: rgba(125,211,252,.35); background: rgba(125,211,252,.10);}
+
+    .phaseSwitch{display:flex; gap:8px; flex-wrap:wrap; margin:8px 0 12px;}
+    .phaseBtn{
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+      color:var(--text);
+      cursor:pointer;
+      font-size:12px;
+    }
+    .phaseBtn.active{background: rgba(125,211,252,.14); border-color: rgba(125,211,252,.32);}
+    .chartLegend{display:flex; gap:10px; flex-wrap:wrap; margin:0 0 10px;}
+    .legendItem{display:inline-flex; align-items:center; gap:8px; padding:7px 10px; border-radius:999px; background: rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); font-size:12px; color:var(--muted);}
+    .legendDot{width:10px; height:10px; border-radius:999px; flex:0 0 auto;}
+    .phasePanel{padding:14px; border-radius:18px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .phaseGrid{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+    .phaseStat{padding:12px; border-radius:16px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .phaseStat .miniK{font-size:12px; color:var(--muted); margin-bottom:6px;}
+    .phaseStat .miniV{font-size:18px; font-weight:700;}
+    .radarNoteBox{
+      margin-top:12px;
+      padding:14px;
+      border-radius:18px;
+      background: linear-gradient(180deg, rgba(125,211,252,.08), rgba(255,255,255,.03));
+      border:1px solid rgba(125,211,252,.16);
+    }
+    .radarNoteTitle{font-weight:700; margin-bottom:10px;}
+    .radarNoteGrid{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px;}
+    .radarNoteItem{padding:12px; border-radius:14px; background: rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.08);}
+    .radarNoteItem strong{display:block; margin-bottom:6px; font-size:13px;}
+    .radarNoteItem span{color:var(--muted); font-size:12px; line-height:1.45;}
+    .questionLine{
+      margin:0 0 12px;
+      color:#cfe5ff;
+      font-size:13px;
+      line-height:1.55;
+    }
+    .readinessGrid{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:10px;
+      margin:14px 0 12px;
+    }
+    .toggleCard{
+      position:relative;
+      display:grid;
+      gap:8px;
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .toggleCard:hover{border-color: rgba(125,211,252,.24);}
+    .toggleCard input{
+      position:absolute;
+      opacity:0;
+      pointer-events:none;
+    }
+    .toggleHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .toggleTitle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      font-size:14px;
+    }
+    .toggleSwitch{
+      width:44px;
+      height:24px;
+      border-radius:999px;
+      background: rgba(148,163,184,.34);
+      position:relative;
+      flex:0 0 auto;
+      transition:.2s ease;
+    }
+    .toggleSwitch::after{
+      content:"";
+      position:absolute;
+      inset:3px auto auto 3px;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      background:#f8fbff;
+      transition:.2s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,.22);
+    }
+    .toggleCard.active{
+      border-color: rgba(52,211,153,.26);
+      background: linear-gradient(180deg, rgba(52,211,153,.08), rgba(255,255,255,.03));
+    }
+    .toggleCard.active .toggleSwitch{
+      background: linear-gradient(90deg, rgba(52,211,153,.88), rgba(96,165,250,.88));
+    }
+    .toggleCard.active .toggleSwitch::after{
+      transform: translateX(20px);
+    }
+    .toggleHelp{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.55;
+    }
+    .statusPanel{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid rgba(251,113,133,.22);
+      background: linear-gradient(180deg, rgba(251,113,133,.09), rgba(255,255,255,.03));
+      box-shadow: 0 10px 24px rgba(0,0,0,.16);
+    }
+    .statusPanel[data-state="good"]{
+      border-color: rgba(52,211,153,.24);
+      background: linear-gradient(180deg, rgba(52,211,153,.10), rgba(255,255,255,.03));
+    }
+    .statusMeta{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .statusChip{
+      display:inline-flex;
+      align-items:center;
+      padding:7px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      color:#dce9f9;
+    }
+    .statusTitle{
+      margin:0;
+      font-size:18px;
+    }
+    .statusPanel p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+    .idcStats{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .idcStat{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .idcStat .miniK{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .idcStat .miniV{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .idcStat p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .constraintGrid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:10px;
+      margin-top:12px;
+    }
+    .constraintCard{
+      padding:12px;
+      border-radius:16px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .constraintCard .miniK{
+      font-size:12px;
+      color:var(--muted);
+      margin-bottom:6px;
+    }
+    .constraintCard .miniV{
+      font-size:18px;
+      font-weight:700;
+      margin-bottom:4px;
+    }
+    .constraintCard p{
+      margin:0;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .flowWrap{
+      display:grid;
+      grid-template-columns: minmax(0, 1fr) 42px minmax(0, 1fr);
+      gap:12px;
+      align-items:stretch;
+      margin-top:14px;
+    }
+    .flowArrow{
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      color:rgba(191,234,255,.72);
+      font-size:28px;
+      line-height:1;
+    }
+    .flowCard{
+      padding:14px;
+      border-radius:18px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .flowCard.locked{
+      opacity:.72;
+      border-style:dashed;
+    }
+    .flowYear{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.05);
+      margin-bottom:10px;
+    }
+    .taskList{
+      display:grid;
+      gap:10px;
+      margin-top:12px;
+    }
+    .taskItem{
+      display:flex;
+      align-items:flex-start;
+      gap:10px;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .taskItem.done{
+      border-color: rgba(52,211,153,.24);
+      background: linear-gradient(180deg, rgba(52,211,153,.09), rgba(255,255,255,.03));
+    }
+    .taskDot{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      margin-top:4px;
+      background: rgba(148,163,184,.5);
+      flex:0 0 auto;
+    }
+    .taskItem.done .taskDot{
+      background: var(--good);
+      box-shadow: 0 0 0 4px rgba(52,211,153,.14);
+    }
+    .taskBody strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+    .taskBody span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .phaseCheck{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      padding:10px 12px;
+      border-radius:14px;
+      background: rgba(255,255,255,.03);
+      border:1px solid rgba(255,255,255,.08);
+      cursor:pointer;
+    }
+    .phaseCheck input{
+      margin-top:3px;
+      accent-color:#60a5fa;
+    }
+    .phaseCheck strong{
+      display:block;
+      margin-bottom:4px;
+      font-size:13px;
+    }
+    .phaseCheck span{
+      display:block;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.5;
+    }
+    .phaseCheck.disabled{
+      opacity:.58;
+      cursor:not-allowed;
+    }
+
+    @media (max-width: 1080px){
+      .grid, .section{grid-template-columns:1fr}
+      .flowWrap{grid-template-columns:1fr}
+      .flowArrow{min-height:24px; transform: rotate(90deg);}
+    }
+    @media (max-width: 980px){
+      .top-row, .notes, .miniGrid, .warningList, .mixReadout, .phaseGrid, .readinessGrid, .idcStats, .constraintGrid{grid-template-columns:1fr 1fr}
+      .barWrap{grid-template-columns:1fr;}
+    }
+    @media (max-width: 640px){
+      .top-row, .notes, .miniGrid, .warningList, .mixReadout, .phaseGrid, .readinessGrid, .idcStats, .constraintGrid{grid-template-columns:1fr}
+      .wrap{padding:14px}
+      .hero, .card{padding:16px}
+      .compareBar{grid-template-columns: 58px 1fr 48px;}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <div class="eyebrow">Dashboard 3 · SMR vs các công nghệ · so sánh trực quan</div>
+      <h1>SMR: điện nền theo pha, không phải cú nhảy vốn.</h1>
+      <div class="sub">
+        Biểu đồ radar dùng điểm chuẩn hóa 0–100 để tránh méo dữ liệu. Tập trung vào 5 chiều: hệ số công suất, ít phát thải, chi phí hệ thống, đất và nước.
+        Phần SMR giữ logic modular để người học thấy rõ sự khác nhau giữa thử nghiệm ban đầu và mở rộng về sau.
+      </div>
+    </section>
+
+    
+    <section class="grid">
+      <div class="card">
+        <h2>Biểu đồ radar</h2>
+        <div class="muted" style="margin-bottom:12px">
+          Bật tắt các nguồn để đọc từng đánh đổi. Mỗi trục có ghi hướng tốt/xấu để dễ theo dõi hơn.
+        </div>
+        <div class="controls" id="techControls"></div>
+        <div class="presetBar">
+          <button class="presetBtn" data-preset="all">Bật tất cả</button>
+          <button class="presetBtn" data-preset="nuclear">Ưu tiên hạt nhân</button>
+          <button class="presetBtn" data-preset="renewables">Ưu tiên tái tạo</button>
+          <button class="presetBtn" data-preset="lowcarbon">Nhìn ít phát thải</button>
+        </div>
+        <div class="top-row">
+          <div class="stat">
+            <div class="k">Trục đang dùng</div>
+            <div class="v">5</div>
+            <div class="s">CF · ít phát thải · chi phí · đất · nước</div>
+          </div>
+          <div class="stat">
+            <div class="k">Cách đọc điểm</div>
+            <div class="v">Cao = tốt</div>
+            <div class="s">Riêng chi phí/đất/nước: mức thực tế càng thấp thì điểm càng cao.</div>
+          </div>
+          <div class="stat">
+            <div class="k">SMR</div>
+            <div class="v">Modular</div>
+            <div class="s">Tăng dần theo module, phù hợp đầu tư theo pha</div>
+          </div>
+        </div>
+        <canvas id="radarChart"></canvas>
+        <div class="radarNoteBox">
+          <div class="radarNoteTitle">Đọc nhanh</div>
+          <div class="radarNoteGrid">
+            <div class="radarNoteItem"><strong>Điện nền</strong><span>SMR và PWR giữ lợi thế ở trục CF.</span></div>
+            <div class="radarNoteItem"><strong>Phát thải</strong><span>Những nguồn sạch nổi lên ở trục này, còn than tụt rất rõ.</span></div>
+            <div class="radarNoteItem"><strong>Chi phí hệ thống</strong><span>Không chỉ nhìn giá nhà máy, mà còn phải nhìn đất, nước và độ ổn định.</span></div>
+          </div>
+        </div>
+        <div class="decisionBox">
+          <div class="decisionTitle">Tóm tắt nhanh theo các nguồn đang bật</div>
+          <div class="decisionGrid">
+            <div class="decisionItem">
+              <div class="miniK">Điện nền mạnh nhất</div>
+              <div class="miniV" id="bestCF">—</div>
+            </div>
+            <div class="decisionItem">
+              <div class="miniK">Ít phát thải nhất</div>
+              <div class="miniV" id="bestEmission">—</div>
+            </div>
+            <div class="decisionItem">
+              <div class="miniK">Cân bằng nhất</div>
+              <div class="miniV" id="bestBalance">—</div>
+            </div>
+          </div>
+          <div class="decisionHint" id="decisionHint">Chọn một nhóm nguồn để xem công nghệ nổi trội theo góc nhìn đó.</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Mô phỏng SMR theo module</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Mô phỏng này không giả lập vật lý lò, mà mô phỏng logic triển khai: công suất tăng theo nấc, vốn rải theo pha, và rủi ro đầu tư không dồn cục như lò lớn.
+          Khi số module còn ít, đây gần như là giai đoạn thử nghiệm an toàn hơn; khi số module tăng, SMR tiến dần về quy mô của lò lớn.
+        </div>
+        <div class="sliderBox">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:10px">
+            <strong>Số module</strong>
+            <span id="moduleLabel">4 module</span>
+          </div>
+          <input id="moduleSlider" type="range" min="1" max="12" value="4" />
+          <div class="miniGrid">
+            <div class="mini">Công suất<br><strong id="smrCapacity">308 MW</strong></div>
+            <div class="mini">Tỷ lệ so PWR<br><strong id="smrRatio">31%</strong></div>
+            <div class="mini">Đầu tư pha<br><strong id="smrPhased">Có</strong></div>
+            <div class="mini">Rủi ro IDC<br><strong id="smrIdc">Thấp hơn</strong></div>
+            <div class="mini">Khởi động<br><strong id="smrStart">Từng bước</strong></div>
+          </div>
+        </div>
+
+        <div class="barWrap">
+          <div class="barCard">
+            <div class="barHead">
+              <div class="barTitle">SMR: build theo module</div>
+              <div class="muted" id="smrBarText">4 / 12 module</div>
+            </div>
+            <div class="bar"><div class="fill smr" id="smrFill"></div></div>
+          </div>
+
+          <div class="barCard">
+            <div class="barHead">
+              <div class="barTitle">PWR: xây một lần</div>
+              <div class="muted">Dồn vốn một lần</div>
+            </div>
+            <div class="bar"><div class="fill pwr" style="width:100%"></div></div>
+            <div class="muted" style="margin-top:10px; font-size:13px; line-height:1.55">
+              PWR là điện nền mạnh, nhưng mô hình đầu tư là “đổ vốn một lần”, nên rủi ro vốn và thời gian lớn hơn.
+            </div>
+          </div>
+        </div>
+
+        <div class="phasePanel">
+          <div class="subTitle">
+            <span>SMR vs PWR</span>
+            <span class="muted" style="font-size:12px">đầu kỳ → về sau</span>
+          </div>
+          <div class="muted" style="margin-bottom:10px; line-height:1.55">
+            Đầu kỳ: SMR cho phép thử nghiệm theo module, giảm cú nhảy vốn đầu tiên. Về sau: khi chuỗi module và cấp phép ổn hơn, SMR có thể tiến gần quy mô của lò lớn nhưng vẫn giữ tính triển khai theo pha.
+          </div>
+          <div class="phaseSwitch" id="phaseSwitch">
+            <button class="phaseBtn active" data-phase="early">Đầu kỳ</button>
+            <button class="phaseBtn" data-phase="late">Về sau</button>
+          </div>
+          <div class="chartLegend" id="phaseLegend">
+            <div class="legendItem"><span class="legendDot" style="background:#c084fc"></span>SMR</div>
+            <div class="legendItem"><span class="legendDot" style="background:#60a5fa"></span>PWR</div>
+          </div>
+          <div class="phaseGrid" style="margin-bottom:12px">
+            <div class="phaseStat">
+              <div class="miniK" id="phaseK1">SMR — đầu kỳ</div>
+              <div class="miniV" id="phaseV1">An toàn hơn cho thử nghiệm</div>
+            </div>
+            <div class="phaseStat">
+              <div class="miniK" id="phaseK2">PWR — đầu kỳ</div>
+              <div class="miniV" id="phaseV2">Cú nhảy vốn lớn</div>
+            </div>
+          </div>
+          <canvas id="phaseChart" style="height:390px; max-height:390px"></canvas>
+          <div class="muted" id="phaseNote" style="margin-top:10px; line-height:1.55; font-size:13px"></div>
+          <div class="insightBox" id="phaseConclusionBox" style="margin-top:12px">
+            <h3 id="phaseConclusionTitle">Kết luận</h3>
+            <p id="phaseConclusionText">—</p>
+            <p id="phaseReasonText" style="margin-top:8px">—</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Bốn điều kiện không thể thiếu</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Mục này không hỏi lò có hiện đại hay không, mà hỏi hệ thống quốc gia đã đủ chín để mang công nghệ hạt nhân vào vận hành hay chưa. Thiếu một mắt xích, dự án có thể thất bại dù bản thân công nghệ tốt.
+        </div>
+        <p class="questionLine">Câu hỏi học: điều kiện nào là bắt buộc trước khi nói đến triển khai SMR?</p>
+
+        <div class="readinessGrid">
+          <label class="toggleCard" id="toggleCard-regulator">
+            <input id="readyRegulator" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Pháp quy độc lập</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Cơ quan an toàn phải có quyền dừng dự án dù dự án đang sinh lời. Nếu pháp quy bị phụ thuộc, toàn bộ lớp an toàn trở thành hình thức.</p>
+          </label>
+
+          <label class="toggleCard" id="toggleCard-workforce">
+            <input id="readyWorkforce" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Nhân lực 15–20 năm</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Một tổ hợp hạt nhân không thể chạy bằng đội ngũ mới học xong. Khoảng trễ đào tạo mới là nút thắt dài nhất.</p>
+          </label>
+
+          <label class="toggleCard" id="toggleCard-nepio">
+            <input id="readyNepio" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Điều phối quốc gia (NEPIO)</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Nếu thiếu đầu mối điều phối cấp quốc gia, pháp lý, đấu thầu, địa điểm và phối hợp liên bộ sẽ rời rạc ngay từ đầu.</p>
+          </label>
+
+          <label class="toggleCard" id="toggleCard-trust">
+            <input id="readyTrust" type="checkbox" />
+            <div class="toggleHead">
+              <div class="toggleTitle">
+                <span class="toggleSwitch"></span>
+                <span>Minh bạch xã hội</span>
+              </div>
+            </div>
+            <p class="toggleHelp">Đồng thuận công chúng chỉ có khi dữ liệu và kịch bản ứng phó được nói rõ. Thiếu minh bạch, dự án thua trước khi khởi công.</p>
+          </label>
+        </div>
+
+        <div class="statusPanel" id="readinessPanel" data-state="bad">
+          <div class="statusMeta">
+            <h3 class="statusTitle" id="readinessTitle">Không thể triển khai an toàn</h3>
+            <span class="statusChip" id="readinessChip">0/4 điều kiện đã sẵn sàng</span>
+          </div>
+          <p id="readinessSummary">Điện hạt nhân là bài toán hệ thống. Khi một trong bốn trụ cột còn trống, công nghệ tốt đến đâu cũng chưa thể biến thành dự án an toàn.</p>
+          <p id="readinessDetail" style="margin-top:8px">Hãy bật lần lượt từng điều kiện để thấy vì sao SMR chưa thể đi thẳng từ ý tưởng sang triển khai.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Dòng tiền theo thời gian</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Biểu đồ này dùng thang tương đối để giải thích logic tài chính: trong lúc công trình chưa phát điện, lãi vay vẫn tiếp tục cộng dồn. Điểm khác nhau nằm ở chỗ SMR có thể đưa từng module vào vận hành sớm hơn.
+        </div>
+        <p class="questionLine">Câu hỏi học: điều gì làm một dự án thất bại ngay từ giai đoạn chưa có điện thương mại?</p>
+        <canvas id="idcChart" style="height:340px; max-height:340px"></canvas>
+        <div class="chartLegend" style="margin-top:12px">
+          <div class="legendItem"><span class="legendDot" style="background:#c084fc"></span>SMR</div>
+          <div class="legendItem"><span class="legendDot" style="background:#60a5fa"></span>PWR</div>
+          <div class="legendItem"><span class="legendDot" style="background:#f59e0b"></span>Vùng IDC tích lũy</div>
+        </div>
+        <div class="idcStats">
+          <div class="idcStat">
+            <div class="miniK">SMR chạm hòa vốn</div>
+            <div class="miniV" id="idcSmrBreakEven">—</div>
+            <p>Module đầu tiên hòa lưới sớm hơn nên đường âm không kéo dài quá lâu.</p>
+          </div>
+          <div class="idcStat">
+            <div class="miniK">PWR chạm hòa vốn</div>
+            <div class="miniV" id="idcPwrBreakEven">—</div>
+            <p>Toàn bộ vốn bị khóa lâu hơn nên áp lực lãi vay có thời gian phình to.</p>
+          </div>
+          <div class="idcStat">
+            <div class="miniK">Điểm cần nhớ</div>
+            <div class="miniV" id="idcRiskSignal">—</div>
+            <p id="idcRiskText">—</p>
+          </div>
+        </div>
+        <div class="insightBox" style="margin-top:12px">
+          <h3>Kết luận</h3>
+          <p id="idcConclusion">—</p>
+          <p id="idcReason" style="margin-top:8px">—</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card">
+        <h2>Bộ trộn hệ thống</h2>
+        <div class="muted" style="margin-bottom:12px; line-height:1.55">
+          Dùng để thử một cơ cấu đơn giản theo 3 nhóm: hạt nhân, tái tạo, hóa thạch. Kéo một thanh, hai thanh còn lại tự co giãn để tổng luôn bằng 100%. Đây là khối phụ trợ, không phải trọng tâm chính của SMR.
+        </div>
+        <div class="mixStacked" id="mixStacked"></div>
+        <div class="mixPresetBar">
+          <button class="mixPresetBtn" data-mix="balanced">Trung dung</button>
+          <button class="mixPresetBtn" data-mix="nuclear">Ưu tiên hạt nhân</button>
+          <button class="mixPresetBtn" data-mix="renewables">Ưu tiên tái tạo</button>
+          <button class="mixPresetBtn" data-mix="fossil">Giữ ổn định ngắn hạn</button>
+        </div>
+        <div class="mixGrid">
+          <div class="mixRow">
+            <div class="label"><span>Hạt nhân</span><strong id="mixNuclearLabel">40%</strong></div>
+            <input id="mixNuclear" type="range" min="0" max="100" value="40" />
+          </div>
+          <div class="mixRow">
+            <div class="label"><span>Tái tạo</span><strong id="mixRenewLabel">40%</strong></div>
+            <input id="mixRenew" type="range" min="0" max="100" value="40" />
+          </div>
+          <div class="mixRow">
+            <div class="label"><span>Hóa thạch</span><strong id="mixFossilLabel">20%</strong></div>
+            <input id="mixFossil" type="range" min="0" max="100" value="20" />
+          </div>
+          <div class="mixReadout">
+            <div class="pill">Ổn định<br><strong id="mixStability">—</strong></div>
+            <div class="pill">Ít phát thải<br><strong id="mixEmission">—</strong></div>
+            <div class="pill">Đất<br><strong id="mixLand">—</strong></div>
+            <div class="pill">Nước<br><strong id="mixWater">—</strong></div>
+          </div>
+          <div class="insightBox">
+            <h3>Nhận xét</h3>
+            <p id="mixInsight">—</p>
+          </div>
+          <div class="insightBox" id="mixConclusionBox" style="margin-top:12px; border-color: rgba(52,211,153,.22); background: linear-gradient(180deg, rgba(52,211,153,.08), rgba(255,255,255,.03));">
+            <h3>Kết luận</h3>
+            <p id="mixConclusionText">—</p>
+            <p id="mixReasonText" style="margin-top:8px">—</p>
+          </div>
+
+          <div class="subCard">
+            <div class="subTitle">
+              <span>Ràng buộc vật lý của hệ thống</span>
+              <span class="muted" style="font-size:12px">không chỉ nhìn tỷ lệ phần trăm</span>
+            </div>
+            <p class="questionLine" style="margin-bottom:0">Câu hỏi học: khi đem mix này vào lưới thật, hệ thống có đang thiếu điện nền hoặc dư tái tạo hay không?</p>
+            <div class="constraintGrid">
+              <div class="constraintCard">
+                <div class="miniK">Điện nền tối thiểu</div>
+                <div class="miniV" id="mixBaseloadState">—</div>
+                <p id="mixBaseloadText">—</p>
+              </div>
+              <div class="constraintCard">
+                <div class="miniK">Hấp thụ tái tạo</div>
+                <div class="miniV" id="mixRenewableState">—</div>
+                <p id="mixRenewableText">—</p>
+              </div>
+              <div class="constraintCard">
+                <div class="miniK">Trạng thái hệ thống</div>
+                <div class="miniV" id="mixSystemState">—</div>
+                <p id="mixSystemText">—</p>
+              </div>
+            </div>
+            <div class="insightBox" id="mixConstraintBox" style="margin-top:12px; border-color: rgba(251,191,36,.22); background: linear-gradient(180deg, rgba(251,191,36,.08), rgba(255,255,255,.03));">
+              <h3>Chẩn đoán</h3>
+              <p id="mixConstraintConclusion">—</p>
+              <p id="mixConstraintReason" style="margin-top:8px">—</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="subCard" style="margin-bottom:14px">
+          <div class="subTitle">
+            <span>Nhược điểm của SMR</span>
+            <span class="muted" style="font-size:12px">để tránh nhìn quá lạc quan</span>
+          </div>
+          <div class="warningList">
+            <div class="warningItem">
+              <div class="tag">FOAK</div>
+              <h4>Chi phí khởi đầu vẫn cao</h4>
+              <p>SMR chưa có lợi thế giá ngay lập tức; dự án đầu tiên thường chịu áp lực học phí công nghệ và chuỗi cung ứng.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Triển khai</div>
+              <h4>Chuỗi cung ứng và cấp phép</h4>
+              <p>Module hóa giúp giảm rủi ro thi công, nhưng giấy phép, logistics và chuẩn hóa vẫn có thể làm chậm nếu hệ thống chưa sẵn sàng.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Hệ thống</div>
+              <h4>Quy mô chưa chắc tối ưu</h4>
+              <p>SMR phù hợp đầu tư theo pha, nhưng nếu nhu cầu rất lớn thì vẫn cần số module đủ nhiều và lưới điện đủ tốt để hấp thụ.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="subCard">
+          <div class="subTitle">
+            <span>Điểm gãy của các nguồn còn lại</span>
+            <span class="muted" style="font-size:12px">để thấy khác biệt ngoài SMR</span>
+          </div>
+          <div class="warningList">
+            <div class="warningItem">
+              <div class="tag">PWR</div>
+              <h4>Khối đầu tư lớn một lần</h4>
+              <p>PWR mạnh về điện nền, nhưng cú nhảy vốn và tiến độ lớn khiến rủi ro dồn rất mạnh ở giai đoạn đầu.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Than</div>
+              <h4>Kẹt vào phát thải và giá nhiên liệu</h4>
+              <p>Than có thể giữ công suất, nhưng bị kẹt vào phát thải cao, áp lực chính sách carbon và biến động nhiên liệu.</p>
+            </div>
+            <div class="warningItem">
+              <div class="tag">Gió</div>
+              <h4>Biến thiên theo thời tiết</h4>
+              <p>Gió rất sạch nhưng đầu ra dao động, nên vẫn cần lưu trữ hoặc nguồn nền để không làm lưới chao đảo.</p>
+            </div>
+          </div>
+          <div class="insightBox" style="margin-top:14px; border-color: rgba(251,191,36,.22); background: linear-gradient(180deg, rgba(251,191,36,.08), rgba(255,255,255,.03));">
+            <h3>Kết luận</h3>
+            <p>Điểm gãy của mỗi nguồn nằm ở chỗ khác nhau: PWR gãy ở cú nhảy vốn đầu kỳ, than gãy ở phát thải và carbon lock-in, còn gió gãy ở tính biến thiên nên phải dựa vào lưới và lưu trữ.</p>
+            <p style="margin-top:8px">Lý do: công nghệ nào càng mạnh ở một mặt thì thường càng phải trả giá ở mặt khác; vì vậy hệ tối ưu không phải một nguồn đơn lẻ mà là cách ghép nguồn đúng vai trò.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="card tableCard">
+      <h2>Chuẩn bị ngắn hạn và dài hạn</h2>
+      <div class="muted" style="margin-bottom:12px; line-height:1.55">
+        Mục này ghép lộ trình thời gian với điều kiện hệ thống. Giai đoạn 2025–2030 là xây nền; sau đó mới nói đến triển khai, làm chủ chuỗi cung ứng và tích hợp vào một hệ đa nguồn.
+      </div>
+      <p class="questionLine">Câu hỏi học: vì sao SMR chưa thể triển khai ngay, và vì sao không thể nhảy cóc qua giai đoạn chuẩn bị?</p>
+      <div class="flowWrap">
+        <div class="flowCard" id="prepPhase1Card">
+          <div class="flowYear">2025–2030</div>
+          <div class="subTitle" style="margin-bottom:0">
+            <span>Xây nền hệ điều hành</span>
+            <span class="muted" style="font-size:12px" id="prepPhase1Status">Chưa hoàn tất</span>
+          </div>
+          <div class="taskList">
+            <div class="taskItem" data-phase1-item="regulator">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Pháp quy độc lập</strong>
+                <span>Đây là công tắc an toàn của toàn bộ hệ thống.</span>
+              </div>
+            </div>
+            <div class="taskItem" data-phase1-item="workforce">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Nhân lực chiều sâu</strong>
+                <span>Khoảng trễ đào tạo 15–20 năm quyết định tốc độ thật của dự án.</span>
+              </div>
+            </div>
+            <div class="taskItem" data-phase1-item="nepio">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Ban điều phối quốc gia</strong>
+                <span>Thiếu đầu mối điều phối, dự án sẽ đứt mạch từ pháp lý đến địa điểm.</span>
+              </div>
+            </div>
+            <div class="taskItem" data-phase1-item="trust">
+              <span class="taskDot"></span>
+              <div class="taskBody">
+                <strong>Minh bạch xã hội</strong>
+                <span>Đồng thuận không đến từ khẩu hiệu, mà đến từ thông tin mở và năng lực ứng phó rõ ràng.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flowArrow">→</div>
+
+        <div class="flowCard locked" id="prepPhase2Card">
+          <div class="flowYear">Sau 2030</div>
+          <div class="subTitle" style="margin-bottom:0">
+            <span>Triển khai và làm chủ</span>
+            <span class="muted" style="font-size:12px" id="prepPhase2Status">Đang bị khóa</span>
+          </div>
+          <div class="taskList">
+            <label class="phaseCheck" id="phase2IndustrialLabel">
+              <input id="phase2Industrial" type="checkbox" data-phase2 />
+              <span>
+                <strong>Hệ sinh thái công nghiệp nội địa</strong>
+                <span>Từng bước làm chủ cơ khí chính xác, vật liệu và bảo trì dài hạn.</span>
+              </span>
+            </label>
+            <label class="phaseCheck" id="phase2WasteLabel">
+              <input id="phase2Waste" type="checkbox" data-phase2 />
+              <span>
+                <strong>Chuỗi nhiên liệu và chất thải</strong>
+                <span>Phải xử lý từ đầu bài toán nhiên liệu đã qua sử dụng và trách nhiệm liên thế hệ.</span>
+              </span>
+            </label>
+            <label class="phaseCheck" id="phase2PeopleLabel">
+              <input id="phase2People" type="checkbox" data-phase2 />
+              <span>
+                <strong>Đội ngũ liên thế hệ</strong>
+                <span>Giữ chân chuyên gia và duy trì truyền nghề để không đứt tri thức.</span>
+              </span>
+            </label>
+            <label class="phaseCheck" id="phase2IntegrationLabel">
+              <input id="phase2Integration" type="checkbox" data-phase2 />
+              <span>
+                <strong>Tích hợp vào hệ thống đa nguồn</strong>
+                <span>SMR phải vào đúng vai: điện nền ổn định, đi cùng tái tạo chứ không thay thế tất cả.</span>
+              </span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <div class="insightBox" id="prepFlowBox" style="margin-top:14px">
+        <h3 id="prepFlowTitle">Vì sao chưa thể nhảy sang pha 2?</h3>
+        <p id="prepFlowText">—</p>
+        <p id="prepFlowReason" style="margin-top:8px">—</p>
+      </div>
+    </section>
+<section class="card tableCard">
+      <h2>Bảng hướng dẫn đọc dashboard</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Mục</th>
+            <th>Cách đọc</th>
+            <th>Ý nghĩa chiến lược</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Biểu đồ radar</td>
+            <td>Điểm cao = tốt hơn trên từng trục. Không dùng số thô để tránh méo do đơn vị khác nhau; riêng chi phí/đất/nước là điểm đảo chiều so với giá trị thực.</td>
+            <td>Cho thấy công nghệ nào cân bằng nhất khi xét cùng lúc CF, ít phát thải, chi phí hệ thống, land và water.</td>
+          </tr>
+          <tr>
+            <td>Toggle công nghệ</td>
+            <td>Bật/tắt từng nguồn để xem so sánh 2–3 công nghệ cùng lúc.</td>
+            <td>Giúp người xem thấy đánh đổi thay vì chỉ nhìn một đường radar quá đông.</td>
+          </tr>
+          <tr>
+            <td>SMR module simulation</td>
+            <td>Kéo thanh trượt để xem công suất tăng theo module.</td>
+            <td>Nhấn vào lợi thế modular: triển khai theo pha, giảm áp lực vốn ban đầu.</td>
+          </tr>
+          <tr>
+            <td>SMR vs PWR theo pha</td>
+            <td>Chọn pha đầu kỳ hoặc về sau để xem cách SMR và PWR khác nhau về vốn, tốc độ vào lưới và mức độ dồn rủi ro.</td>
+            <td>Đầu kỳ thấy cú nhảy vốn của PWR; về sau thấy SMR tiến dần theo module và tiệm cận quy mô lớn.</td>
+          </tr>
+          <tr>
+            <td>Bốn điều kiện không thể thiếu</td>
+            <td>Bật từng điều kiện để xem bộ lọc an toàn quốc gia đã khép kín hay chưa.</td>
+            <td>Nhắc rằng SMR không thể đi thẳng từ ý tưởng sang triển khai nếu pháp quy, nhân lực, điều phối và minh bạch còn khuyết.</td>
+          </tr>
+          <tr>
+            <td>Dòng tiền theo thời gian</td>
+            <td>Quan sát đoạn tiền âm kéo dài bao lâu và lúc nào đường tiền quay lại vùng dương.</td>
+            <td>Giải thích vì sao IDC mới là điểm làm dự án gãy về tài chính, và vì sao SMR giảm rủi ro nhờ mở doanh thu sớm theo module.</td>
+          </tr>
+          <tr>
+            <td>Bộ trộn hệ thống</td>
+            <td>Kéo 3 nhóm nguồn để thử một cơ cấu điện đơn giản.</td>
+            <td>Biến trang này thành công cụ tư duy hệ thống, không chỉ là bảng so sánh.</td>
+          </tr>
+          <tr>
+            <td>Chuẩn bị ngắn hạn và dài hạn</td>
+            <td>Đọc từ trái sang phải: hoàn tất nền tảng trước, rồi mới mở khóa các bước làm chủ sau 2030.</td>
+            <td>Cho thấy lộ trình hạt nhân là bài toán nhiều thập kỷ và không có đường tắt.</td>
+          </tr>
+          <tr>
+            <td>Ghi chú dữ liệu</td>
+            <td>Dùng dữ liệu định tính đã chốt trong cuộc chat; đây là score mô phỏng, không phải bảng đo lường chính thức.</td>
+            <td>Tránh tranh luận sai trọng tâm: dashboard đang so sánh logic hệ thống, không phải công bố một bộ số kỹ thuật tuyệt đối.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>Câu hỏi tư duy?</h2>
+      <div class="notes">
+        <div class="note">
+          <h3>1. Cái gì đang được tối ưu?</h3>
+          <p>Đang tối ưu chi phí rẻ nhất, điện nền ổn định nhất, hay khả năng triển khai theo pha? Ba mục tiêu này thường không trùng nhau.</p>
+        </div>
+        <div class="note">
+          <h3>2. Nguồn nào thắng khi hệ chịu áp lực?</h3>
+          <p>Một công nghệ nhìn đẹp ở trạng thái bình thường chưa chắc thắng khi thiếu nước, thiếu gió, hoặc cần điện ban đêm.</p>
+        </div>
+        <div class="note">
+          <h3>3. Rủi ro nằm ở đâu?</h3>
+          <p>Rủi ro vật lý, rủi ro tài chính, rủi ro cấp phép, hay rủi ro vận hành? SMR giảm một số rủi ro, nhưng không xóa hết.</p>
+        </div>
+        <div class="note">
+          <h3>4. Mix nào thật sự bền?</h3>
+          <p>Hệ bền không nhất thiết là hệ “sạch nhất” hay “rẻ nhất”, mà là hệ giữ được điện nền, phát thải thấp và khả thi trong thực tế.</p>
+        </div>
+      </div>
+      <div class="footer" style="margin-top:14px">
+        Score hiển thị đã được chuẩn hóa theo hướng “cao hơn = tốt hơn”. Riêng trục cost/land/water: thấp thực tế hơn thì score tốt hơn.
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const techData = {
+      "Hạt nhân lớn": {
+        color: "#60a5fa",
+        scores: [92, 94, 58, 84, 60],
+        note: "Điện nền mạnh, CF cao, đầu tư lớn một lần."
+      },
+      "SMR": {
+        color: "#c084fc",
+        scores: [90, 94, 58, 88, 65],
+        note: "Gần PWR về bản chất vật lý, khác ở mô hình triển khai và vốn."
+      },
+      "Than": {
+        color: "#94a3b8",
+        scores: [76, 8, 55, 48, 35],
+        note: "CF khá cao nhưng phát thải cao, là mốc đối chứng xấu về carbon."
+      },
+      "Mặt trời": {
+        color: "#fbbf24",
+        scores: [28, 85, 45, 18, 92],
+        note: "Sạch và tiết kiệm nước, nhưng gián đoạn theo thời điểm."
+      },
+      "Gió": {
+        color: "#34d399",
+        scores: [40, 95, 50, 42, 90],
+        note: "Sạch, đất và nước tốt, nhưng phụ thuộc điều kiện gió."
+      }
+    };
+
+    const axes = ["CF cao", "Ít phát thải cao", "Chi phí thấp", "Đất thấp", "Nước thấp"];
+
+    const active = new Set(Object.keys(techData));
+
+    const controls = document.getElementById("techControls");
+    const presetButtons = [...document.querySelectorAll(".presetBtn")];
+    const radarCtx = document.getElementById("radarChart");
+    const mixStacked = document.getElementById("mixStacked");
+    const mixPresetButtons = [...document.querySelectorAll(".mixPresetBtn")];
+    const bestCF = document.getElementById("bestCF");
+    const bestEmission = document.getElementById("bestEmission");
+    const bestBalance = document.getElementById("bestBalance");
+    const decisionHint = document.getElementById("decisionHint");
+
+    function syncPairComparison(){}
+
+    function updateDecisionBox(selectedNames){
+      if (!selectedNames.length) return;
+      let cfWinner = selectedNames[0];
+      let emWinner = selectedNames[0];
+      let balanceWinner = selectedNames[0];
+      let bestCFScore = -Infinity;
+      let bestEmScore = -Infinity;
+      let bestBalanceScore = -Infinity;
+
+      selectedNames.forEach((name) => {
+        const s = techData[name].scores;
+        const cf = s[0];
+        const em = s[1];
+        const balance = (s[0] + s[1] + s[2] + s[3] + s[4]) / 5;
+        if (cf > bestCFScore) { bestCFScore = cf; cfWinner = name; }
+        if (em > bestEmScore) { bestEmScore = em; emWinner = name; }
+        if (balance > bestBalanceScore) { bestBalanceScore = balance; balanceWinner = name; }
+      });
+
+      bestCF.textContent = cfWinner;
+      bestEmission.textContent = emWinner;
+      bestBalance.textContent = balanceWinner;
+
+      const count = selectedNames.length;
+      const textMap = {
+        1: `Đang xem một công nghệ: ${selectedNames[0]}. Đây là chế độ kiểm tra đơn lẻ, phù hợp khi muốn soi một lựa chọn cụ thể.`,
+        2: `Đang so sánh cặp: ${selectedNames.join(" vs ")}. Lúc này trade-off hiện ra rõ nhất.`,
+        3: `Ba nguồn đang được so cùng lúc. Nên đọc theo trục thay vì đọc theo tổng thể.`,
+        4: `Bốn nguồn đang mở. Cần chú ý công nghệ nào thắng ở điện nền và công nghệ nào thắng ở ít phát thải.`,
+        5: `Đủ 5 nguồn: đây là bức tranh đầy đủ nhất, nhưng cũng là chế độ dễ rối nhất nếu không đọc theo mục tiêu.`
+      };
+      decisionHint.textContent = textMap[count] || "Chọn một nhóm nguồn để xem công nghệ nổi trội theo góc nhìn đó.";
+    }
+
+    const buildChart = () => {
+      const datasets = [...active].map((name) => ({
+        label: name,
+        data: techData[name].scores,
+        borderColor: techData[name].color,
+        backgroundColor: techData[name].color + "22",
+        pointBackgroundColor: techData[name].color,
+        borderWidth: 2,
+        fill: true,
+        tension: 0.18
+      }));
+
+      updateDecisionBox([...active]);
+
+      if (window._radarChart) window._radarChart.destroy();
+      window._radarChart = new Chart(radarCtx, {
+        type: "radar",
+        data: { labels: axes, datasets },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: "#eaf2ff",
+                boxWidth: 14,
+                boxHeight: 14
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.dataset.label}: ${ctx.formattedValue}`
+              }
+            }
+          },
+          scales: {
+            r: {
+              angleLines: { color: "rgba(255,255,255,.10)" },
+              grid: { color: "rgba(255,255,255,.10)" },
+              pointLabels: {
+                color: "#d5e6ff",
+                font: { size: 13, weight: "600" }
+              },
+              ticks: {
+                color: "#9eb2cb",
+                backdropColor: "transparent",
+                stepSize: 20
+              },
+              suggestedMin: 0,
+              suggestedMax: 100
+            }
+          }
+        }
+      });
+    };
+
+    const renderControls = () => {
+      controls.innerHTML = "";
+      Object.keys(techData).forEach((name) => {
+        const chip = document.createElement("label");
+        chip.className = "chip";
+        chip.innerHTML = `
+          <span class="swatch" style="background:${techData[name].color}"></span>
+          <input type="checkbox" ${active.has(name) ? "checked" : ""} style="accent-color:${techData[name].color}; transform: translateY(1px);" />
+          <span>${name}</span>
+        `;
+        const input = chip.querySelector("input");
+        input.addEventListener("change", () => {
+          if (input.checked) active.add(name); else active.delete(name);
+          if (!active.size) {
+            input.checked = true;
+            active.add(name);
+            return;
+          }
+          buildChart();
+        });
+        controls.appendChild(chip);
+      });
+    };
+
+    presetButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const preset = btn.dataset.preset;
+        active.clear();
+
+        if (preset === "all") {
+          Object.keys(techData).forEach((name) => active.add(name));
+        } else if (preset === "nuclear") {
+          ["Hạt nhân lớn", "SMR", "Gió"].forEach((name) => active.add(name));
+        } else if (preset === "renewables") {
+          ["Mặt trời", "Gió", "SMR"].forEach((name) => active.add(name));
+        } else if (preset === "lowcarbon") {
+          ["Hạt nhân lớn", "SMR", "Mặt trời", "Gió"].forEach((name) => active.add(name));
+        }
+
+        renderControls();
+        buildChart();
+        syncPairComparison();
+      });
+    });
+
+    const slider = document.getElementById("moduleSlider");
+    const moduleLabel = document.getElementById("moduleLabel");
+    const smrCapacity = document.getElementById("smrCapacity");
+    const smrRatio = document.getElementById("smrRatio");
+    const smrFill = document.getElementById("smrFill");
+    const smrBarText = document.getElementById("smrBarText");
+    const smrPhased = document.getElementById("smrPhased");
+    const smrIdc = document.getElementById("smrIdc");
+    const smrStart = document.getElementById("smrStart");
+
+    const PWR_CAPACITY = 1000;
+    const MODULE_MW = 77;
+
+    function updateSMR(){
+      const modules = Number(slider.value);
+      const cap = modules * MODULE_MW;
+      const ratio = Math.round((cap / PWR_CAPACITY) * 100);
+
+      moduleLabel.textContent = `${modules} module${modules > 1 ? "s" : ""}`;
+      smrCapacity.textContent = `${cap} MW`;
+      smrRatio.textContent = `${ratio}%`;
+      smrBarText.textContent = `${modules} / 12 module`;
+      smrFill.style.width = `${(modules / 12) * 100}%`;
+      smrPhased.textContent = modules <= 3 ? "Khởi động" : modules <= 7 ? "Mở rộng" : "Gần đầy tải";
+      smrIdc.textContent = modules <= 3 ? "Rất thấp" : modules <= 7 ? "Thấp hơn" : "Tăng dần";
+      smrStart.textContent = modules <= 3 ? "Thử nghiệm an toàn" : modules <= 7 ? "Mở rộng theo pha" : "Tiệm cận quy mô lớn";
+    }
+    slider.addEventListener("input", updateSMR);
+
+
+    const phaseSwitch = document.getElementById("phaseSwitch");
+    const phaseLegend = document.getElementById("phaseLegend");
+    const phaseK1 = document.getElementById("phaseK1");
+    const phaseV1 = document.getElementById("phaseV1");
+    const phaseK2 = document.getElementById("phaseK2");
+    const phaseV2 = document.getElementById("phaseV2");
+    const phaseCtx = document.getElementById("phaseChart");
+    const phaseNote = document.getElementById("phaseNote");
+    const phaseConclusionTitle = document.getElementById("phaseConclusionTitle");
+    const phaseConclusionText = document.getElementById("phaseConclusionText");
+    const phaseReasonText = document.getElementById("phaseReasonText");
+    let currentPhase = "early";
+
+    const phaseData = {
+      early: {
+        labels: ["0","1","2","3","4","5","6"],
+        smr: [0, 77, 154, 231, 308, 308, 308],
+        pwr: [0, 0, 0, 0, 0, 0, 1000],
+        k1: "SMR — đầu kỳ",
+        v1: "An toàn hơn cho thử nghiệm",
+        k2: "PWR — đầu kỳ",
+        v2: "Cú nhảy vốn lớn",
+        note: "Đầu kỳ: SMR cho phép mở từng module nên vốn không bị khóa hết trong một cú xây; PWR vẫn phải gánh một khối đầu tư lớn trước khi có công suất thương mại.",
+        conclusion: "SMR hợp hơn cho giai đoạn thử nghiệm và mở bước đầu. PWR hợp hơn khi đã có khả năng chịu một cú nhảy vốn lớn.",
+        reason: "SMR chia nhỏ rủi ro đầu tư theo module, còn PWR gom rủi ro vào một dự án lớn trước khi có điện thương mại. Đây là khác biệt về đường cong vốn, không phải khác biệt về bản chất vật lý."
+      },
+      late: {
+        labels: ["0","2","4","6","8","10","12"],
+        smr: [308, 385, 462, 539, 616, 770, 924],
+        pwr: [1000, 1000, 1000, 1000, 1000, 1000, 1000],
+        k1: "SMR — về sau",
+        v1: "Tiệm cận quy mô lò lớn",
+        k2: "PWR — về sau",
+        v2: "Ổn định khi đã vào vận hành",
+        note: "Về sau: nếu dây chuyền module và cấp phép đã ổn, SMR tiếp tục cộng dần công suất. Khi đủ vốn và đủ module, nó tiệm cận quy mô lò lớn nhưng vẫn không đổi bản chất triển khai theo pha.",
+        conclusion: "Về sau, SMR không còn là câu chuyện ‘thử nghiệm nhỏ’, mà là câu chuyện cộng dồn công suất theo pha. PWR lúc này chỉ còn lợi thế khi dự án đã vượt qua được cửa vốn ban đầu.",
+        reason: "Khi hệ sinh thái đã chín, cái quyết định không còn là khả năng dựng một lò có công suất lớn ngay lập tức, mà là năng lực mở rộng, chuẩn hóa và nhân bản. SMR mạnh ở điểm đó; PWR mạnh ở điểm ‘đã xong thì rất ổn định’."
+      }
+    };
+
+    function renderPhaseChart(phase){
+      const data = phaseData[phase];
+      phaseK1.textContent = data.k1;
+      phaseV1.textContent = data.v1;
+      phaseK2.textContent = data.k2;
+      phaseV2.textContent = data.v2;
+      if (window._phaseChart) window._phaseChart.destroy();
+      window._phaseChart = new Chart(phaseCtx, {
+        type: "line",
+        data: {
+          labels: data.labels,
+          datasets: [
+            {
+              label: "SMR",
+              data: data.smr,
+              borderColor: "#c084fc",
+              backgroundColor: "rgba(192,132,252,.18)",
+              tension: .2,
+              borderWidth: 3.25,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#c084fc",
+              fill: false,
+              order: 2
+            },
+            {
+              label: "PWR",
+              data: data.pwr,
+              borderColor: "#60a5fa",
+              backgroundColor: "rgba(96,165,250,.14)",
+              tension: .12,
+              borderWidth: 3.25,
+              pointRadius: 4,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#60a5fa",
+              borderDash: [7, 5],
+              fill: false,
+              order: 1
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          layout: { padding: { top: 10, right: 18, bottom: 4, left: 8 } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => ` ${ctx.dataset.label}: ${ctx.formattedValue}`
+              }
+            }
+          },
+          scales: {
+            x: {
+              offset: true,
+              grid: { color: "rgba(255,255,255,.06)" },
+              ticks: {
+                color: "#9eb2cb",
+                callback: (value, index) => index === 0 ? "" : value
+              },
+              title: {
+                display: true,
+                text: "Năm sau khởi công",
+                color: "#9eb2cb",
+                font: { size: 12, weight: "600" }
+              }
+            },
+            y: {
+              min: 0,
+              max: 1120,
+              grid: { color: "rgba(255,255,255,.08)" },
+              ticks: { color: "#9eb2cb", stepSize: 200 },
+              title: {
+                display: true,
+                text: "Công suất (MW)",
+                color: "#9eb2cb",
+                font: { size: 12, weight: "600" }
+              }
+            }
+          }
+        }
+      });
+      return {
+        note: data.note,
+        conclusion: data.conclusion,
+        reason: data.reason
+      };
+    }
+
+    function setPhase(phase){
+      currentPhase = phase;
+      phaseSwitch.querySelectorAll(".phaseBtn").forEach(btn => btn.classList.toggle("active", btn.dataset.phase === phase));
+      const payload = renderPhaseChart(phase);
+      phaseNote.textContent = payload.note;
+      phaseConclusionTitle.textContent = phase === "early" ? "Kết luận đầu kỳ" : "Kết luận về sau";
+      phaseConclusionText.textContent = payload.conclusion;
+      phaseReasonText.textContent = payload.reason;
+      return payload.note;
+    }
+
+    phaseSwitch.addEventListener("click", (e) => {
+      const btn = e.target.closest(".phaseBtn");
+      if (!btn) return;
+      setPhase(btn.dataset.phase);
+    });
+
+    setPhase("early");
+
+    const readinessInputs = {
+      regulator: document.getElementById("readyRegulator"),
+      workforce: document.getElementById("readyWorkforce"),
+      nepio: document.getElementById("readyNepio"),
+      trust: document.getElementById("readyTrust")
+    };
+    const readinessCards = {
+      regulator: document.getElementById("toggleCard-regulator"),
+      workforce: document.getElementById("toggleCard-workforce"),
+      nepio: document.getElementById("toggleCard-nepio"),
+      trust: document.getElementById("toggleCard-trust")
+    };
+    const readinessLabels = {
+      regulator: "pháp quy độc lập",
+      workforce: "nhân lực chiều sâu",
+      nepio: "điều phối NEPIO",
+      trust: "minh bạch xã hội"
+    };
+    const readinessPanel = document.getElementById("readinessPanel");
+    const readinessTitle = document.getElementById("readinessTitle");
+    const readinessChip = document.getElementById("readinessChip");
+    const readinessSummary = document.getElementById("readinessSummary");
+    const readinessDetail = document.getElementById("readinessDetail");
+
+    const prepPhase1Status = document.getElementById("prepPhase1Status");
+    const prepPhase2Status = document.getElementById("prepPhase2Status");
+    const prepPhase2Card = document.getElementById("prepPhase2Card");
+    const prepFlowTitle = document.getElementById("prepFlowTitle");
+    const prepFlowText = document.getElementById("prepFlowText");
+    const prepFlowReason = document.getElementById("prepFlowReason");
+    const prepPhase1Items = [...document.querySelectorAll("[data-phase1-item]")];
+    const prepPhase2Inputs = [...document.querySelectorAll("[data-phase2]")];
+
+    function updatePrepFlow(){
+      const phase1Count = Object.values(readinessInputs).filter((input) => input.checked).length;
+      const phase1Ready = phase1Count === Object.keys(readinessInputs).length;
+      const phase2Count = phase1Ready ? prepPhase2Inputs.filter((input) => input.checked).length : 0;
+
+      prepPhase1Status.textContent = phase1Ready ? "Đã đủ nền tảng" : `${phase1Count}/4 trụ cột`;
+      prepPhase2Card.classList.toggle("locked", !phase1Ready);
+
+      prepPhase2Inputs.forEach((input) => {
+        input.disabled = !phase1Ready;
+        input.closest(".phaseCheck").classList.toggle("disabled", !phase1Ready);
+      });
+
+      if (!phase1Ready) {
+        prepPhase2Status.textContent = "Đang bị khóa";
+        prepFlowTitle.textContent = "Vì sao chưa thể nhảy sang pha 2?";
+        prepFlowText.textContent = "Vì phần việc trước 2030 không phải thủ tục phụ. Đó là nơi dựng ra luật chơi, con người và năng lực điều phối để dự án không tự sập vì chính cấu trúc của nó.";
+        prepFlowReason.textContent = "Khi pha 1 còn thiếu, nói về triển khai sau 2030 chỉ là đi nhanh hơn năng lực quốc gia. SMR giảm áp lực vốn, nhưng không xóa được khoảng trễ pháp lý và nhân lực.";
+        return;
+      }
+
+      if (phase2Count < prepPhase2Inputs.length) {
+        prepPhase2Status.textContent = `${phase2Count}/4 bước dài hạn`;
+        prepFlowTitle.textContent = "Pha 2 đã mở, nhưng mới chỉ bắt đầu";
+        prepFlowText.textContent = "Sau khi có nền tảng, bài toán chuyển sang làm chủ công nghiệp phụ trợ, chuỗi nhiên liệu, đội ngũ liên thế hệ và cách ghép SMR vào hệ thống đa nguồn.";
+        prepFlowReason.textContent = "Đây là lý do Mục 4 xem điện hạt nhân là bài toán nhiều thập kỷ: xây nhà máy có thể nhanh hơn xây cả hệ sinh thái giữ nó vận hành an toàn.";
+        return;
+      }
+
+      prepPhase2Status.textContent = "Sẵn sàng làm chủ";
+      prepFlowTitle.textContent = "Lúc này mới có thể nói đến triển khai bền";
+      prepFlowText.textContent = "Khi cả hai pha đều khép kín, SMR không còn là một ý tưởng công nghệ đơn lẻ mà trở thành một phần của chiến lược điện nền dài hạn.";
+      prepFlowReason.textContent = "Bài học ở đây không phải 'có lò là xong', mà là chỉ khi nền tảng và trách nhiệm dài hạn cùng hiện diện thì chương trình hạt nhân mới có cửa đi xa.";
+    }
+
+    function updateReadiness(){
+      const missing = [];
+      Object.entries(readinessInputs).forEach(([key, input]) => {
+        const checked = input.checked;
+        readinessCards[key].classList.toggle("active", checked);
+        if (!checked) missing.push(readinessLabels[key]);
+      });
+
+      const readyCount = Object.keys(readinessInputs).length - missing.length;
+      const ready = missing.length === 0;
+
+      readinessPanel.dataset.state = ready ? "good" : "bad";
+      readinessTitle.textContent = ready ? "Đủ điều kiện khởi động" : "Không thể triển khai an toàn";
+      readinessChip.textContent = `${readyCount}/4 điều kiện đã sẵn sàng`;
+
+      if (ready) {
+        readinessSummary.textContent = "Khi đủ cả bốn điều kiện, câu chuyện mới chuyển từ 'có nên làm hay không' sang 'triển khai theo nhịp nào để an toàn và bền vững'.";
+        readinessDetail.textContent = "Điểm cần thấy là SMR không tự mở cửa dự án. Công nghệ chỉ bước vào sau khi luật, nhân lực, điều phối và niềm tin xã hội đã đứng vững.";
+      } else if (missing.length === 4) {
+        readinessSummary.textContent = "Cả bốn trụ cột đều chưa được xác nhận. Đây là trạng thái của một ý tưởng công nghệ chưa có hệ điều hành quốc gia đi kèm.";
+        readinessDetail.textContent = "Bật dần từng điều kiện để thấy dự án hạt nhân thất bại trước hết ở chỗ hệ thống chưa sẵn sàng, không chỉ ở bản thân lò phản ứng.";
+      } else {
+        readinessSummary.textContent = `Mắt xích còn thiếu: ${missing.join(", ")}. Chỉ cần một mắt xích chưa có, toàn bộ dự án vẫn chưa vượt qua bộ lọc an toàn quốc gia.`;
+        readinessDetail.textContent = "Đây là điều Mục 4 muốn nhấn mạnh: điện hạt nhân là phép thử của thể chế, nhân lực và minh bạch, chứ không chỉ là phép thử công nghệ.";
+      }
+
+      prepPhase1Items.forEach((item) => {
+        item.classList.toggle("done", readinessInputs[item.dataset.phase1Item].checked);
+      });
+
+      updatePrepFlow();
+    }
+
+    Object.values(readinessInputs).forEach((input) => input.addEventListener("input", updateReadiness));
+    prepPhase2Inputs.forEach((input) => input.addEventListener("input", updatePrepFlow));
+
+    const idcSmrBreakEven = document.getElementById("idcSmrBreakEven");
+    const idcPwrBreakEven = document.getElementById("idcPwrBreakEven");
+    const idcRiskSignal = document.getElementById("idcRiskSignal");
+    const idcRiskText = document.getElementById("idcRiskText");
+    const idcConclusion = document.getElementById("idcConclusion");
+    const idcReason = document.getElementById("idcReason");
+
+    const idcYears = Array.from({ length: 15 }, (_, i) => i);
+    const idcSmrSeries = [0, -12, -24, -36, -44, -38, -18, 6, 18, 27, 34, 40, 45, 49, 52];
+    const idcPwrSeries = [0, -16, -34, -56, -82, -110, -138, -162, -178, -172, -146, -108, -62, -14, 18];
+
+    function findBreakEven(series){
+      for (let i = 1; i < series.length; i += 1){
+        if (series[i] >= 0) return i;
+      }
+      return null;
+    }
+
+    const idcHighlightPlugin = {
+      id: "idcHighlightPlugin",
+      beforeDatasetsDraw(chart){
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || chart.canvas.id !== "idcChart" || !scales.x || !scales.y) return;
+        const start = scales.x.getPixelForValue(1);
+        const end = scales.x.getPixelForValue(8);
+        ctx.save();
+        ctx.fillStyle = "rgba(245, 158, 11, 0.10)";
+        ctx.fillRect(start, chartArea.top, end - start, chartArea.bottom - chartArea.top);
+        ctx.fillStyle = "rgba(255,255,255,0.70)";
+        ctx.font = "12px Inter, sans-serif";
+        ctx.fillText("IDC tích lũy", start + 10, chartArea.top + 18);
+        ctx.restore();
+      },
+      afterDatasetsDraw(chart){
+        const { ctx, chartArea, scales } = chart;
+        if (!chartArea || chart.canvas.id !== "idcChart" || !scales.x || !scales.y) return;
+        const breakEvenMarks = [
+          { year: findBreakEven(idcSmrSeries), color: "#c084fc", label: "SMR hòa vốn" },
+          { year: findBreakEven(idcPwrSeries), color: "#60a5fa", label: "PWR hòa vốn" }
+        ];
+
+        ctx.save();
+        ctx.setLineDash([6, 5]);
+        ctx.lineWidth = 1;
+        ctx.font = "12px Inter, sans-serif";
+
+        breakEvenMarks.forEach((mark, index) => {
+          if (mark.year == null) return;
+          const x = scales.x.getPixelForValue(mark.year);
+          ctx.strokeStyle = mark.color;
+          ctx.beginPath();
+          ctx.moveTo(x, chartArea.top + 8);
+          ctx.lineTo(x, chartArea.bottom);
+          ctx.stroke();
+
+          ctx.fillStyle = mark.color;
+          ctx.fillText(mark.label, x + 6, chartArea.top + 18 + index * 16);
+        });
+
+        ctx.restore();
+      }
+    };
+
+    Chart.register(idcHighlightPlugin);
+
+    function initIdcChart(){
+      const smrBreakEven = findBreakEven(idcSmrSeries);
+      const pwrBreakEven = findBreakEven(idcPwrSeries);
+
+      idcSmrBreakEven.textContent = smrBreakEven == null ? "Chưa có" : `Năm ${smrBreakEven}`;
+      idcPwrBreakEven.textContent = pwrBreakEven == null ? "Chưa có" : `Năm ${pwrBreakEven}`;
+      idcRiskSignal.textContent = "Lãi vay phình to khi dự án còn chưa phát điện";
+      idcRiskText.textContent = "Điểm đau tài chính không nằm ở công suất danh nghĩa, mà nằm ở độ dài của đoạn tiền âm bị lãi vay chồng lãi vay.";
+      idcConclusion.textContent = "SMR giảm rủi ro tài chính không phải chỉ vì nhỏ hơn, mà vì có thể rút ngắn thời gian nằm trong vùng IDC tích lũy và mở doanh thu sớm hơn theo từng module.";
+      idcReason.textContent = "PWR dồn gần như toàn bộ áp lực vào giai đoạn xây dựng. SMR vẫn chịu IDC, nhưng dòng tiền được giải nén theo pha nên khả năng đổ vỡ tài chính thấp hơn khi dự án còn đang học và đang mở rộng.";
+
+      new Chart(document.getElementById("idcChart"), {
+        type: "line",
+        data: {
+          labels: idcYears,
+          datasets: [
+            {
+              label: "SMR",
+              data: idcSmrSeries,
+              borderColor: "#c084fc",
+              backgroundColor: "rgba(192,132,252,.15)",
+              tension: .32,
+              borderWidth: 3,
+              pointRadius: (ctx) => ctx.dataIndex === smrBreakEven ? 5 : 2.5,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#f8fbff"
+            },
+            {
+              label: "PWR",
+              data: idcPwrSeries,
+              borderColor: "#60a5fa",
+              backgroundColor: "rgba(96,165,250,.12)",
+              tension: .28,
+              borderWidth: 3,
+              pointRadius: (ctx) => ctx.dataIndex === pwrBreakEven ? 5 : 2.5,
+              pointHoverRadius: 6,
+              pointBackgroundColor: "#f8fbff"
+            }
+          ]
+        },
+        options: {
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title(items){
+                  return `Năm ${items[0].label}`;
+                },
+                label(context){
+                  return `${context.dataset.label}: ${context.raw}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              title: { display: true, text: "Thời gian (năm)" },
+              grid: { color: "rgba(255,255,255,.06)" },
+              ticks: { color: "#cfe5ff" }
+            },
+            y: {
+              title: { display: true, text: "Dòng tiền tích lũy (chỉ số tương đối)" },
+              grid: { color: "rgba(255,255,255,.08)" },
+              ticks: { color: "#cfe5ff" }
+            }
+          }
+        }
+      });
+    }
+
+
+    const mixNuclear = document.getElementById("mixNuclear");
+    const mixRenew = document.getElementById("mixRenew");
+    const mixFossil = document.getElementById("mixFossil");
+    const mixNuclearLabel = document.getElementById("mixNuclearLabel");
+    const mixRenewLabel = document.getElementById("mixRenewLabel");
+    const mixFossilLabel = document.getElementById("mixFossilLabel");
+    const mixStability = document.getElementById("mixStability");
+    const mixEmission = document.getElementById("mixEmission");
+    const mixLand = document.getElementById("mixLand");
+    const mixWater = document.getElementById("mixWater");
+    const mixInsight = document.getElementById("mixInsight");
+    const mixConclusionText = document.getElementById("mixConclusionText");
+    const mixReasonText = document.getElementById("mixReasonText");
+    const mixBaseloadState = document.getElementById("mixBaseloadState");
+    const mixBaseloadText = document.getElementById("mixBaseloadText");
+    const mixRenewableState = document.getElementById("mixRenewableState");
+    const mixRenewableText = document.getElementById("mixRenewableText");
+    const mixSystemState = document.getElementById("mixSystemState");
+    const mixSystemText = document.getElementById("mixSystemText");
+    const mixConstraintConclusion = document.getElementById("mixConstraintConclusion");
+    const mixConstraintReason = document.getElementById("mixConstraintReason");
+
+    let mixState = { nuclear: 40, renew: 40, fossil: 20 };
+
+    function sumMix(m){
+      return m.nuclear + m.renew + m.fossil;
+    }
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(max, n)); }
+
+    function normalizeMix(changed){
+      const vals = { ...mixState };
+      let total = sumMix(vals);
+      if (!isFinite(total) || total <= 0){
+        mixState = { nuclear: 40, renew: 40, fossil: 20 };
+        return;
+      }
+
+      const fixed = clamp(vals[changed], 0, 100);
+      const others = ["nuclear", "renew", "fossil"].filter(k => k !== changed);
+      const remaining = 100 - fixed;
+      const otherSum = vals[others[0]] + vals[others[1]];
+
+      vals[changed] = fixed;
+      if (otherSum <= 0){
+        vals[others[0]] = remaining / 2;
+        vals[others[1]] = remaining / 2;
+      } else {
+        vals[others[0]] = remaining * vals[others[0]] / otherSum;
+        vals[others[1]] = remaining * vals[others[1]] / otherSum;
+      }
+
+      vals.nuclear = Math.round(vals.nuclear);
+      vals.renew = Math.round(vals.renew);
+      vals.fossil = 100 - vals.nuclear - vals.renew;
+      if (vals.fossil < 0){
+        vals.fossil = 0;
+        const sum2 = vals.nuclear + vals.renew;
+        if (sum2 > 0){
+          vals.nuclear = Math.round(100 * vals.nuclear / sum2);
+          vals.renew = 100 - vals.nuclear;
+        } else {
+          vals.nuclear = 50; vals.renew = 50;
+        }
+      }
+
+      mixState = vals;
+    }
+
+    function computeMixScores(){
+      const n = mixState.nuclear;
+      const r = mixState.renew;
+      const f = mixState.fossil;
+
+      const stability = Math.round(n*0.95 + r*0.45 + f*0.72);
+      const emission = Math.round(n*0.95 + r*0.88 + f*0.12);
+      const land = Math.round(n*0.85 + r*0.35 + f*0.56);
+      const water = Math.round(n*0.72 + r*0.78 + f*0.46);
+
+      mixNuclearLabel.textContent = `${n}%`;
+      mixRenewLabel.textContent = `${r}%`;
+      mixFossilLabel.textContent = `${f}%`;
+
+      mixStability.textContent = `${clamp(stability,0,100)}/100`;
+      mixEmission.textContent = `${clamp(emission,0,100)}/100`;
+      mixLand.textContent = `${clamp(land,0,100)}/100`;
+      mixWater.textContent = `${clamp(water,0,100)}/100`;
+
+      let insight = "";
+      let conclusion = "";
+      let reason = "";
+      if (f >= 45) {
+        insight = "Mix này vẫn nặng về hóa thạch. Điểm cộng là hệ có thể dễ giữ ổn định hơn, nhưng đổi lại phát thải và rủi ro Net Zero tăng rõ.";
+        conclusion = "Kết luận: đây là mix an toàn ngắn hạn nhưng yếu về mục tiêu dài hạn.";
+        reason = "Lý do: hóa thạch giúp giữ hệ chạy ổn định hơn trong ngắn hạn, nhưng carbon lock-in và áp lực phát thải làm nó không bền nếu nhìn theo Net Zero.";
+      } else if (n >= 35 && r >= 35) {
+        insight = "Mix khá cân bằng: hạt nhân đang đóng vai điện nền, còn tái tạo kéo điểm ít phát thải. Đây là cấu hình tương đối hợp lý cho bài toán hệ thống.";
+        conclusion = "Kết luận: đây là mix cân bằng nhất theo logic hệ thống.";
+        reason = "Lý do: hạt nhân cung cấp nền 24/7, tái tạo kéo phát thải xuống, còn phần hóa thạch đủ nhỏ để không chi phối toàn bộ cấu hình.";
+      } else if (r >= 55 && n < 20) {
+        insight = "Mix này sạch hơn nhưng phụ thuộc nhiều vào thời tiết và lưu trữ. Nếu không có lớp nền đủ mạnh, hệ vẫn khó tự giữ ổn định vào giờ xấu.";
+        conclusion = "Kết luận: mix này đẹp về phát thải nhưng yếu ở độ ổn định.";
+        reason = "Lý do: tái tạo cao làm giảm carbon, nhưng thiếu lớp nền khiến hệ phải dựa nhiều vào thời tiết và lưu trữ để cân bằng.";
+      } else if (n >= 50) {
+        insight = "Mix thiên mạnh về hạt nhân. Điểm mạnh là ổn định, điểm cần cân nhắc là vốn đầu tư và khả năng phối hợp với tái tạo để tránh dư cứng.";
+        conclusion = "Kết luận: mix này mạnh về điện nền nhưng cần ghép thêm phần linh hoạt.";
+        reason = "Lý do: hạt nhân cho ổn định cao, nhưng nếu quá lệch sang hạt nhân thì hệ có thể kém linh hoạt và tốn vốn đầu tư ban đầu.";
+      } else {
+        insight = "Mix đang ở trạng thái trung gian. Muốn kết luận tốt hay xấu cần nhìn thêm bối cảnh lưới, lưu trữ và nhu cầu đỉnh.";
+        conclusion = "Kết luận: mix trung gian chỉ tốt khi đi kèm lưới điện và lưu trữ đủ mạnh.";
+        reason = "Lý do: bản thân cơ cấu nguồn chưa đủ để kết luận, vì độ bền của mix còn phụ thuộc vào cách vận hành hệ thống và nhu cầu đỉnh.";
+      }
+
+      mixInsight.textContent = insight;
+      mixConclusionText.textContent = conclusion;
+      mixReasonText.textContent = reason;
+
+      const baseloadOk = n >= 25 || (n + f >= 45);
+      const renewAbsorbOk = r <= 55 || (n >= 25 || f >= 25);
+
+      mixBaseloadState.textContent = baseloadOk ? "Đủ nền" : "Thiếu nền";
+      mixBaseloadText.textContent = baseloadOk
+        ? "Hệ vẫn có lớp công suất giữ nhịp 24/7 khi thời tiết xấu hoặc phụ tải tăng."
+        : "Lớp nguồn giữ nhịp còn mỏng; hệ dễ chao đảo khi đầu ra tái tạo hụt hoặc phụ tải tăng đột ngột.";
+
+      mixRenewableState.textContent = renewAbsorbOk ? "Trong giới hạn" : "Dễ bị dồn ứ";
+      mixRenewableText.textContent = renewAbsorbOk
+        ? "Tỷ lệ tái tạo vẫn còn nằm trong vùng hệ thống hấp thụ được."
+        : "Công suất tái tạo đang đi nhanh hơn khả năng hấp thụ; nếu không có nguồn nền, lưới hoặc lưu trữ đi cùng thì rất dễ lãng phí.";
+
+      if (!baseloadOk && !renewAbsorbOk) {
+        mixSystemState.textContent = "Căng thẳng";
+        mixSystemText.textContent = "Thiếu điện nền và dư tái tạo cùng lúc.";
+        mixConstraintConclusion.textContent = "Nguy cơ mất ổn định đi cùng lãng phí công suất. Đây là cấu hình nhìn sạch trên giấy nhưng dễ gãy trong vận hành thực tế.";
+        mixConstraintReason.textContent = "Khi nguồn nền không đủ mà tái tạo lại chiếm tỷ trọng quá cao, hệ thống phải gánh đồng thời hai bài toán: giữ nhịp trong giờ xấu và xử lý phần công suất dư trong giờ tốt.";
+      } else if (!baseloadOk) {
+        mixSystemState.textContent = "Nguy cơ mất ổn định";
+        mixSystemText.textContent = "Nguồn nền chưa đủ để đỡ hệ thống.";
+        mixConstraintConclusion.textContent = "Cảnh báo chính ở mix này là thiếu điện nền. Hệ thống vẫn có thể sạch hơn, nhưng độ ổn định sẽ bị thử thách ngay khi điều kiện vận hành xấu đi.";
+        mixConstraintReason.textContent = "Điện nền là phần giữ cho hệ không bị rơi vào trạng thái phụ thuộc hoàn toàn vào thời tiết hoặc vào nguồn linh hoạt đắt đỏ trong giờ căng.";
+      } else if (!renewAbsorbOk) {
+        mixSystemState.textContent = "Lãng phí công suất";
+        mixSystemText.textContent = "Tái tạo đang vượt khả năng hấp thụ.";
+        mixConstraintConclusion.textContent = "Mix này không thiếu tham vọng giảm phát thải, nhưng đang vượt trước khả năng hấp thụ của hệ thống. Phần tái tạo dư có thể bị cắt giảm hoặc chạy kém hiệu quả.";
+        mixConstraintReason.textContent = "Nếu lưới điện, lưu trữ và lớp nguồn nền không đi cùng, công suất tái tạo cao không tự động biến thành điện hữu ích trong mọi thời điểm.";
+      } else if (f >= 45) {
+        mixSystemState.textContent = "Ổn định ngắn hạn";
+        mixSystemText.textContent = "Có nền nhưng còn nặng hóa thạch.";
+        mixConstraintConclusion.textContent = "Hệ vận hành sẽ đỡ căng hơn, nhưng đang đổi sự ổn định ngắn hạn lấy áp lực phát thải và khóa carbon trong dài hạn.";
+        mixConstraintReason.textContent = "Đây là trạng thái 'giữ điện trước đã' chứ chưa phải trạng thái tối ưu chiến lược. Vai trò của SMR trong dài hạn là giúp giảm phụ thuộc vào lớp nền hóa thạch này.";
+      } else {
+        mixSystemState.textContent = "Cân bằng";
+        mixSystemText.textContent = "Có nền và tái tạo chưa vượt ngưỡng hấp thụ.";
+        mixConstraintConclusion.textContent = "Mix này đi gần hơn với logic hệ thống: có điện nền để giữ nhịp, có tái tạo để kéo phát thải xuống, và chưa đẩy lưới vào trạng thái quá tải hấp thụ.";
+        mixConstraintReason.textContent = "Đây là góc nhìn Mục 4 nhấn mạnh: SMR chỉ có ý nghĩa khi được đặt vào vai trò điện nền trong một hệ đa nguồn có ràng buộc vật lý thật.";
+      }
+
+      const segments = [
+        { label: "Hạt nhân", value: n, color: "#60a5fa" },
+        { label: "Tái tạo", value: r, color: "#34d399" },
+        { label: "Hóa thạch", value: f, color: "#94a3b8" }
+      ];
+      mixStacked.innerHTML = segments.map(seg => `<div class="mixSeg" style="width:${seg.value}%; background:${seg.color};">${seg.value > 12 ? `${seg.label} ${seg.value}%` : ""}</div>`).join("");
+    }
+
+    function onMixInput(changed){
+      normalizeMix(changed);
+      mixNuclear.value = mixState.nuclear;
+      mixRenew.value = mixState.renew;
+      mixFossil.value = mixState.fossil;
+      computeMixScores();
+    }
+
+    mixNuclear.addEventListener("input", () => onMixInput("nuclear"));
+    mixRenew.addEventListener("input", () => onMixInput("renew"));
+    mixFossil.addEventListener("input", () => onMixInput("fossil"));
+
+    mixPresetButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const preset = btn.dataset.mix;
+        if (preset === "balanced") mixState = { nuclear: 34, renew: 33, fossil: 33 };
+        else if (preset === "nuclear") mixState = { nuclear: 55, renew: 30, fossil: 15 };
+        else if (preset === "renewables") mixState = { nuclear: 15, renew: 65, fossil: 20 };
+        else if (preset === "fossil") mixState = { nuclear: 20, renew: 20, fossil: 60 };
+        mixNuclear.value = mixState.nuclear;
+        mixRenew.value = mixState.renew;
+        mixFossil.value = mixState.fossil;
+        computeMixScores();
+      });
+    });
+
+    renderControls();
+    buildChart();
+    updateSMR();
+    syncPairComparison();
+    initIdcChart();
+    updateReadiness();
+    computeMixScores();
+  </script>
+</body>
+</html>
