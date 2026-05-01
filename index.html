@@ -13,6 +13,7 @@
     --line2:#27415d;
     --text:#c9d7e3;
     --muted:#6c8298;
+    --muted2:#8da3b8;
     --blue:#47c5ff;
     --cyan:#93e6ff;
     --green:#36d17d;
@@ -38,12 +39,13 @@
   .chiprow{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
   .chip{border:1px solid var(--line);background:rgba(7,17,28,.78);padding:8px 10px;border-radius:12px;font-size:11px;color:var(--muted)}
   .chip strong{color:var(--text)}
-  .grid{display:grid;grid-template-columns:1.55fr .95fr;gap:12px}
+  .grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px;align-items:start}
   .panel{background:linear-gradient(180deg, rgba(12,22,35,.95), rgba(7,17,28,.95));border:1px solid rgba(22,48,74,.95);border-radius:18px;box-shadow:0 16px 50px rgba(0,0,0,.34);overflow:hidden}
+  .sidePanel{position:sticky;top:14px;max-height:calc(100vh - 28px);overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(71,197,255,.35) rgba(4,9,14,.65)}
   .panel h3{margin:0;padding:14px 16px;border-bottom:1px solid rgba(22,48,74,.85);font-size:12px;letter-spacing:.16em;color:var(--cyan);text-transform:uppercase}
   .panel .content{padding:14px 16px}
   .coreWrap{position:relative}
-  #sceneCanvas{width:100%;height:auto;display:block;aspect-ratio: 1.44 / 1; background:
+  #sceneCanvas{width:100%;height:auto;display:block;aspect-ratio: 1.28 / 1; background:
       radial-gradient(900px 420px at 50% 46%, rgba(28,68,92,.26) 0%, rgba(12,19,30,.18) 42%, rgba(6,10,16,.72) 100%),
       linear-gradient(180deg, #071018, #050a11);}
   .overlayTop{position:absolute;left:12px;top:12px;display:flex;flex-direction:column;gap:8px;pointer-events:none}
@@ -76,7 +78,7 @@
   .bigValue{font-size:26px;color:var(--green);font-weight:800;letter-spacing:.06em}
   input[type=range]{width:100%;accent-color:var(--blue)}
   .scaleRow{display:flex;justify-content:space-between;font-size:10px;color:var(--muted2);margin-top:6px}
-  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+  .metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
   .metric{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:14px;padding:10px}
   .metric .k{font-size:10px;letter-spacing:.12em;color:var(--muted);margin-bottom:6px;text-transform:uppercase}
   .metric .v{font-size:22px;font-weight:700;line-height:1.1}
@@ -86,7 +88,7 @@
   .fill{height:100%;width:0;background:linear-gradient(90deg, var(--green), var(--blue));border-radius:999px;transition:width .18s ease}
   .fill.warn{background:linear-gradient(90deg, var(--amber), var(--orange))}
   .fill.danger{background:linear-gradient(90deg, var(--orange), var(--red))}
-  .steps{display:grid;gap:8px}
+  .steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .step{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:12px;padding:10px 12px;font-size:12px;line-height:1.55;color:var(--muted)}
   .step strong{color:var(--text)}
   .step.on{border-color:rgba(71,197,255,.45);background:rgba(71,197,255,.08);color:var(--text)}
@@ -94,6 +96,38 @@
   .legend div{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:12px;padding:8px 10px;font-size:11px;color:var(--muted);line-height:1.45}
   .legend strong{color:var(--text)}
   .smallNote{font-size:11px;color:var(--muted);line-height:1.55;background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:12px;padding:10px 12px}
+  .dashboardStack{display:grid;gap:12px}
+  .subGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .chartCard,.reactivityCard,.storyCard{background:rgba(6,14,22,.72);border:1px solid rgba(23,50,75,.8);border-radius:16px;padding:12px}
+  .cardHeader{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px}
+  .cardTitle{font-size:11px;letter-spacing:.14em;color:var(--cyan);text-transform:uppercase}
+  .cardSub{font-size:10px;color:var(--muted);line-height:1.45;margin-top:4px}
+  .traceTabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .traceBtn{border:1px solid rgba(39,65,93,.96);background:rgba(8,20,31,.8);color:var(--muted2);padding:7px 10px;border-radius:999px;font-size:10px;letter-spacing:.12em;font-family:inherit;text-transform:uppercase;cursor:pointer;transition:.15s ease}
+  .traceBtn:hover{border-color:rgba(71,197,255,.55);color:var(--text)}
+  .traceBtn.on{background:rgba(71,197,255,.14);border-color:rgba(71,197,255,.72);color:var(--cyan)}
+  .trendWrap{position:relative;border-radius:14px;border:1px solid rgba(23,50,75,.8);background:
+      linear-gradient(180deg, rgba(5,12,18,.98), rgba(7,17,28,.92)),
+      radial-gradient(circle at 18% 22%, rgba(71,197,255,.12), transparent 32%);
+    padding:10px;overflow:hidden}
+  .trendSvg{width:100%;height:auto;display:block;aspect-ratio:2.28/1}
+  .trendFoot{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:start;margin-top:8px;font-size:10px;color:var(--muted)}
+  .trendContext{line-height:1.45;text-align:center}
+  .trendRead{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
+  .trendNow{font-size:26px;font-weight:800;letter-spacing:.04em;color:var(--text);line-height:1}
+  .trendDelta{font-size:10px;color:var(--muted2);letter-spacing:.08em;text-transform:uppercase}
+  .reactivityList{display:grid;gap:8px}
+  .reactivityRow{display:grid;grid-template-columns:minmax(98px,1fr) minmax(124px,1.1fr) auto;gap:10px;align-items:center;font-size:10px;color:var(--muted2)}
+  .reactivityRow strong{font-size:12px;color:var(--text);font-weight:700}
+  .reactivityTrack{position:relative;height:10px;border-radius:999px;border:1px solid rgba(23,50,75,.82);background:rgba(3,9,14,.95);overflow:hidden}
+  .reactivityTrack::before{content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(147,230,255,.16)}
+  .reactivityBar{position:absolute;top:1px;bottom:1px;border-radius:999px}
+  .reactivityBar.pos{left:50%;background:linear-gradient(90deg, rgba(71,197,255,.36), rgba(147,230,255,.9))}
+  .reactivityBar.neg{right:50%;background:linear-gradient(90deg, rgba(255,159,67,.9), rgba(255,93,93,.36))}
+  .reactivitySummary{margin-top:10px;font-size:10.5px;color:var(--muted);line-height:1.5}
+  .storyGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+  .storyCard .label{margin-bottom:7px}
+  .storyCard p{margin:0;font-size:11px;line-height:1.55;color:var(--text)}
   .footerLine{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}
   .badge{display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:1px solid rgba(71,197,255,.22);padding:6px 10px}
   .badge strong{color:var(--text)}
@@ -150,9 +184,19 @@
   @media (max-width: 1180px){
     .grid{grid-template-columns:1fr}
     .chiprow{justify-content:flex-start}
+    .sidePanel{position:static;max-height:none}
+  }
+  @media (max-width: 1320px){
+    .metrics{grid-template-columns:repeat(2,minmax(0,1fr))}
+  }
+  @media (max-width: 980px){
+    .subGrid,.storyGrid{grid-template-columns:1fr}
   }
   @media (max-width: 760px){
-    .guideGrid,.metrics,.legend{grid-template-columns:1fr}
+    .guideGrid,.metrics,.legend,.steps{grid-template-columns:1fr}
+    .trendFoot,.reactivityRow{grid-template-columns:1fr}
+    .trendContext{text-align:left}
+    .trendRead{align-items:flex-start;text-align:left}
     .overlayGuide{position:static;max-width:none;margin:10px 12px 0}
     .overlayFocus{position:static;display:block;padding:12px}
     .focusPill{display:inline-block;margin-top:10px}
@@ -166,14 +210,16 @@
   <div class="guideCard">
     <div class="guideTitle">Lò phản ứng hạt nhân mini · Cách đọc nhanh</div>
     <div class="guideSub">
-      Đây là mô phỏng giáo dục. Mục tiêu là nhìn được chuỗi nhân quả: neutron → phân hạch → nhiệt → hơi nước → công suất.
-      3D cho phép quan sát cỗ máy theo lớp: vỏ an toàn, bình lò, bơm, bộ tạo hơi, tua-bin và, khi bật X-RAY, cả lõi bên trong.
+      Đây là mô phỏng giáo dục cho Chương 2. Mục tiêu là nhìn rõ chuỗi: neutron → phân hạch → k_eff → công suất → nhiệt → nhiệt dư.
+      <strong>Lưu ý:</strong> dashboard này đã được nén lại, không mô phỏng 100%, để giữ đúng trọng tâm học tập; các cơ chế khác được đơn giản hoá vì mô hình thực tế quá phức tạp và khó đọc nhanh.
+      Cách đọc đúng là: trạng thái hệ, nguyên nhân biến đổi, rồi hậu quả sau khi dừng lò.
+      3D cho phép quan sát cùng một lò theo lớp nhận thức: xa thấy kiến trúc, gần thấy lõi, rất gần hoặc X-RAY mới thấy pellet, đường đi neutron và điểm phân hạch.
     </div>
     <div class="guideGrid">
-      <div class="item"><strong>2D</strong><br/>Xem mặt cắt để hiểu bối cảnh tổng thể: lõi, cụm nhiên liệu, thanh điều khiển và dòng neutron.</div>
-      <div class="item"><strong>3D</strong><br/>Kéo chuột để quay camera, lăn bánh xe để zoom, WASD / QE để bay quanh máy. Bật X-RAY để thấy bên trong lõi.</div>
-      <div class="item"><strong>k</strong><br/>Thanh trượt điều khiển trạng thái dưới tới hạn / tới hạn / trên tới hạn. Nếu giữ quá lâu ở vùng xấu, nhiệt dư sẽ tích lũy.</div>
-      <div class="item"><strong>SCRAM</strong><br/>Cắm thanh điều khiển xuống nhanh. Phản ứng giảm, nhưng nhiệt dư vẫn còn và phải được làm mát.</div>
+      <div class="item"><strong>2D</strong><br/>Xem mặt cắt để thấy trạng thái lõi, đường nhiệt và điểm nóng chú thích mà không bị quá tải thị giác.</div>
+      <div class="item"><strong>3D</strong><br/>Kéo chuột để quay camera, lăn bánh xe để phóng to. Khi bật focus hoặc X-RAY, cùng mô hình sẽ hé sâu dần vào vùng pellet.</div>
+      <div class="item"><strong>k_eff</strong><br/>Thanh trượt chỉ đổi trạng thái lõi nền; `k_eff` cuối cùng còn bị thanh điều khiển, Doppler, chất làm chậm, xenon và SCRAM kéo đổi.</div>
+      <div class="item"><strong>SCRAM</strong><br/>SCRAM dừng chuỗi phản ứng tức thời rất nhanh, nhưng không xoá nhiệt dư. Sau dừng lò vẫn phải nhìn nhiệt độ nhiên liệu, nhiệt độ chất làm mát và nhiệt dư.</div>
     </div>
     <div class="guideActions">
       <button class="btn soft" id="guideClose">Hiểu rồi, vào mô phỏng</button>
@@ -200,8 +246,8 @@
 <div class="wrap">
   <div class="topbar">
     <div>
-      <div class="title">Lò phản ứng hạt nhân mini</div>
-      <div class="subtitle">Mô phỏng lò nhiệt hạt nhân · ưu tiên trực quan vật lí · 2D / 3D đồng bộ một lõi vật lí</div>
+      <div class="title">Chương 2 · Dashboard chuỗi nhân quả lò phản ứng</div>
+      <div class="subtitle">Neutron → phân hạch → k_eff → công suất → nhiệt → nhiệt dư · giữ đúng phạm vi vật lí lõi lò</div>
     </div>
     <div class="chiprow">
       <div class="chip"><strong>Nhịp mô phỏng:</strong> 1 s ≈ 5 / 10 thế hệ</div>
@@ -220,11 +266,12 @@
           <div class="overlayBadge ok" id="statusBadge">BÌNH THƯỜNG</div>
           <div class="overlayHint" id="sceneHint">
             <strong>Gợi ý:</strong> lia chuột / chạm vào vật thể để hiện chú thích mini · dùng X-RAY để quan sát lõi.
+          Cố đọc theo chuỗi: trạng thái hệ → nguyên nhân → hậu quả sau khi dừng lò.
           </div>
         </div>
         <div class="overlayGuide" id="cameraGuide">
           Chạm / lia vào vật thể để mở chú thích mini.
-          Bình thường lõi được che bởi vỏ máy; chỉ nhìn sâu vào trong khi bật X-RAY hoặc zoom rất gần đúng vùng trung tâm.
+          Bình thường lõi được che bởi vỏ máy; chỉ nhìn sâu vào trong khi bật X-RAY hoặc phóng to rất gần vùng trung tâm.
         </div>
         <div class="miniTooltip" id="miniTooltip" aria-hidden="true"></div>
         <div class="specterBadge" id="specterBadge"><strong>3D HỌC TẬP · LOD 0</strong><br/>Xa: thấy vỏ máy và đường ống · gần đúng vùng lõi mới hé nội thất</div>
@@ -237,34 +284,100 @@
           <div class="focusPill" id="zoomState">PHÓNG ĐẠI x1.00</div>
         </div>
       </div>
+      <div class="content">
+        <div class="subGrid">
+          <div class="reactivityCard">
+            <div class="cardTitle">Phân rã k_eff</div>
+            <div class="cardSub">Một hàng = một nguyên nhân. Nhìn từng lực kéo để hiểu vì sao lõi đang tăng hay giảm độ phản ứng.</div>
+            <div class="reactivityList" id="reactivityList" style="margin-top:12px;"></div>
+            <div class="reactivitySummary" id="reactivitySummary">`k_eff` chỉ có ý nghĩa học tập khi nhìn đủ cả nguồn dương lẫn nguồn âm.</div>
+          </div>
+
+          <div class="reactivityCard">
+            <div class="cardTitle">4 đoạn ngắn để học</div>
+            <div class="cardSub">Không lặp tooltip. Mỗi đoạn chỉ giữ một nhiệm vụ nhận thức.</div>
+            <div class="storyGrid" style="margin-top:12px;">
+              <div class="storyCard">
+                <div class="label">Hiện tượng</div>
+                <p id="storyPhenomenon">Hệ đang ở gần tới hạn ổn định: thế hệ neutron sau gần bằng thế hệ neutron trước.</p>
+              </div>
+              <div class="storyCard">
+                <div class="label">Cơ chế</div>
+                <p id="storyMechanism">Trạng thái nền, thanh điều khiển, Doppler, chất làm chậm và xenon đang bù nhau để giữ lõi quanh mốc `k_eff ≈ 1`.</p>
+              </div>
+              <div class="storyCard">
+                <div class="label">Hệ quả học tập</div>
+                <p id="storyConsequence">Ổn định không phải điểm “đứng yên”, mà là cân bằng động của nhiều hồi tiếp cùng lúc.</p>
+              </div>
+              <div class="storyCard">
+                <div class="label">Ví dụ trực quan</div>
+                <p id="storyExample">Giữ chart ở `k_eff`, rồi kéo slider nhẹ để thấy hệ tự cân lại theo thời gian.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="panel">
-      <h3>Điều khiển & Thông số vật lí</h3>
-      <div class="content">
+    <div class="panel sidePanel">
+      <h3>Điều khiển & Giải thích Chương 2</h3>
+      <div class="content dashboardStack">
         <div class="sliderBlock">
           <div class="sliderHeader">
-            <div class="label">k đặt mục tiêu</div>
+            <div>
+              <div class="label">Trạng thái lõi nền</div>
+              <div class="cardSub">Thanh trượt chỉ đổi trạng thái lõi nền. `k_eff` thực còn bị rods, Doppler, moderator, xenon và SCRAM kéo đi.</div>
+            </div>
             <div class="bigValue" id="kTargetRead">1.0000</div>
           </div>
           <input id="kSlider" type="range" min="0.95" max="1.05" step="0.0005" value="1.0000" />
-          <div class="scaleRow"><span>0.95 dưới tới hạn</span><span>1.00 tới hạn</span><span>1.05 trên tới hạn</span></div>
+          <div class="scaleRow"><span>0.95 thấp độ phản ứng</span><span>1.00 gần tới hạn</span><span>1.05 dương mạnh</span></div>
           <div class="btnrow">
             <button class="btn on" id="demoBtn">MÔ PHỎNG</button>
             <button class="btn" id="realityBtn">THỰC TẾ</button>
             <button class="btn soft" id="viewBtn">KHÔNG GIAN 3D</button>
             <button class="btn soft" id="xrayBtn">X-RAY</button>
+            <button class="btn soft" id="focusBtn">FOCUS PHÂN HẠCH</button>
             <button class="btn soft" id="stepBtn">GIẢI THÍCH TỪNG BƯỚC</button>
             <button class="btn soft" id="zoomBtn">PHÓNG ĐẠI</button>
             <button class="btn negative" id="scramBtn">NGẮT KHẨN</button>
+            <button class="btn soft" id="recoverBtn">RÚT THANH</button>
             <button class="btn soft" id="resetBtn">ĐẶT LẠI</button>
           </div>
           <div class="smallNote" id="controlNote" style="margin-top:10px;">
-            Thanh trượt là lệnh của người vận hành. Mô phỏng dùng k hiệu dụng sau khi tính thanh điều khiển, Doppler, moderator và xenon. Sau SCRAM, nhiệt dư vẫn tồn tại nên lò không thể nguội ngay.
+            SCRAM dập chuỗi phản ứng tức thời rất nhanh. Phần người học cần đọc tiếp là nhiệt dư, vì nhiệt này vẫn còn dù chuỗi số neutron đã rơi xuống.
           </div>
         </div>
 
-        <div class="section">
+        <div class="chartCard">
+          <div class="cardHeader">
+            <div>
+              <div class="cardTitle">Nhịp hệ</div>
+              <div class="cardSub" id="trendTitle">k_eff theo thời gian gần nhất</div>
+            </div>
+            <div class="trendRead">
+              <div class="trendNow" id="trendNow">1.0000</div>
+              <div class="trendDelta" id="trendDelta">ổn định</div>
+            </div>
+          </div>
+          <div class="traceTabs">
+            <button class="traceBtn on" data-series="keff">k_eff</button>
+            <button class="traceBtn" data-series="neutrons">số neutron</button>
+            <button class="traceBtn" data-series="fuel">nhiệt độ nhiên liệu</button>
+            <button class="traceBtn" data-series="coolant">nhiệt độ chất làm mát</button>
+            <button class="traceBtn" data-series="decay">nhiệt dư</button>
+          </div>
+          <div class="trendWrap">
+            <svg class="trendSvg" id="trendSvg" viewBox="0 0 360 158" preserveAspectRatio="none" aria-label="Biểu đồ nhịp hệ"></svg>
+          </div>
+          <div class="trendFoot">
+            <span id="trendLow">0.980</span>
+            <span class="trendContext" id="trendContext">Đồ thị này để thấy hệ đang tự cân bằng, tăng công suất tức thời hay chỉ còn nhiệt dư sau khi dừng lò.</span>
+            <span id="trendHigh">1.020</span>
+          </div>
+        </div>
+
+        <div class="section" style="margin-top:0;padding-top:0;border-top:0;">
           <div class="metrics">
             <div class="metric">
               <div class="k">k hiệu dụng</div>
@@ -279,95 +392,83 @@
               <div class="n" id="rhoNote">gần cân bằng tới hạn</div>
             </div>
             <div class="metric">
-              <div class="k">neutron</div>
+              <div class="k">số neutron</div>
               <div class="v" id="nVal">60</div>
-              <div class="u">hạt đang được mô phỏng</div>
-              <div class="n">Physics count tách riêng với số hạt hiển thị để tránh nhầm giữa mô hình và hình vẽ.</div>
+              <div class="u">đại diện cho chuỗi phản ứng tức thời</div>
+              <div class="n">Số này gắn với chuỗi phân hạch đang chạy, không phải số chấm đang vẽ trên màn hình.</div>
             </div>
             <div class="metric">
-              <div class="k">phân hạch / s</div>
+              <div class="k">phân hạch / giây</div>
               <div class="v" id="fissVal">0</div>
-              <div class="u">tốc độ phân hạch</div>
-              <div class="n">Sự kiện phân hạch tạo nhiệt và sinh ra 2–3 neutron mới.</div>
+              <div class="u">fission rate</div>
+              <div class="n">Mỗi lần tăng ở đây thường kéo theo neutron con, nhiệt trong pellet và dấu focus trong 3D.</div>
+            </div>
+            <div class="metric">
+              <div class="k">công suất tức thời</div>
+              <div class="v" id="promptVal">94%</div>
+              <div class="u">chuỗi chính</div>
+              <div class="n">Đây là phần sẽ rơi nhanh nhất khi thanh điều khiển cắm xuống trong SCRAM.</div>
+            </div>
+            <div class="metric">
+              <div class="k">nhiệt dư</div>
+              <div class="v" id="decayVal">6%</div>
+              <div class="u">sau dừng lò vẫn còn</div>
+              <div class="n">Nguồn nhiệt do sản phẩm phân hạch phân rã, không biến mất cùng lúc với chuỗi neutron.</div>
             </div>
             <div class="metric">
               <div class="k">nhiệt nhiên liệu</div>
               <div class="v" id="fuelVal">285</div>
               <div class="u">°C</div>
-              <div class="n">Phản hồi Doppler làm độ phản ứng giảm khi nhiên liệu nóng hơn.</div>
+              <div class="n">Nhiên liệu nóng hơn làm Doppler mạnh hơn, nên tự kéo độ phản ứng đi xuống.</div>
             </div>
             <div class="metric">
-              <div class="k">nhiệt nước làm mát</div>
+              <div class="k">nhiệt độ chất làm mát</div>
               <div class="v" id="coolVal">275</div>
               <div class="u">°C</div>
-              <div class="n">Nước làm chậm nóng hơn → làm chậm neutron kém hơn.</div>
-            </div>
-            <div class="metric">
-              <div class="k">công suất nhiệt</div>
-              <div class="v" id="powVal">100%</div>
-              <div class="u">công suất nhiệt</div>
-              <div class="n" id="powNote">đầu ra ổn định</div>
+              <div class="n">Chất làm mát nóng lên thì khả năng làm chậm neutron kém đi và tải nhiệt ra chậm hơn.</div>
             </div>
             <div class="metric">
               <div class="k">xenon-135</div>
               <div class="v" id="xeVal">0.0000</div>
-              <div class="u">độ phạt xenon</div>
-              <div class="n">Sau SCRAM hoặc công suất cao, xenon tích lũy rồi làm giảm k.</div>
+              <div class="u">poison tạm thời</div>
+              <div class="n">Sau công suất cao hoặc sau SCRAM, xenon có thể dâng lên rồi mới nhả dần.</div>
             </div>
             <div class="metric">
               <div class="k">thanh điều khiển</div>
               <div class="v" id="rodVal">30%</div>
-              <div class="u">độ chèn</div>
-              <div class="n">Cắm sâu hơn → hấp thụ neutron mạnh hơn.</div>
+              <div class="u">rod insertion</div>
+              <div class="n">Thanh điều khiển là đòn bẩy nhanh nhất lên chuỗi neutron, nhưng không phải đòn bẩy duy nhất của nhiệt.</div>
             </div>
             <div class="metric">
-              <div class="k">hơi nước</div>
-              <div class="v" id="steamVal">0%</div>
-              <div class="u">tỉ phần hơi</div>
-              <div class="n">Nhiệt đủ cao thì thành hơi, kéo tua-bin / phát điện.</div>
+              <div class="k">công suất nhiệt</div>
+              <div class="v" id="powVal">100%</div>
+              <div class="u">công suất tức thời + nhiệt dư</div>
+              <div class="n" id="powNote">đầu ra ổn định</div>
             </div>
             <div class="metric">
-              <div class="k">thời gian hoạt động</div>
-              <div class="v" id="upVal">00:00:00</div>
-              <div class="u">thời gian chạy</div>
-              <div class="n">Thời gian tính từ lúc khởi động mô phỏng.</div>
-            </div>
-            <div class="metric">
-              <div class="k">thời gian sự cố</div>
-              <div class="v" id="incVal">00:00:00</div>
-              <div class="u">đồng hồ sự cố</div>
-              <div class="n">Dùng để thấy vùng nguy hiểm kéo dài bao lâu trước khi quá nhiệt.</div>
+              <div class="k">thế hệ neutron</div>
+              <div class="v" id="genVal">0</div>
+              <div class="u">số thế hệ neutron</div>
+              <div class="n">Dùng để đọc đồ thị như một nhịp chuỗi, không chỉ như đồng hồ thời gian.</div>
             </div>
           </div>
         </div>
 
         <div class="section">
-          <div class="label" style="margin-bottom:8px">Chuỗi quá trình của lò</div>
+          <div class="cardTitle" style="margin-bottom:8px;">Chuỗi nhân quả</div>
           <div class="steps" id="steps">
-            <div class="step" data-step="0"><strong>1.</strong> Neutron bay vào vùng nước làm chậm trong bình lò.</div>
-            <div class="step" data-step="1"><strong>2.</strong> Nước làm chậm neutron; tốc độ giảm để xác suất phân hạch tăng.</div>
-            <div class="step" data-step="2"><strong>3.</strong> Neutron nhiệt được cụm nhiên liệu hấp thụ và gây phân hạch.</div>
-            <div class="step" data-step="3"><strong>4.</strong> Mỗi phân hạch sinh 2–3 neutron mới, đồng thời tạo nhiệt trong lõi.</div>
-            <div class="step" data-step="4"><strong>5.</strong> Nhiệt chuyển sang nước sơ cấp; nếu là PWR, hơi được tạo ở bộ tạo hơi.</div>
-            <div class="step" data-step="5"><strong>6.</strong> Thanh điều khiển và phản hồi Doppler / chất làm chậm giữ k_eff không vượt ngưỡng.</div>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="smallNote">
-            Bấm hoặc lia chuột vào từng phần tử để hiện chú thích. Bảng chú giải cố định đã được bỏ để vùng nhìn sạch hơn; thông tin bây giờ chỉ bật lên khi bạn chạm vào đúng vật thể.
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="smallNote">
-            3D ở đây không phải để “đẹp mắt cho có”. Nó để nhìn thấy một điều quan trọng: neutron bay trong một không gian có nước, các thanh nhiên liệu và thanh điều khiển; khi neutron bị làm chậm và trúng viên nhiên liệu, phân hạch xảy ra ngay tại đó và sinh ra neutron mới cùng nhiệt.
+            <div class="step" data-step="0"><strong>1.</strong> Neutron đi vào nước làm chậm quanh bó nhiên liệu.</div>
+            <div class="step" data-step="1"><strong>2.</strong> Neutron chậm lại nên xác suất bị U-235 hấp thụ tăng lên.</div>
+            <div class="step" data-step="2"><strong>3.</strong> Phân hạch xảy ra trong pellet và sinh 2–3 neutron con.</div>
+            <div class="step" data-step="3"><strong>4.</strong> Công suất tức thời tăng trước, rồi nhiệt đi từ nhiên liệu sang chất làm mát.</div>
+            <div class="step" data-step="4"><strong>5.</strong> Nhiệt độ và xenon đổi lại kéo `k_eff` về vùng thấp hơn.</div>
+            <div class="step" data-step="5"><strong>6.</strong> SCRAM dập chuỗi chính, còn nhiệt dư thì vẫn phải được tải ra.</div>
           </div>
         </div>
 
         <div class="footerLine">
-          <div class="badge"><strong>Luôn bật:</strong> vật lí / trực quan hóa tách lớp</div>
-          <div class="badge"><strong>Ngắt khẩn:</strong> thủ công בלבד</div>
+          <div class="badge"><strong>Trọng tâm:</strong> trạng thái hệ · nguyên nhân · hậu quả sau dừng lò</div>
+          <div class="badge"><strong>Tập trung 3D:</strong> cùng một mô hình · không tách scene</div>
         </div>
       </div>
     </div>
@@ -401,32 +502,62 @@
     rhoVal: $('rhoVal'),
     nVal: $('nVal'),
     fissVal: $('fissVal'),
+    promptVal: $('promptVal'),
+    decayVal: $('decayVal'),
     fuelVal: $('fuelVal'),
     coolVal: $('coolVal'),
     powVal: $('powVal'),
     xeVal: $('xeVal'),
     rodVal: $('rodVal'),
-    steamVal: $('steamVal'),
-    upVal: $('upVal'),
-    incVal: $('incVal'),
+    genVal: $('genVal'),
     kEffNote: $('kEffNote'),
     rhoNote: $('rhoNote'),
     powNote: $('powNote'),
+    controlNote: $('controlNote'),
+    trendSvg: $('trendSvg'),
+    trendTitle: $('trendTitle'),
+    trendNow: $('trendNow'),
+    trendDelta: $('trendDelta'),
+    trendLow: $('trendLow'),
+    trendHigh: $('trendHigh'),
+    trendContext: $('trendContext'),
+    reactivityList: $('reactivityList'),
+    reactivitySummary: $('reactivitySummary'),
+    storyPhenomenon: $('storyPhenomenon'),
+    storyMechanism: $('storyMechanism'),
+    storyConsequence: $('storyConsequence'),
+    storyExample: $('storyExample'),
     demoBtn: $('demoBtn'),
     realityBtn: $('realityBtn'),
     viewBtn: $('viewBtn'),
     xrayBtn: $('xrayBtn'),
+    focusBtn: $('focusBtn'),
     stepBtn: $('stepBtn'),
     zoomBtn: $('zoomBtn'),
     scramBtn: $('scramBtn'),
+    recoverBtn: $('recoverBtn'),
     resetBtn: $('resetBtn'),
+    traceBtns: Array.from(document.querySelectorAll('.traceBtn')),
     steps: Array.from(document.querySelectorAll('.step'))
   };
 
   const c = ui.scene.getContext('2d');
 
   const GUIDE_KEY = 'mini_reactor_guide_v4_seen';
-  if(!localStorage.getItem(GUIDE_KEY)){
+  const GUIDE_OFF = new URLSearchParams(location.search).get('noguide') === '1';
+  const storage = (() => {
+    try {
+      if(!window.localStorage) throw new Error('no storage');
+      const probe = '__probe__';
+      window.localStorage.setItem(probe, '1');
+      window.localStorage.removeItem(probe);
+      return window.localStorage;
+    } catch (err) {
+      return { getItem: () => null, setItem: () => {}, removeItem: () => {} };
+    }
+  })();
+  if(GUIDE_OFF) storage.setItem(GUIDE_KEY, '1');
+  if(!GUIDE_OFF && !storage.getItem(GUIDE_KEY)){
     ui.guideMask.classList.add('on');
     ui.guideMask.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
@@ -436,7 +567,7 @@
     ui.guideMask.classList.remove('on');
     ui.guideMask.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
-    localStorage.setItem(GUIDE_KEY, '1');
+    storage.setItem(GUIDE_KEY, '1');
   }
 
   function clamp(v, a, b){ return Math.max(a, Math.min(b, v)); }
@@ -461,13 +592,16 @@
     thermalState: 'normal',
     meltdown: false,
     scram: false,
-    shutdownAge: 0,
-    shutdownPower: 1.0,
+    scramAge: 0,
+    scramPower: 1.0,
     scramLatched: false,
-    promptPower: 1.0,
+    promptPower: 0.94,
     specterMode: 'auto',
     xrayVision: false,
-    decayHeat: 0.0,
+    focusMode: true,
+    focusCooldown: 0,
+    focusSequence: null,
+    decayHeat: 0.06,
     stepRevealMode: false,
     stepRevealIndex: 0,
     pointerType: 'mouse',
@@ -479,6 +613,9 @@
     kEff: 1.0000,
     reactivity: 0,
     generations: 0,
+    chartMetric: 'keff',
+    chartHistory: [],
+    chartClock: 0,
     generationPulse: 0,
     initialNeutrons: 60,
     expectedNeutrons: 60,
@@ -497,6 +634,9 @@
     lastFissionEvents: 0,
     displayCount: 0,
     rodInsertion: 0.30,
+    baseContribution: 0,
+    controlContribution: 0,
+    scramContribution: 0,
     rodPenalty: 0,
     dopplerPenalty: 0,
     moderatorPenalty: 0,
@@ -505,8 +645,7 @@
     lastFastCount: 0,
     uiFlash: 0,
     particles: [],
-    heatTrail: [],
-    spark: [],
+    fissionBursts: [],
     lastEvent: 'source',
     lastFissionPos: {x:0,y:0,z:0},
     sceneZoom: 1.00,
@@ -557,6 +696,7 @@
 
   function setViewMode(mode){
     S.viewMode = mode;
+    if(mode !== '3d') S.focusSequence = null;
     ui.viewText.textContent = mode === '3d' ? 'KIẾN TRÚC 3D' : 'MẶT CẮT 2D';
     ui.viewBtn.textContent = mode === '3d' ? 'TRỞ VỀ MẶT CẮT' : 'KHÔNG GIAN 3D';
     ui.viewBtn.classList.toggle('on', mode === '3d');
@@ -571,6 +711,7 @@
   function resetReactor(keepMode = true){
     const mode = S.mode;
     const viewMode = S.viewMode;
+    const focusMode = S.focusMode;
     Object.assign(S, {
       time: 0,
       incidentTime: 0,
@@ -578,23 +719,29 @@
       thermalState: 'normal',
       meltdown: false,
       scram: false,
-      shutdownAge: 0,
-      shutdownPower: 1.0,
+      scramAge: 0,
+      scramPower: 1.0,
       scramLatched: false,
-      promptPower: 1.0,
+      promptPower: 0.94,
       specterMode: 'auto',
-      decayHeat: 0.0,
+      focusMode: true,
+      focusCooldown: 0,
+      focusSequence: null,
+      decayHeat: 0.06,
       stepRevealMode: false,
       stepRevealIndex: 0,
       kTarget: 1.0000,
       kEff: 1.0000,
       reactivity: 0,
       generations: 0,
+      chartMetric: 'keff',
+      chartHistory: [],
+      chartClock: 0,
       generationPulse: 0,
       expectedNeutrons: S.initialNeutrons,
-      fuelTemp: 285,
-      coolantTemp: 275,
-      xenon: 0.0,
+      fuelTemp: 502,
+      coolantTemp: 353,
+      xenon: 1.02,
       steam: 0.0,
       power: 1.0,
       fissionRate: 0,
@@ -602,6 +749,9 @@
       lastFissionEvents: 0,
       displayCount: 0,
       rodInsertion: 0.30,
+      baseContribution: 0,
+      controlContribution: 0,
+      scramContribution: 0,
       rodPenalty: 0,
       dopplerPenalty: 0,
       moderatorPenalty: 0,
@@ -610,8 +760,7 @@
       lastFastCount: 0,
       uiFlash: 0,
       particles: [],
-      heatTrail: [],
-      spark: [],
+      fissionBursts: [],
       lastEvent: 'source',
       lastFissionPos: {x:0,y:0,z:0},
       sourcePulse: 0,
@@ -624,6 +773,7 @@
       sceneTargetPanY: 0
     });
     S.mode = keepMode ? mode : S.mode;
+    S.focusMode = focusMode;
     S.viewMode = viewMode;
     S.camYaw = 0.62;
     S.camPitch = -0.28;
@@ -645,12 +795,12 @@
     ui.statusBadge.textContent = 'BÌNH THƯỜNG';
     ui.statusBadge.className = 'overlayBadge ok';
     ui.xrayBtn.classList.toggle('on', S.xrayVision);
+    ui.focusBtn.classList.toggle('on', S.focusMode);
     ui.scramBtn.classList.remove('on');
     ui.stepBtn.textContent = 'GIẢI THÍCH TỪNG BƯỚC';
     ui.fatalOverlay.classList.remove('on');
     ui.fatalOverlay.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('shake', 'meltdown-screen');
-    ui.xrayBtn.classList.toggle('on', S.xrayVision);
     S.hoverHit = null;
     setTooltip(false);
     buildInitialPopulation();
@@ -659,28 +809,36 @@
   function manualScram(){
     if(S.meltdown) return;
     S.scram = true;
-    S.shutdownAge = 0;
+    S.scramAge = 0;
     S.scramLatched = false;
+    S.focusSequence = null;
     S.lastEvent = 'scram';
     ui.scramBtn.classList.add('on');
+    if(S.chartMetric !== 'decay') S.chartMetric = 'decay';
   }
 
   function decayHeatFraction(ageSec){
     const age = Math.max(0, ageSec);
-    const blend = 0.50 * Math.exp(-age / 20) + 0.30 * Math.exp(-age / 300) + 0.20 * Math.exp(-age / 10000);
-    return 0.066 * blend;
+    const fast = 0.060 / Math.pow(1 + age / 120, 0.7);
+    const slow = 0.010 / Math.pow(1 + age / 2000, 0.3);
+    return fast + slow;
   }
 
-  function computeFeedback(){
-    const rodVisual = S.scram ? 1.0 : clamp(0.30 - (S.kTarget - 1.0) * 10.0, 0.0, 0.95);
-    S.rodInsertion = rodVisual;
-    S.dopplerPenalty = -0.000018 * Math.max(0, S.fuelTemp - 285);
-    S.moderatorPenalty = -0.000012 * Math.max(0, S.coolantTemp - 285);
-    S.xenonPenalty = S.xenon * 0.0225;
-    S.rodPenalty = 0.030 * (0.30 - S.rodInsertion);
-    const scramPenalty = S.scram ? -0.050 : 0.0;
-    S.kEff = clamp(S.kTarget + S.rodPenalty + S.dopplerPenalty + S.moderatorPenalty - S.xenonPenalty + scramPenalty, 0.82, 1.14);
-    S.reactivity = (S.kEff - 1) / S.kEff;
+  function computeFeedback(dt){
+    const rodTarget = S.scram
+      ? 1.0
+      : clamp(0.28 + (S.kTarget - 1.0) * 1.25 + (S.promptPower - 0.94) * 0.08 + (S.power - 1.0) * 0.035, 0.08, 0.62);
+    const rodRate = S.scram ? 14.0 : 1.35;
+    S.rodInsertion = lerp(S.rodInsertion, rodTarget, clamp(dt * rodRate, 0, S.scram ? 0.85 : 0.18));
+    S.baseContribution = (S.kTarget - 1.0) + 0.020;
+    S.controlContribution = -0.16 * (S.rodInsertion - 0.28);
+    S.dopplerPenalty = -0.000021 * (S.fuelTemp - 285);
+    S.moderatorPenalty = -0.000013 * (S.coolantTemp - 275);
+    S.xenonPenalty = S.xenon * 0.0145;
+    S.scramContribution = S.scram ? (-0.032 - 0.072 * clamp((S.rodInsertion - 0.22) / 0.78, 0, 1)) : 0;
+    S.rodPenalty = S.controlContribution;
+    S.kEff = clamp(1 + S.baseContribution + S.controlContribution + S.dopplerPenalty + S.moderatorPenalty - S.xenonPenalty + S.scramContribution, 0.72, 1.08);
+    S.reactivity = (S.kEff - 1) / Math.max(0.72, S.kEff);
   }
 
   function spawnNeutron(x, y, z, fast = true, boost = 1){
@@ -745,6 +903,84 @@
   const CORE_RODS = rodsLayout();
   const CORE_PELLETS = CORE_RODS.flatMap(fuelPelletsForRod);
 
+  function triggerFissionFocus(burst){
+    if(!S.focusMode || S.focusCooldown > 0 || S.viewMode !== '3d' || S.dragging || S.meltdown) return;
+    S.focusCooldown = 2.1;
+    S.focusSequence = {
+      timer: 0,
+      pos: {x:burst.x, y:burst.y, z:burst.z},
+      focusDist: 292
+    };
+  }
+
+  function spawnFissionBurst(x, y, z, births = 2){
+    const burst = {x, y, z, age:0, life:1.55, neutrons:[], fragments:[], heat:[]};
+    const neutronCount = Math.min(3, Math.max(2, births));
+    for(let i=0;i<neutronCount;i++){
+      const yaw = rand(0, Math.PI * 2);
+      const pitch = rand(-0.55, 0.55);
+      const speed = rand(94, 142);
+      burst.neutrons.push({
+        x, y, z,
+        vx: Math.cos(yaw) * Math.cos(pitch) * speed,
+        vy: Math.sin(pitch) * speed,
+        vz: Math.sin(yaw) * Math.cos(pitch) * speed
+      });
+    }
+    const fragmentYaw = rand(0, Math.PI * 2);
+    for(let i=0;i<2;i++){
+      const yaw = fragmentYaw + (i ? Math.PI : 0) + rand(-0.18, 0.18);
+      const pitch = rand(-0.22, 0.22);
+      const speed = rand(44, 72);
+      burst.fragments.push({
+        x, y, z,
+        vx: Math.cos(yaw) * Math.cos(pitch) * speed,
+        vy: Math.sin(pitch) * speed,
+        vz: Math.sin(yaw) * Math.cos(pitch) * speed
+      });
+    }
+    for(let i=0;i<3;i++){
+      const yaw = rand(0, Math.PI * 2);
+      const pitch = rand(-0.42, 0.42);
+      const speed = rand(20, 38);
+      burst.heat.push({
+        x, y, z,
+        vx: Math.cos(yaw) * Math.cos(pitch) * speed,
+        vy: Math.sin(pitch) * speed,
+        vz: Math.sin(yaw) * Math.cos(pitch) * speed
+      });
+    }
+    S.fissionBursts.push(burst);
+    if(S.fissionBursts.length > 6) S.fissionBursts.shift();
+    triggerFissionFocus(burst);
+    return burst;
+  }
+
+  function updateFissionBursts(dt){
+    S.focusCooldown = Math.max(0, S.focusCooldown - dt);
+    const alive = [];
+    for(const burst of S.fissionBursts){
+      burst.age += dt;
+      burst.neutrons.forEach((item) => {
+        item.x += item.vx * dt;
+        item.y += item.vy * dt;
+        item.z += item.vz * dt;
+      });
+      burst.fragments.forEach((item) => {
+        item.x += item.vx * dt;
+        item.y += item.vy * dt;
+        item.z += item.vz * dt;
+      });
+      burst.heat.forEach((item) => {
+        item.x += item.vx * dt;
+        item.y += item.vy * dt;
+        item.z += item.vz * dt;
+      });
+      if(burst.age < burst.life) alive.push(burst);
+    }
+    S.fissionBursts = alive;
+  }
+
   function updateParticles(dt){
     const coreBox = {x:-210, y:-150, z:-160, w:420, h:300, d:320};
     const fuelBox = {x:-150, y:-135, z:-110, w:300, h:270, d:220};
@@ -800,10 +1036,9 @@
       }
 
       // control rod absorption field
-      const absorptionField = S.scram ? 0.72 : (0.10 + 0.55 * S.rodInsertion);
-      const rodXs = [148, 178];
-      for(const rx of rodXs){
-        if(Math.abs(p.x - rx) < 18 && p.y > -150 && p.y < 150 && Math.abs(p.z) < 120){
+      const absorptionField = S.scram ? 0.88 : (0.10 + 0.55 * S.rodInsertion);
+      for(const rod of CORE_RODS){
+        if(Math.abs(p.x - rod.x) < 15 && Math.abs(p.z - rod.z) < 15 && p.y > -145 && p.y < 145){
           if(Math.random() < absorptionField * dt * 10){
             p.hitFlash = 1;
             p.dead = true;
@@ -814,15 +1049,16 @@
       }
       if(p.dead) continue;
 
-      // fission on thermal neutron inside fuel pellet zone
+      // fission on thermal số neutron inside fuel pellet zone
       if(inFuel && p.type === 'thermal'){
         const nearPellet = pellets.some(q => Math.abs(p.x - q.x) < 11 && Math.abs(p.y - q.y) < 11 && Math.abs(p.z - q.z) < 11);
-        const drive = clamp(0.055 + (S.kEff - 1.0) * 2.8 + S.power * 0.02, 0.02, 0.48);
+        const drive = clamp(0.042 + (S.kEff - 1.0) * 1.9 + S.promptPower * 0.05, 0.015, 0.44);
         if(nearPellet && Math.random() < drive * dt * 18){
           fissionEvents++;
           S.lastEvent = 'fission';
           S.lastFissionPos = {x:p.x, y:p.y, z:p.z};
           const births = 2 + (Math.random() < 0.58 ? 1 : 0);
+          spawnFissionBurst(p.x, p.y, p.z, births);
           for(let i=0;i<births;i++){
             const pos = {
               x: p.x + rand(-6,6),
@@ -864,57 +1100,65 @@
 
     S.time += dt;
     S.incidentTime += dt;
+    const promptBeforeControl = S.promptPower;
 
     if(S.scram){
-      S.shutdownAge += dt;
+      S.scramAge += dt;
     }
 
-    computeFeedback();
+    computeFeedback(dt);
+
+    const targetPromptChain = clamp(0.94 * Math.exp((S.kEff - 1.0) * 18.0), 0.015, 6.1);
+    const promptResponse = S.scram ? 12.0 : (S.kEff > 1 ? 2.5 : 3.4);
+    S.promptPower = lerp(S.promptPower, targetPromptChain, clamp(dt * promptResponse, 0, S.scram ? 0.65 : 0.18));
 
     if(S.scram && !S.scramLatched){
-      S.shutdownPower = Math.max(0.25, S.powerPrompt || S.power || 1.0);
+      S.scramPower = Math.max(0.18, promptBeforeControl + S.decayHeat);
       S.scramLatched = true;
     }
     if(!S.scram){
-      S.shutdownAge = 0;
-      S.shutdownPower = Math.max(0.25, S.powerPrompt || S.power || 1.0);
+      S.scramAge = 0;
+      S.scramPower = Math.max(0.18, S.promptPower + S.decayHeat);
+      const operatingDecayTarget = clamp(0.06 * Math.max(0.32, S.promptPower), 0.02, 0.38);
+      S.decayHeat = lerp(S.decayHeat, operatingDecayTarget, clamp(dt * 0.55, 0, 0.08));
+    }else{
+      S.decayHeat = clamp(S.scramPower * decayHeatFraction(S.scramAge), 0, 0.62);
     }
-
-    S.generations += dt * S.genPerSec;
-    const targetN = S.initialNeutrons * Math.pow(Math.max(0.15, S.kEff), S.generations);
-    S.expectedNeutrons = lerp(S.expectedNeutrons, targetN, clamp(dt * 4.2, 0, 0.35));
-
-    const fluxRatio = S.expectedNeutrons / S.initialNeutrons;
-    const aboveCritical = Math.max(0, S.kEff - 1.0);
-    const thermalShare = Math.max(0.15, Math.min(0.95, S.displayCount ? (S.lastThermalCount / Math.max(1, S.displayCount)) : 0.45));
-    S.promptPower = clamp(0.72 * fluxRatio + aboveCritical * 7.5 + thermalShare * 0.8, 0, 6.5);
-
-    const decayFrac = S.scram ? decayHeatFraction(S.shutdownAge) : 0;
-    S.decayHeat = S.scram ? S.shutdownPower * decayFrac : 0;
     S.power = clamp(S.promptPower + S.decayHeat, 0, 6.5);
 
-    const heatIn = 24 * S.power + 9 * aboveCritical;
-    const heatLoss = (S.fuelTemp - S.ambient) * 0.08 + (S.coolantTemp - S.ambient) * 0.04;
-    const netHeat = heatIn - heatLoss;
+    S.generations += dt * S.genPerSec * clamp(0.55 + S.promptPower * 0.75, 0.55, 3.0);
+    const neutronTarget = S.initialNeutrons * clamp(0.08 + S.promptPower * 1.08, 0.08, 7.2);
+    const neutronRate = S.scram ? 8.5 : 4.2;
+    S.expectedNeutrons = lerp(S.expectedNeutrons, neutronTarget, clamp(dt * neutronRate, 0, 0.36));
 
-    S.fuelTemp += netHeat * dt;
-    S.coolantTemp += ((S.fuelTemp - S.coolantTemp) * 0.55 - (S.coolantTemp - S.ambient) * 0.04) * dt;
+    const aboveCritical = Math.max(0, S.kEff - 1.0);
+    const promptHeatIn = 20 * S.promptPower + aboveCritical * 12;
+    const decayHeatIn = 12 * S.decayHeat;
+    const fuelToCoolant = Math.max(0, S.fuelTemp - S.coolantTemp) * (S.scram ? 0.095 : 0.108);
+    const coolantToLoop = Math.max(0, S.coolantTemp - S.ambient) * (S.scram ? 0.034 : 0.046);
+    const fuelDrift = Math.max(0, S.fuelTemp - 285) * 0.016;
+    const coolantDrift = Math.max(0, S.coolantTemp - 275) * 0.014;
+    const netFuel = promptHeatIn + decayHeatIn - fuelToCoolant - fuelDrift;
+    const netCoolant = fuelToCoolant - coolantToLoop - coolantDrift;
 
-    const xeProduction = 0.00055 * S.power * S.genPerSec;
-    const xeDecay = 0.0011 * S.xenon;
-    const xeScramBoost = S.scram ? 0.00055 : 0;
-    S.xenon += (xeProduction + xeScramBoost - xeDecay) * dt;
-    S.xenon = clamp(S.xenon, 0, 2.8);
+    S.fuelTemp = clamp(S.fuelTemp + netFuel * dt, 280, 1800);
+    S.coolantTemp = clamp(S.coolantTemp + netCoolant * dt, 260, 850);
+
+    const xeProduction = 0.0030 * Math.min(2.4, S.promptPower);
+    const xeAfterglow = S.scram ? 0.0018 * Math.exp(-S.scramAge / 140) * clamp(S.scramPower, 0.6, 2.8) : 0;
+    const xeBurnout = (0.0008 + 0.0021 * Math.max(0.15, S.promptPower)) * S.xenon;
+    S.xenon += (xeProduction + xeAfterglow - xeBurnout) * dt;
+    S.xenon = clamp(S.xenon, 0, 3.6);
 
     S.fissionRate = lerp(S.fissionRate, S.lastFissionEvents * (S.mode === 'demo' ? 5 : 10), clamp(dt * 3, 0, 0.25));
-    S.steam = clamp((S.coolantTemp - 100) / 900, 0, 1);
+    S.steam = clamp((S.coolantTemp - 300) / 250, 0, 1);
 
-    const thermalLoad = (Math.max(0, S.fuelTemp - 300) / 220) + (Math.max(0, S.coolantTemp - 280) / 240) + (S.power / 1.9) + (S.decayHeat * 15);
-    const coolingDeficit = netHeat > 0.2;
+    const thermalLoad = (Math.max(0, S.fuelTemp - 360) / 260) + (Math.max(0, S.coolantTemp - 300) / 220) + (S.promptPower / 2.3) + (S.decayHeat * 11);
+    const coolingDeficit = (netFuel + netCoolant) > 3.5;
 
     switch(S.thermalState){
       case 'normal':
-        if(thermalLoad > 0.95 || S.fuelTemp > 560 || S.power > 1.35){
+        if(thermalLoad > 0.94 || S.fuelTemp > 600 || S.power > 1.36){
           S.thermalState = 'warning';
           S.dangerTime = Math.max(S.dangerTime, 0.25);
         }else{
@@ -923,10 +1167,10 @@
         break;
 
       case 'warning':
-        if(thermalLoad > 1.55 || S.fuelTemp > 760 || S.coolantTemp > 360 || (coolingDeficit && S.dangerTime > 1.4)){
+        if(thermalLoad > 1.52 || S.fuelTemp > 780 || S.coolantTemp > 370 || (coolingDeficit && S.dangerTime > 1.3)){
           S.thermalState = 'transient';
           S.dangerTime = Math.max(S.dangerTime, 1.5);
-        }else if(thermalLoad < 0.72 && S.fuelTemp < 500 && S.power < 1.2){
+        }else if(thermalLoad < 0.72 && S.fuelTemp < 540 && S.power < 1.15){
           S.thermalState = 'normal';
           S.dangerTime = Math.max(0, S.dangerTime - dt * 1.1);
         }else{
@@ -935,10 +1179,10 @@
         break;
 
       case 'transient':
-        if((thermalLoad > 2.25 || S.fuelTemp > 1020 || S.coolantTemp > 430 || (S.reactivity >= S.betaEff && S.power > 1.1)) && S.dangerTime > 2.8){
+        if((thermalLoad > 2.2 || S.fuelTemp > 1060 || S.coolantTemp > 440 || (S.reactivity >= S.betaEff && S.promptPower > 1.25)) && S.dangerTime > 2.6){
           S.thermalState = 'prompt_critical';
           S.dangerTime = Math.max(S.dangerTime, 3.0);
-        }else if(thermalLoad < 1.20 && S.fuelTemp < 700 && S.power < 1.6){
+        }else if(thermalLoad < 1.15 && S.fuelTemp < 720 && S.power < 1.45){
           S.thermalState = 'warning';
           S.dangerTime = Math.max(0, S.dangerTime - dt * 0.7);
         }else{
@@ -947,10 +1191,10 @@
         break;
 
       case 'prompt_critical':
-        if(S.fuelTemp > 1500 || (S.dangerTime > 7.5 && coolingDeficit) || (S.shutdownAge > 0 && S.decayHeat > 0.03 && S.fuelTemp > 1320)){
+        if(S.fuelTemp > 1500 || (S.dangerTime > 7.0 && coolingDeficit) || (S.scramAge > 0 && S.decayHeat > 0.025 && S.fuelTemp > 1340)){
           S.thermalState = 'meltdown';
           triggerMeltdown();
-        }else if(thermalLoad < 1.65 && S.fuelTemp < 980 && S.power < 1.8){
+        }else if(thermalLoad < 1.6 && S.fuelTemp < 1000 && S.power < 1.65){
           S.thermalState = 'transient';
           S.dangerTime = Math.max(0, S.dangerTime - dt * 0.5);
         }else{
@@ -988,10 +1232,10 @@
     switch(S.thermalState){
       case 'warning': return {text:'CẢNH BÁO', cls:'warn', note:'nhiệt đang tích lũy'};
       case 'transient': return {text:'QUÁ ĐỘ', cls:'danger', note:'tải nhiệt nguy hiểm'};
-      case 'prompt_critical': return {text:'TỚI HẠN TỨC THỜI', cls:'danger', note:'vùng prompt neutron'};
+      case 'prompt_critical': return {text:'TỚI HẠN TỨC THỜI', cls:'danger', note:'vùng prompt số neutron'};
       case 'meltdown': return {text:'NÓNG CHẢY LÕI', cls:'melt', note:'hư hỏng lõi'};
       default:
-        if(S.scram || S.decayHeat > 0.01) return {text:'THẢI NHIỆT', cls:'warn', note:'đang loại bỏ nhiệt dư'};
+        if(S.scram || (S.promptPower < 0.18 && S.decayHeat > 0.01)) return {text:'THẢI NHIỆT', cls:'warn', note:'đang loại bỏ nhiệt dư'};
         return {text:'BÌNH THƯỜNG', cls:'ok', note:'gần tới hạn ổn định'};
     }
   }
@@ -1081,8 +1325,8 @@
 
   function getSpecterLOD(){
     if(S.viewMode !== '3d') return 0;
-    if(S.camDist > 760) return 0;
-    if(S.camDist > 430) return 1;
+    if(S.camDist > 780) return 0;
+    if(S.camDist > 470) return 1;
     return 2;
   }
 
@@ -1131,6 +1375,7 @@
 
   function shouldRevealInterior(cam, W, H, lod){
     if(S.viewMode !== '3d' || S.xrayVision) return S.xrayVision;
+    if(S.focusSequence) return true;
     if(lod < 2 || S.camDist > 330) return false;
     const core = project3D(0, 0, 0, cam, W, H);
     const focusRadius = Math.max(48, 120 * core.scale);
@@ -1145,12 +1390,12 @@
     const sg = {x: vessel.x + vessel.w + 34, y: vessel.y + 106, w: 118, h: 180};
     return [
       {key:'fuel', x:core.x+12, y:core.y+10, w:core.w-24, h:core.h-20, priority:0, title:'CỤM NHIÊN LIỆU', body:'Các thanh nhiên liệu chứa nhiều viên pellet; lõi không phải một khối uranium đặc.', foot:'Mỗi thanh là một phần tử riêng của bó nhiên liệu.'},
-      {key:'control', x:668, y:126, w:82, h:280, priority:0, tone:'warn', title:'THANH ĐIỀU KHIỂN', body:'Thanh điều khiển hấp thụ neutron bằng vật liệu hấp thụ mạnh như boron carbide hoặc hafnium.', foot:'Chèn sâu hơn thì k_eff giảm xuống.'},
-      {key:'decay_heat', x:core.x+62, y:core.y-20, w:core.w-124, h:66, priority:0, tone:'danger', hidden: !(S.scram || S.decayHeat > 0.01), title:'NHIỆT DƯ', body:'Sau SCRAM, lõi vẫn còn nhiệt do sản phẩm phân hạch tiếp tục phân rã phóng xạ.', foot:'Vì vậy shutdown không đồng nghĩa với nguội ngay.'},
+      {key:'control', x:668, y:126, w:82, h:280, priority:0, tone:'warn', title:'THANH ĐIỀU KHIỂN', body:'Thanh điều khiển hấp thụ số neutron bằng vật liệu hấp thụ mạnh như boron carbide hoặc hafnium.', foot:'Chèn sâu hơn thì k_eff giảm xuống.'},
+      {key:'decay_heat', x:core.x+62, y:core.y-20, w:core.w-124, h:66, priority:0, tone:'danger', hidden: !(S.scram || (S.promptPower < 0.18 && S.decayHeat > 0.01)), title:'NHIỆT DƯ', body:'Sau SCRAM, lõi vẫn còn nhiệt do sản phẩm phân hạch tiếp tục phân rã phóng xạ.', foot:'Vì vậy dừng lò không đồng nghĩa với nguội ngay.'},
       {key:'primary_loop', x:vessel.x + vessel.w - 8, y:vessel.y + 122, w:sg.x - (vessel.x + vessel.w) + 20, h:150, priority:2, title:'VÒNG SƠ CẤP', body:'Nước áp suất cao mang nhiệt từ bình lò sang bộ tạo hơi nhưng không được phép sôi trong bình lò.', foot:'Đây là mạch kín chính của PWR.'},
       {key:'secondary_loop', x:sg.x, y:sg.y+16, w:sg.w, h:sg.h-32, priority:2, title:'VÒNG THỨ CẤP', body:'Mạch thứ cấp nhận nhiệt từ bộ tạo hơi để tạo hơi nước dẫn tới tua-bin.', foot:'Hai mạch tách nhau để phần tua-bin không nằm trong mạch sơ cấp.'},
       {key:'steam_generator', x:sg.x-10, y:sg.y-8, w:sg.w+20, h:sg.h+16, priority:0, title:'BỘ TẠO HƠI', body:'Thiết bị trao đổi nhiệt giữa vòng sơ cấp và vòng thứ cấp.', foot:'Đây là điểm chuyển nhiệt chứ không phải chính lõi phản ứng.'},
-      {key:'moderator', x:vessel.x+18, y:vessel.y+18, w:vessel.w-36, h:vessel.h-36, priority:3, title:'NƯỚC LÀM CHẬM', body:'Nước vừa làm chậm neutron vừa mang nhiệt ra khỏi nhiên liệu.', foot:'Nước làm chậm nóng hơn thì khả năng làm chậm neutron giảm.'},
+      {key:'moderator', x:vessel.x+18, y:vessel.y+18, w:vessel.w-36, h:vessel.h-36, priority:3, title:'NƯỚC LÀM CHẬM', body:'Nước vừa làm chậm số neutron vừa mang nhiệt ra khỏi nhiên liệu.', foot:'Nước làm chậm nóng hơn thì khả năng làm chậm số neutron giảm.'},
       {key:'vessel', x:vessel.x, y:vessel.y, w:vessel.w, h:vessel.h, priority:4, title:'BÌNH CHỊU ÁP LỰC', body:'Bình chịu áp lực bao lõi và giữ nước mạch sơ cấp trong điều kiện áp suất cao.', foot:'Đây là lớp kết cấu giữ toàn bộ quá trình truyền nhiệt chính.'}
     ];
   }
@@ -1174,16 +1419,16 @@
     push('pump','BƠM TUẦN HOÀN','Bơm giữ lưu lượng mạch sơ cấp ổn định quanh lõi.', 'Lưu lượng làm mát là điều kiện sống còn sau SCRAM.', pumpP, 78 + lod*6, 'ok', 'outer', 1);
     push('pressurizer','BÌNH ĐIỀU ÁP','Bình điều áp giữ nước mạch sơ cấp ở áp suất đủ cao để tránh sôi trong bình lò.', 'Đây là chi tiết rất đặc trưng của PWR.', pressP, 76 + lod*6, 'ok', 'outer', 1);
     push('turbine','KHU TUA-BIN','Cụm tua-bin nằm xa lõi, nhận hơi từ vòng thứ cấp để tạo công cơ học và điện.', 'Điện không được tạo ngay trong lõi mà ở khối máy phía sau.', turP, 95 + lod*6, 'ok', 'outer', 2);
-    push('moderator','NƯỚC LÀM CHẬM','Nước trong bình lò làm chậm neutron và đồng thời tải nhiệt ra khỏi nhiên liệu.', 'Đây là môi trường quyết định cả động học neutron lẫn truyền nhiệt.', project3D(-40,20,0,cam,W,H), 112 + lod*8, 'ok', 'inner', 3);
+    push('moderator','NƯỚC LÀM CHẬM','Nước trong bình lò làm chậm số neutron và đồng thời tải nhiệt ra khỏi nhiên liệu.', 'Đây là môi trường quyết định cả động học số neutron lẫn truyền nhiệt.', project3D(-40,20,0,cam,W,H), 112 + lod*8, 'ok', 'inner', 3);
     push('fuel','CỤM NHIÊN LIỆU','Bó nhiên liệu gồm nhiều thanh và pellet, không phải một khối đặc.', 'Cận cảnh sẽ thấy pellet, vị trí phân hạch và dấu nhiệt hiện ra theo mức zoom.', coreP, 120 + lod*8, 'ok', 'inner', 1);
-    push('control','THANH ĐIỀU KHIỂN','Thanh điều khiển hấp thụ neutron mạnh để giảm reactivity.', 'SCRAM là đưa chúng xuống rất nhanh chứ không làm lõi nguội ngay.', controlP, 70 + lod*4, 'warn', 'inner', 0);
+    push('control','THANH ĐIỀU KHIỂN','Thanh điều khiển hấp thụ số neutron mạnh để giảm độ phản ứng.', 'SCRAM là đưa chúng xuống rất nhanh chứ không làm lõi nguội ngay.', controlP, 70 + lod*4, 'warn', 'inner', 0);
     if(S.displayCount > 0){
-      push('neutron','TRƯỜNG NEUTRON','Các chấm và vệt chỉ là mẫu hiển thị của neutron để người học thấy xu hướng chuyển động và tương tác.', 'Số hạt hiển thị đã được giảm tải; logic vật lí vẫn tính riêng.', project3D(-18, 26, 18, cam, W, H), 56 + lod*6, 'ok', 'inner', 2);
+      push('số neutron','TRƯỜNG NEUTRON','Các chấm và vệt chỉ là mẫu hiển thị của số neutron để người học thấy xu hướng chuyển động và tương tác.', 'Số hạt hiển thị đã được giảm tải; logic vật lí vẫn tính riêng.', project3D(-18, 26, 18, cam, W, H), 56 + lod*6, 'ok', 'inner', 2);
     }
     if(S.lastEvent === 'fission' || S.lastFissionEvents > 0){
-      push('fission_point','ĐIỂM PHÂN HẠCH','Vòng sáng này đánh dấu một sự kiện phân hạch gần nhất trong vùng nhiên liệu.', 'Tại đây neutron bị hấp thụ, sinh neutron mới và giải phóng nhiệt.', project3D(S.lastFissionPos.x, S.lastFissionPos.y, S.lastFissionPos.z, cam, W, H), 34 + lod*4, 'warn', 'inner', 0);
+      push('fission_point','ĐIỂM PHÂN HẠCH','Vòng sáng này đánh dấu một sự kiện phân hạch gần nhất trong vùng nhiên liệu.', 'Tại đây số neutron bị hấp thụ, sinh số neutron mới và giải phóng nhiệt.', project3D(S.lastFissionPos.x, S.lastFissionPos.y, S.lastFissionPos.z, cam, W, H), 34 + lod*4, 'warn', 'inner', 0);
     }
-    if(S.scram || S.decayHeat > 0.01){
+    if(S.scram || (S.promptPower < 0.18 && S.decayHeat > 0.01)){
       push('decay_heat','NHIỆT DƯ','Sau SCRAM, nhiệt vẫn tiếp tục sinh ra từ phân rã phóng xạ của sản phẩm phân hạch.', 'Đó là lý do hệ làm mát vẫn phải hoạt động sau khi chuỗi phân hạch chính dừng.', project3D(0, -96, 0, cam, W, H), 48 + lod*4, 'danger', 'inner', 0);
     }
     return items;
@@ -1729,7 +1974,7 @@
           true);
       });
 
-      // neutron trails and particles inside the vessel
+      // số neutron trails and particles inside the vessel
       S.particles.forEach(p => {
         const danger = S.reactivity >= S.betaEff;
         c.save();
@@ -1780,7 +2025,7 @@
         c.restore();
       }
 
-      if(S.scram || S.decayHeat > 0.01){
+      if(S.scram || (S.promptPower < 0.18 && S.decayHeat > 0.01)){
         c.save();
         c.globalAlpha = clamp(0.12 + S.decayHeat * 2.4, 0.14, 0.44);
         const decayCount = mobile ? 7 : 12;
@@ -1794,6 +2039,53 @@
           c.fill();
         }
         c.restore();
+      }
+
+      if(S.fissionBursts.length){
+        S.fissionBursts.forEach((burst) => {
+          const burstAlpha = clamp(1 - (burst.age / burst.life), 0, 1);
+          const center = project3D(burst.x, burst.y, burst.z, cam, W, H);
+          burst.neutrons.forEach((item) => {
+            const head = project3D(item.x, item.y, item.z, cam, W, H);
+            c.save();
+            c.globalAlpha = burstAlpha * 0.92;
+            c.strokeStyle = 'rgba(235,247,255,.92)';
+            c.lineWidth = 1.6;
+            c.beginPath();
+            c.moveTo(center.x, center.y);
+            c.lineTo(head.x, head.y);
+            c.stroke();
+            c.fillStyle = 'rgba(255,255,255,.95)';
+            c.beginPath();
+            c.arc(head.x, head.y, Math.max(1.6, 2.2 * head.scale), 0, Math.PI * 2);
+            c.fill();
+            c.restore();
+          });
+          burst.fragments.forEach((item, index) => {
+            const head = project3D(item.x, item.y, item.z, cam, W, H);
+            c.save();
+            c.globalAlpha = burstAlpha * 0.86;
+            c.strokeStyle = index ? 'rgba(255,143,95,.88)' : 'rgba(247,198,74,.88)';
+            c.lineWidth = 2.2;
+            c.beginPath();
+            c.moveTo(center.x, center.y);
+            c.lineTo(head.x, head.y);
+            c.stroke();
+            c.restore();
+          });
+          burst.heat.forEach((item) => {
+            const head = project3D(item.x, item.y, item.z, cam, W, H);
+            c.save();
+            c.globalAlpha = burstAlpha * 0.48;
+            c.strokeStyle = 'rgba(255,103,103,.68)';
+            c.lineWidth = 3.4;
+            c.beginPath();
+            c.moveTo(center.x, center.y);
+            c.lineTo(head.x, head.y);
+            c.stroke();
+            c.restore();
+          });
+        });
       }
 
       // glow/halo cues
@@ -1869,7 +2161,7 @@
       }else if(S.hoverHit.key === 'fission_point'){
         const p = project3D(S.lastFissionPos.x, S.lastFissionPos.y, S.lastFissionPos.z, cam, W, H);
         c.beginPath(); c.arc(p.x, p.y, 18 * Math.max(1, p.scale), 0, Math.PI*2); c.stroke();
-      }else if(S.hoverHit.key === 'neutron'){
+      }else if(S.hoverHit.key === 'số neutron'){
         const p = project3D(-18,26,18,cam,W,H);
         c.beginPath(); c.arc(p.x, p.y, 32 * p.scale, 0, Math.PI*2); c.stroke();
       }
@@ -1907,7 +2199,7 @@
     c.fillText('QUAN SÁT 3D', 34, H - 48);
     c.fillStyle = 'rgba(255,255,255,.62)';
     const guideText = S.xrayVision
-      ? (mobile ? 'X-RAY: thấy cả vỏ che chắn lẫn nội thất.' : 'X-RAY đang bật: thấy vỏ che chắn, lõi, neutron và dòng nhiệt cùng lúc.')
+      ? (mobile ? 'X-RAY: thấy cả vỏ che chắn lẫn nội thất.' : 'X-RAY đang bật: thấy vỏ che chắn, lõi, số neutron và dòng nhiệt cùng lúc.')
       : interiorPeek
         ? (mobile ? 'Đang nhìn gần lõi để học chi tiết.' : 'Đang zoom gần đúng vùng lõi: chỉ hé nội thất phục vụ học tập.')
         : (mobile ? 'Mặc định chỉ thấy kiến trúc ngoài.' : 'Bình thường chỉ thấy kiến trúc ngoài; hãy hover đúng vật thể để xem chú thích.');
@@ -1937,25 +2229,229 @@
     ui.stepBtn.textContent = S.stepRevealMode ? `BƯỚC ${Math.min(idx + 1, STEP_EXPLAIN.length)}/${STEP_EXPLAIN.length}` : 'GIẢI THÍCH TỪNG BƯỚC';
   }
 
+  function formatSigned(value, digits = 4){
+    return `${value >= 0 ? '+' : ''}${value.toFixed(digits)}`;
+  }
+
+  function captureTrendSample(dt){
+    S.chartClock += dt;
+    if(S.chartClock < 0.12) return;
+    S.chartClock = 0;
+    S.chartHistory.push({
+      t: S.time,
+      g: S.generations,
+      keff: S.kEff,
+      neutrons: S.expectedNeutrons,
+      fuel: S.fuelTemp,
+      coolant: S.coolantTemp,
+      decay: S.decayHeat
+    });
+    if(S.chartHistory.length > 500) S.chartHistory.shift();
+  }
+
+  function getTrendConfig(metric){
+    const generationTag = `G ${Math.round(S.generations)}`;
+    switch(metric){
+      case 'neutrons':
+        return {
+          key:'neutrons',
+          label:'số neutron theo nhịp chuỗi',
+          current:S.expectedNeutrons,
+          color:'147,230,255',
+          ref:null,
+          axis:(v) => Math.round(v).toString(),
+          display:(v) => Math.round(v).toLocaleString('en-US'),
+          delta:(d) => `${d >= 0 ? '+' : ''}${Math.round(d)} · ${generationTag}`,
+          context:'Sau SCRAM, số neutron có thể rơi trước rất nhanh. Phần học quan trọng là nhận ra nhiệt dư vẫn còn kéo dài sau đó.'
+        };
+      case 'fuel':
+        return {
+          key:'fuel',
+          label:'nhiệt độ nhiên liệu của lõi',
+          current:S.fuelTemp,
+          color:'255,159,67',
+          ref:null,
+          axis:(v) => `${Math.round(v)}°`,
+          display:(v) => `${Math.round(v)}°`,
+          delta:(d) => `${d >= 0 ? '+' : ''}${Math.round(d)}° · ${generationTag}`,
+          context:'Fuel temp thường đổi trước nhiệt độ chất làm mát. Đường này cho thấy năng lượng còn kẹt trong nhiên liệu nhiều đến đâu.'
+        };
+      case 'coolant':
+        return {
+          key:'coolant',
+          label:'nhiệt độ chất làm mát của mạch chính',
+          current:S.coolantTemp,
+          color:'108,231,255',
+          ref:null,
+          axis:(v) => `${Math.round(v)}°`,
+          display:(v) => `${Math.round(v)}°`,
+          delta:(d) => `${d >= 0 ? '+' : ''}${Math.round(d)}° · ${generationTag}`,
+          context:'Coolant temp là nhịp tải nhiệt. Nếu coolant hạ chậm, fuel cũng sẽ nguội chậm theo.'
+        };
+      case 'decay':
+        return {
+          key:'decay',
+          label:'nhiệt dư sau dừng lò',
+          current:S.decayHeat,
+          color:'255,103,103',
+          ref:null,
+          axis:(v) => `${Math.round(v * 100)}%`,
+          display:(v) => `${Math.round(v * 100)}%`,
+          delta:(d) => `${d >= 0 ? '+' : ''}${Math.round(d * 100)}% · ${generationTag}`,
+          context:'Đây là đường giúp người học thấy vì sao dừng lò không đồng nghĩa với nguội ngay.'
+        };
+      default:
+        return {
+          key:'keff',
+          label:'k_eff theo thời gian gần nhất',
+          current:S.kEff,
+          color:'71,197,255',
+          ref:1.0,
+          axis:(v) => v.toFixed(3),
+          display:(v) => v.toFixed(4),
+          delta:(d) => `${d >= 0 ? '+' : ''}${d.toFixed(4)} · ${generationTag}`,
+          context:'Đọc nhịp quanh mốc 1.000 để biết lõi đang tự cân bằng, bị rods kéo xuống, hay đang được feedback nhiệt bù lại.'
+        };
+    }
+  }
+
+  function renderTrendChart(){
+    const samples = S.chartHistory.length
+      ? S.chartHistory
+      : [{keff:S.kEff, neutrons:S.expectedNeutrons, fuel:S.fuelTemp, coolant:S.coolantTemp, decay:S.decayHeat}];
+    const cfg = getTrendConfig(S.chartMetric);
+    const values = samples.map((sample) => sample[cfg.key]);
+    const current = values[values.length - 1] ?? cfg.current;
+    const first = values[0] ?? current;
+    let min = Math.min(...values, cfg.ref ?? current);
+    let max = Math.max(...values, cfg.ref ?? current);
+    const spread = Math.max(0.0001, max - min);
+    min -= spread * 0.18;
+    max += spread * 0.18;
+    if(cfg.key === 'keff'){
+      min = Math.min(min, 0.98, 1.0);
+      max = Math.max(max, 1.02, 1.0);
+    }else if(cfg.key === 'neutrons'){
+      min = 0;
+    }else if(cfg.key === 'decay'){
+      min = 0;
+      max = Math.max(max, 0.08);
+    }
+    const W = 360, H = 158;
+    const pad = {l:10, r:10, t:8, b:10};
+    const innerW = W - pad.l - pad.r;
+    const innerH = H - pad.t - pad.b;
+    const scaleX = (index) => pad.l + (values.length <= 1 ? 0 : (index / (values.length - 1)) * innerW);
+    const scaleY = (value) => pad.t + (1 - ((value - min) / Math.max(0.0001, max - min))) * innerH;
+    const path = values.map((value, index) => `${index === 0 ? 'M' : 'L'} ${scaleX(index).toFixed(2)} ${scaleY(value).toFixed(2)}`).join(' ');
+    const area = `${path} L ${scaleX(values.length - 1).toFixed(2)} ${(pad.t + innerH).toFixed(2)} L ${scaleX(0).toFixed(2)} ${(pad.t + innerH).toFixed(2)} Z`;
+    const grid = Array.from({length:4}, (_, i) => {
+      const y = pad.t + (innerH / 3) * i;
+      return `<line x1="${pad.l}" y1="${y.toFixed(2)}" x2="${(pad.l + innerW).toFixed(2)}" y2="${y.toFixed(2)}" stroke="rgba(108,231,255,.10)" stroke-width="1" />`;
+    }).join('') + Array.from({length:5}, (_, i) => {
+      const x = pad.l + (innerW / 4) * i;
+      return `<line x1="${x.toFixed(2)}" y1="${pad.t}" x2="${x.toFixed(2)}" y2="${(pad.t + innerH).toFixed(2)}" stroke="rgba(108,231,255,.06)" stroke-width="1" />`;
+    }).join('');
+    const refLine = cfg.ref == null ? '' : `<line x1="${pad.l}" y1="${scaleY(cfg.ref).toFixed(2)}" x2="${(pad.l + innerW).toFixed(2)}" y2="${scaleY(cfg.ref).toFixed(2)}" stroke="rgba(247,198,74,.34)" stroke-width="1.25" stroke-dasharray="4 4" />`;
+    const currentX = scaleX(values.length - 1);
+    const currentY = scaleY(current);
+    ui.trendSvg.innerHTML = `${grid}${refLine}<path d="${area}" fill="rgba(${cfg.color},.12)" /><path d="${path}" fill="none" stroke="rgba(${cfg.color},.98)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" /><circle cx="${currentX.toFixed(2)}" cy="${currentY.toFixed(2)}" r="3.7" fill="rgba(${cfg.color},1)" /><circle cx="${currentX.toFixed(2)}" cy="${currentY.toFixed(2)}" r="8.4" fill="rgba(${cfg.color},.14)" />`;
+    ui.trendTitle.textContent = cfg.label;
+    ui.trendNow.textContent = cfg.display(current);
+    ui.trendDelta.textContent = cfg.delta(current - first);
+    ui.trendLow.textContent = cfg.axis(min);
+    ui.trendHigh.textContent = cfg.axis(max);
+    ui.trendContext.textContent = cfg.context;
+    ui.traceBtns.forEach((btn) => btn.classList.toggle('on', btn.dataset.series === S.chartMetric));
+  }
+
+  function renderReactivityBreakdown(){
+    const rows = [
+      {label:'Base state', value:S.baseContribution},
+      {label:'Control rods', value:S.controlContribution},
+      {label:'Fuel Doppler', value:S.dopplerPenalty},
+      {label:'Moderator', value:S.moderatorPenalty},
+      {label:'Xenon-135', value:-S.xenonPenalty},
+      {label:'SCRAM', value:S.scramContribution}
+    ];
+    const halfTrack = 50;
+    const scale = 0.12;
+    ui.reactivityList.innerHTML = rows.map((row) => {
+      const width = Math.min(halfTrack, Math.abs(row.value) / scale * halfTrack);
+      return `<div class="reactivityRow"><span>${row.label}</span><div class="reactivityTrack"><div class="reactivityBar ${row.value >= 0 ? 'pos' : 'neg'}" style="width:${width.toFixed(2)}%;"></div></div><strong>${formatSigned(row.value)}</strong></div>`;
+    }).join('');
+    ui.reactivitySummary.textContent = S.scram
+      ? 'SCRAM đang kéo độ phản ứng xuống rất mạnh, nhưng Doppler, moderator và xenon vẫn tiếp tục đổi sau đó. Vì vậy `k_eff` có thể giảm sâu rồi nhích tăng lại mà lõi vẫn chưa hết nhiệt.'
+      : S.thermalState === 'warning' || S.thermalState === 'transient'
+        ? 'Trong quá độ, nguồn dương từ base state có thể còn đó nhưng feedback nhiệt và xenon đang phản công. Bảng này cho thấy nguyên nhân chứ không chỉ hậu quả.'
+        : 'Ở vùng ổn định, base state và rods gần như triệt nhau, còn Doppler, moderator và xenon làm phần ổn định mềm để lõi không trôi quá xa mốc 1.';
+  }
+
+  function refreshStoryCards(){
+    let story;
+    if(S.meltdown){
+      story = {
+        phenomenon:'Sau dừng lò, số neutron rơi nhanh nhưng lõi vẫn chưa nguội ngay.',
+        mechanism:'Chuỗi prompt đã dừng, song sản phẩm phân hạch vẫn phân rã và tiếp tục bơm nhiệt vào nhiên liệu.',
+        consequence:'Điều nguy hiểm không còn là phản ứng dây chuyền, mà là việc mất khả năng kéo nhiệt ra đủ nhanh.',
+        example:'Đổi chart sang nhiệt dư để thấy đường nhiệt còn cao dù `k_eff` và số neutron đã tụt mạnh.'
+      };
+    }else if(S.scram || (S.promptPower < 0.25 && S.decayHeat > 0.018)){
+      story = {
+        phenomenon:'SCRAM làm số chuỗi neutron sụp rất nhanh, nhưng nhiệt dư vẫn còn trong lõi.',
+        mechanism:'Thanh điều khiển hấp thụ số neutron gần như ngay lập tức; phần còn lại là nhiệt do phân rã phóng xạ.',
+        consequence:'Người học phải nhìn hai thời gian khác nhau: thời gian dập phản ứng và thời gian nguội lõi.',
+        example:'Chart số neutron tụt gần như ngay, còn nhiệt dư giảm chậm hơn nhiều và nhiệt độ nhiên liệu chỉ hạ dần theo coolant.'
+      };
+    }else if(S.focusSequence || S.lastEvent === 'fission'){
+      story = {
+        phenomenon:'Một phân hạch vừa xảy ra ngay trong pellet.',
+        mechanism:'Một số neutron nhiệt bị hấp thụ, hạt nhân vỡ ra thành mảnh phân hạch, neutron con và nhiệt cục bộ.',
+        consequence:'Điện hạt nhân là kết quả của rất nhiều vi-sự kiện lặp lại, không phải một cú nổ lớn duy nhất.',
+        example:'Focus mode zoom vào điểm gần nhất để nhìn neutron con, mảnh phân hạch và vệt nhiệt trong cùng khung hình.'
+      };
+    }else if(S.thermalState === 'warning' || S.thermalState === 'transient'){
+      story = {
+        phenomenon:'`k_eff` đang bị kéo xuống nhưng nhiệt độ lõi vẫn có quán tính nên chưa dừng tăng ngay.',
+        mechanism:'Fuel và coolant giữ năng lượng; xenon và feedback nhiệt đi chậm hơn số neutron nên hệ có độ trễ.',
+        consequence:'Không được đọc dashboard như một nút bật/tắt. Cần nhìn cả trạng thái tức thời lẫn hậu quả sau vài nhịp.',
+        example:'So sánh chart k_eff với nhiệt độ nhiên liệu để thấy phản ứng giảm trước, còn nhiệt mới giảm sau khi tải nhiệt ra đủ mạnh.'
+      };
+    }else{
+      story = {
+        phenomenon:'Hệ đang ở gần tới hạn ổn định: thế hệ neutron sau gần bằng thế hệ neutron trước.',
+        mechanism:'Trạng thái nền, thanh điều khiển, Doppler, chất làm chậm và xenon đang bù nhau để giữ lõi quanh mốc `k_eff ≈ 1`.',
+        consequence:'Ổn định không phải điểm “đứng yên”, mà là cân bằng động của nhiều hồi tiếp cùng lúc.',
+        example:'Giữ chart ở `k_eff`, rồi kéo slider nhẹ để thấy hệ tự cân lại theo thời gian.'
+      };
+    }
+    ui.storyPhenomenon.textContent = story.phenomenon;
+    ui.storyMechanism.textContent = story.mechanism;
+    ui.storyConsequence.textContent = story.consequence;
+    ui.storyExample.textContent = story.example;
+  }
+
   function refreshUI(){
     const stat = statusForState();
     const cam = {yaw:S.camYaw,pitch:S.camPitch,dist:S.camDist,fov:820,tx:S.camTargetX,ty:S.camTargetY,tz:S.camTargetZ};
     const lodNow = getSpecterLOD();
     const inspectionOpen = shouldRevealInterior(cam, ui.scene.width, ui.scene.height, lodNow);
+    const focusActive = !!S.focusSequence;
 
     ui.kTargetRead.textContent = S.kTarget.toFixed(4);
     ui.kEffVal.textContent = S.kEff.toFixed(4);
     ui.rhoVal.textContent = S.reactivity.toFixed(4);
     ui.nVal.textContent = Math.max(0, Math.round(S.expectedNeutrons)).toLocaleString('en-US');
     ui.fissVal.textContent = Math.max(0, S.fissionRate).toFixed(0);
+    ui.promptVal.textContent = `${Math.round(S.promptPower * 100)}%`;
+    ui.decayVal.textContent = `${Math.round(S.decayHeat * 100)}%`;
     ui.fuelVal.textContent = Math.round(S.fuelTemp).toString();
     ui.coolVal.textContent = Math.round(S.coolantTemp).toString();
     ui.powVal.textContent = `${Math.round(S.power * 100)}%`;
     ui.xeVal.textContent = S.xenon.toFixed(4);
     ui.rodVal.textContent = `${Math.round(S.rodInsertion * 100)}%`;
-    ui.steamVal.textContent = `${Math.round(S.steam * 100)}%`;
-    ui.upVal.textContent = fmtTime(S.time);
-    ui.incVal.textContent = fmtTime(S.incidentTime);
+    ui.genVal.textContent = Math.round(S.generations).toString();
+    ui.focusBtn.classList.toggle('on', S.focusMode);
 
     ui.statusBadge.textContent = stat.text;
     ui.statusBadge.className = `overlayBadge ${stat.cls}`;
@@ -1984,7 +2480,7 @@
       ui.rhoNote.textContent = 'delayed neutrons không còn đủ để kìm phản ứng';
       ui.rhoVal.style.color = 'var(--red)';
     }else if(S.thermalState === 'transient' || S.thermalState === 'warning'){
-      ui.rhoNote.textContent = 'nhiệt và reactivity đang lệch khỏi cân bằng';
+      ui.rhoNote.textContent = 'nhiệt và độ phản ứng đang lệch khỏi cân bằng';
       ui.rhoVal.style.color = 'var(--amber)';
     }else if(S.kEff < 0.985){
       ui.rhoNote.textContent = 'độ phản ứng âm ròng';
@@ -1992,12 +2488,6 @@
     }else{
       ui.rhoNote.textContent = 'gần cân bằng tới hạn';
       ui.rhoVal.style.color = 'var(--green)';
-    }
-
-    const fillPct = clamp((S.power / 6.5) * 100, 0, 100);
-    let fill = ui.scene.parentElement.querySelector('.fill');
-    if(!fill){
-      // no-op; placeholder if we later add a progress bar
     }
 
     if(S.meltdown){
@@ -2015,41 +2505,53 @@
     ui.viewText.textContent = S.viewMode === '3d' ? 'KIẾN TRÚC 3D' : 'MẶT CẮT 2D';
     ui.viewBtn.textContent = S.viewMode === '3d' ? 'TRỞ VỀ MẶT CẮT' : 'KHÔNG GIAN 3D';
     ui.viewBtn.classList.toggle('on', S.viewMode === '3d');
-    ui.zoomBtn.textContent = S.viewMode === '3d' ? `ZOOM 3D x${(680 / S.camDist).toFixed(2)}` : (S.kTarget > 1.01 ? 'THU NHỎ' : 'PHÓNG ĐẠI');
+    ui.zoomBtn.textContent = S.viewMode === '3d' ? `ZOOM 3D x${(680 / S.camDist).toFixed(2)}` : 'PHÓNG ĐẠI';
     ui.zoomState.textContent = S.viewMode === '3d'
-      ? `${S.xrayVision ? 'X-RAY' : inspectionOpen ? 'FOCUS LÕI' : 'VỎ KÍN'} · LOD ${lodNow} · x${(680 / S.camDist).toFixed(2)}`
+      ? `${focusActive ? 'FOCUS PHÂN HẠCH' : S.xrayVision ? 'X-RAY' : inspectionOpen ? 'FOCUS LÕI' : 'VỎ KÍN'} · LOD ${lodNow} · x${(680 / S.camDist).toFixed(2)}`
       : `PHÓNG ĐẠI x${S.sceneZoom.toFixed(2)}`;
 
     const stage = deriveStageMessage();
     ui.stageMsg.textContent = stage.msg;
     ui.stageSmall.textContent = stage.small;
     ui.sceneHint.innerHTML = S.viewMode === '3d'
-      ? `<strong>Gợi ý:</strong> kéo để quay · bánh xe để zoom · WASD / QE để dịch · ${S.xrayVision ? 'X-RAY đang mở.' : inspectionOpen ? 'Đang nhìn gần lõi.' : 'Vỏ ngoài đang che lõi.'}`
-      : '<strong>Gợi ý:</strong> kéo để dịch, bánh xe để zoom · 3D để xem vỏ che chắn và đường nhiệt.';
+      ? `<strong>Gợi ý:</strong> kéo để quay · bánh xe để phóng to/thu nhỏ · WASD / QE để dịch · ${focusActive ? 'Camera đang tự khóa vào một phân hạch gần nhất.' : S.xrayVision ? 'X-RAY đang mở.' : inspectionOpen ? 'Đang hé vùng lõi.' : 'Vỏ ngoài đang che lõi.'}`
+      : '<strong>Gợi ý:</strong> kéo để dịch, bánh xe để zoom · chuyển 3D để thấy các lớp nhận thức của cùng một lò.';
+    if(ui.controlNote){
+      ui.controlNote.textContent = S.scram
+        ? 'SCRAM dập chuỗi prompt rất nhanh, còn nhiệt dư vẫn phải được theo dõi. Bấm RÚT THANH để xem xenon pit recovery và sự nhích lại của `k_eff`.'
+        : S.viewMode === '3d'
+          ? '3D dùng để đọc lớp vỏ, bình lò, lõi và điểm phân hạch trong cùng một mô hình.'
+          : '2D dùng để đọc chuỗi số neutron → phân hạch → k_eff → công suất → nhiệt → nhiệt dư trong một mặt cắt duy nhất.';
+    }
     ui.specterBadge.style.display = S.viewMode === '3d' ? 'block' : 'none';
     ui.specterBadge.innerHTML = S.viewMode === '3d'
       ? `<strong>3D HỌC TẬP · LOD ${lodNow}</strong><br/>${
           S.xrayVision
-            ? 'X-RAY: thấy vỏ, bình lò, neutron, điểm phân hạch và nhiệt dư cùng lúc.'
-            : inspectionOpen
-              ? 'Focus gần: hé lõi để học rods, moderator, neutron và dòng nhiệt.'
+            ? 'X-RAY: thấy vỏ, bình lò, số neutron, điểm phân hạch và nhiệt dư cùng lúc.'
+            : focusActive
+              ? 'Fission focus: zoom vào pellet gần nhất, rồi tự lùi về toàn cảnh.'
+              : inspectionOpen
+                ? 'Focus gần: hé lõi để học rods, moderator, số neutron và dòng nhiệt.'
               : lodNow === 0
                 ? 'Xa: thấy toàn khối lò và vỏ che chắn.'
                 : lodNow === 1
                   ? 'Trung cảnh: thấy đường ống, bộ tạo hơi và kiến trúc máy.'
                   : 'Cận cảnh: chỉ mở lõi khi trỏ đúng vùng trung tâm.'
         }`
-      : '<strong>MẶT CẮT 2D</strong><br/>Nhìn tổng thể: lõi, nước làm chậm, vòng sơ cấp và bộ tạo hơi.';
+      : '<strong>MẶT CẮT 2D</strong><br/>Nhìn tổng thể nguyên nhân và hậu quả trong cùng mặt cắt lõi.';
+    renderTrendChart();
+    renderReactivityBreakdown();
+    refreshStoryCards();
     updateStepPanel();
   }
 
   const STEP_EXPLAIN = [
-    {msg:'Neutron nhanh đi vào vùng nước làm chậm trong bình lò.', small:'Trong PWR, chính nước quanh nhiên liệu vừa làm chậm neutron vừa nhận nhiệt từ nhiên liệu.'},
-    {msg:'Neutron bị làm chậm thành neutron nhiệt.', small:'Khi tốc độ giảm, xác suất bị U-235 hấp thụ để gây phân hạch tăng lên.'},
-    {msg:'Neutron nhiệt bị nhiên liệu hấp thụ và gây phân hạch.', small:'Mỗi sự kiện phân hạch thường sinh 2-3 neutron mới cùng một lượng nhiệt đáng kể.'},
-    {msg:'Chuỗi neutron mới lan ra trong lõi và tiếp tục tạo nhiệt.', small:'Nhiệt tích trong nhiên liệu trước rồi mới truyền dần sang nước làm mát.'},
-    {msg:'Nhiệt đi từ mạch sơ cấp sang bộ tạo hơi rồi sang mạch thứ cấp.', small:'Hai mạch không trộn lẫn; tua-bin nhận năng lượng từ hơi ở mạch thứ cấp.'},
-    {msg:'Thanh điều khiển, Doppler và phản hồi moderator giữ hệ trong vùng ổn định.', small:'SCRAM dừng chuỗi phân hạch chính nhưng không xóa nhiệt dư còn lại trong lõi.'}
+    {msg:'Neutron đi vào lớp nước làm chậm quanh bó nhiên liệu.', small:'Nước vừa làm chậm số neutron vừa là đường đầu tiên mang nhiệt rời khỏi pellet.'},
+    {msg:'Neutron chậm lại nên xác suất bị nhiên liệu hấp thụ tăng lên.', small:'Bước này quyết định vì sao cùng một số neutron có thể hoặc không thể gây ra phân hạch tiếp theo.'},
+    {msg:'Phân hạch xảy ra trong pellet và sinh neutron con.', small:'Đây là nơi fission focus mode phải trả lời câu hỏi “nó diễn ra ở đâu và sinh ra gì”.'},
+    {msg:'Prompt power tăng trước, còn nhiệt đi sau theo quán tính vật liệu.', small:'Dashboard phải giúp người học phân biệt rõ động học số neutron với động học nhiệt.'},
+    {msg:'Nhiệt độ và xenon phản hồi ngược lại để kéo `k_eff` xuống.', small:'Lõi không tăng mãi theo một đường thẳng vì luôn có nhiều cơ chế âm cùng phản hồi.'},
+    {msg:'SCRAM dập chuỗi prompt, nhưng nhiệt dư vẫn phải được làm mát.', small:'Đây là ý trung tâm của Chương 2: dừng lò không có nghĩa là hết nhiệt ngay.'}
   ];
 
   function deriveStageMessage(){
@@ -2062,33 +2564,43 @@
         small: `${S.hoverHit.body}${S.hoverHit.foot ? ` ${S.hoverHit.foot}` : ''}`.trim()
       };
     }
+    if(S.focusSequence){
+      return {
+        msg:'Camera đang khóa vào một phân hạch cục bộ trong pellet.',
+        small:'Nhìn neutron con, mảnh phân hạch và vệt nhiệt để thấy phân hạch là một vi-sự kiện có vị trí cụ thể.'
+      };
+    }
     switch(S.thermalState){
       case 'meltdown':
-        return {msg:'Lõi đã nóng chảy. Đây là trạng thái hư hỏng nhiệt độc lập với giao diện, không phải hiệu ứng bị reset bởi UI.', small:'Nhiệt dư sau shutdown vẫn tồn tại, nên “tắt lò” không đồng nghĩa với hết nguy hiểm.'};
+        return {msg:'Lõi đã bước sang trạng thái hư hỏng nhiệt.', small:'Dù chuỗi số neutron có giảm, nhiệt dư và tải nhiệt tích lại vẫn có thể đưa hệ sang vùng nóng chảy.'};
       case 'prompt_critical':
-        return {msg:'Đang ở vùng tới hạn tức thời. Neutron trễ không còn đủ để kìm phản ứng và nhiệt vẫn đang tăng.', small:'Đây là vùng cực nguy hiểm: vừa có động học neutron rất nhanh, vừa có tải nhiệt lớn.'};
+        return {msg:'Hệ đang ở vùng prompt critical: số chuỗi neutron quá nhanh.', small:'Đây là lúc `k_eff`, công suất tức thời và nhiệt cùng leo lên với tốc độ khó kiểm soát.'};
       case 'transient':
-        return {msg:'Lò đang trong vùng chuyển tiếp nguy hiểm. Công suất và nhiệt độ còn tăng dù phản ứng đã bị kìm bớt.', small:'Nếu hệ làm mát không theo kịp, trạng thái này có thể đi tiếp lên vùng tới hạn tức thời.'};
+        return {msg:'Lõi đang trong một quá độ nóng với quán tính nhiệt còn lớn.', small:'Hãy so sánh chart `k_eff` với `nhiệt độ nhiên liệu` để thấy phản ứng giảm trước, nhiệt giảm sau.'};
       case 'warning':
-        return {msg:'Nhiệt đang tích lũy. Đây là dấu hiệu sớm rằng hệ làm mát hoặc mức công suất đang rời vùng an toàn.', small:'Theo dõi thời gian giữ trong vùng xấu: nhiệt không thể bị “tắt rụp” chỉ bằng nút SCRAM.'};
+        return {msg:'Feedback âm đã xuất hiện nhưng nhiệt vẫn còn đang tích lũy.', small:'Đây là vùng tốt để học vì nguyên nhân và hậu quả bắt đầu tách nhịp khỏi nhau.'};
     }
-    if(S.scram || S.decayHeat > 0.01){
-      return {msg:'Lò đã dừng chuỗi phân hạch chính, nhưng nhiệt dư vẫn còn. Hệ làm mát phải tiếp tục lấy nhiệt khỏi lõi.', small:'Đây là lý do shutdown không đồng nghĩa với nguội ngay.'};
+    if(S.scram || (S.promptPower < 0.18 && S.decayHeat > 0.01)){
+      return {msg:'Chuỗi prompt đã dừng, nhưng nhiệt dư vẫn còn nằm trong lõi.', small:'Đây là lý do phải tiếp tục nhìn coolant và nhiệt độ nhiên liệu sau dừng lò.'};
     }
     if(S.lastEvent === 'fission' || S.lastFissionEvents > 0){
-      return {msg:'Neutron nhiệt vừa bị U-235 hấp thụ. Phân hạch sinh neutron mới và giải phóng nhiệt trong nhiên liệu.', small:'Một sự kiện phân hạch có thể tiếp tục nuôi chuỗi phản ứng nếu k còn đủ lớn.'};
+      return {msg:'Một số neutron nhiệt vừa gây phân hạch trong nhiên liệu.', small:'Hãy theo dấu nó sang `k_eff`, công suất tức thời rồi tới nhiệt của lõi.'};
     }
     if(S.lastEvent === 'moderation'){
-      return {msg:'Neutron nhanh đang đi trong nước làm chậm. Nước làm chậm giúp tăng xác suất bị nhiên liệu hấp thụ.', small:'Neutron chậm hơn sẽ dễ gây phân hạch hơn khi gặp hạt nhân phân hạch được.'};
+      return {msg:'Neutron nhanh đang được nước làm chậm trước khi có thể gây phân hạch hiệu quả.', small:'Không phải số neutron nào cũng hữu ích như nhau; bước moderation quyết định điều đó.'};
     }
     if(S.lastEvent === 'rod'){
-      return {msg:'Thanh điều khiển vừa hấp thụ neutron. Càng chèn sâu, k_eff càng giảm.', small:'Vật liệu hấp thụ mạnh như boron carbide hoặc hafnium là công cụ chính để điều chỉnh phản ứng.'};
+      return {msg:'Thanh điều khiển vừa hấp thụ số neutron và kéo `k_eff` xuống.', small:'Rods tác động nhanh lên chuỗi prompt, nhưng không xóa nhiệt dư đã sinh ra trước đó.'};
     }
-    return {msg:'Đang nhìn tổng thể hệ lò. Bình thường bạn thấy kiến trúc ngoài trước, rồi mới đi sâu vào lõi khi cần học chi tiết.', small:'Đây là vùng quan sát mặc định để tránh cảm giác “nhìn xuyên” như mô hình rỗng.'};
+    return {msg:'Hệ đang gần tới hạn ổn định và các hồi tiếp đang gần như triệt nhau.', small:'Nhìn chart `k_eff` cùng bảng phân rã để thấy cân bằng này được tạo ra như thế nào.'};
   }
 
   function updateCamera(dt){
-    // 3D spectator style: target can be moved with WASD/QE while orbiting around it
+    const manualInput = keys['KeyW'] || keys['KeyA'] || keys['KeyS'] || keys['KeyD'] || keys['KeyQ'] || keys['KeyE'];
+    if(S.focusSequence && (S.dragging || manualInput)){
+      S.focusSequence = null;
+    }
+
     const move = 140 * dt;
     const cosY = Math.cos(S.camYaw), sinY = Math.sin(S.camYaw);
     const forwardX = cosY, forwardZ = sinY;
@@ -2099,19 +2611,46 @@
     if(keys['KeyD']){ S.camTargetX += rightX * move; S.camTargetZ += rightZ * move; }
     if(keys['KeyQ']) S.camTargetY += move;
     if(keys['KeyE']) S.camTargetY -= move;
-    S.camTargetX = clamp(S.camTargetX, -120, 120);
-    S.camTargetY = clamp(S.camTargetY, -60, 60);
-    S.camTargetZ = clamp(S.camTargetZ, -120, 120);
 
-    if(S.specterMode === 'auto' && !S.dragging && !keys['KeyW'] && !keys['KeyA'] && !keys['KeyS'] && !keys['KeyD'] && !keys['KeyQ'] && !keys['KeyE']){
+    if(S.focusSequence){
+      const seq = S.focusSequence;
+      seq.timer += dt;
+      const inDur = 0.55;
+      const holdDur = 0.72;
+      const outDur = 0.92;
+      const total = inDur + holdDur + outDur;
+      if(seq.timer >= total){
+        S.focusSequence = null;
+      }else{
+        let blend;
+        if(seq.timer < inDur){
+          blend = seq.timer / inDur;
+        }else if(seq.timer < inDur + holdDur){
+          blend = 1;
+        }else{
+          blend = 1 - ((seq.timer - inDur - holdDur) / outDur);
+        }
+        const desiredTargetX = seq.pos.x * 0.88 * blend;
+        const desiredTargetY = seq.pos.y * 0.82 * blend;
+        const desiredTargetZ = seq.pos.z * 0.88 * blend;
+        S.camTargetX = lerp(S.camTargetX, desiredTargetX, clamp(dt * 8.0, 0, 0.42));
+        S.camTargetY = lerp(S.camTargetY, desiredTargetY, clamp(dt * 8.0, 0, 0.42));
+        S.camTargetZ = lerp(S.camTargetZ, desiredTargetZ, clamp(dt * 8.0, 0, 0.42));
+        S.camDist = lerp(S.camDist, 680 - blend * (680 - seq.focusDist), clamp(dt * 8.0, 0, 0.46));
+        S.camPitch = lerp(S.camPitch, -0.12, clamp(dt * 2.2, 0, 0.12));
+      }
+    }else if(S.specterMode === 'auto' && !S.dragging && !manualInput){
       const focus = (S.lastEvent === 'fission' && S.generationPulse > 0.28)
         ? S.lastFissionPos
         : {x:0,y:0,z:0};
-      S.camTargetX = lerp(S.camTargetX, focus.x * 0.6, clamp(dt * 2.1, 0, 0.18));
-      S.camTargetY = lerp(S.camTargetY, focus.y * 0.35, clamp(dt * 2.1, 0, 0.18));
-      S.camTargetZ = lerp(S.camTargetZ, focus.z * 0.6, clamp(dt * 2.1, 0, 0.18));
+      S.camTargetX = lerp(S.camTargetX, focus.x * 0.52, clamp(dt * 2.1, 0, 0.18));
+      S.camTargetY = lerp(S.camTargetY, focus.y * 0.28, clamp(dt * 2.1, 0, 0.18));
+      S.camTargetZ = lerp(S.camTargetZ, focus.z * 0.52, clamp(dt * 2.1, 0, 0.18));
     }
 
+    S.camTargetX = clamp(S.camTargetX, -120, 120);
+    S.camTargetY = clamp(S.camTargetY, -60, 60);
+    S.camTargetZ = clamp(S.camTargetZ, -120, 120);
     S.camPitch = clamp(S.camPitch, -1.2, 1.1);
     S.camDist = clamp(S.camDist, 260, 980);
   }
@@ -2135,6 +2674,8 @@
     if(!S.meltdown){
       updatePhysics(dt);
       updateParticles(dt);
+      updateFissionBursts(dt);
+      captureTrendSample(dt);
     }else{
       S.uiFlash = 1;
     }
@@ -2173,6 +2714,26 @@
     }
   });
   ui.xrayBtn.addEventListener('click', () => { S.xrayVision = !S.xrayVision; ui.xrayBtn.classList.toggle('on', S.xrayVision); });
+  ui.recoverBtn.addEventListener('click', () => {
+    if(S.meltdown) return;
+    S.scram = false;
+    S.scramLatched = false;
+    S.lastEvent = 'rod';
+    S.focusSequence = null;
+    S.scramAge = 0;
+    S.scramPower = Math.max(0.18, S.promptPower + S.decayHeat);
+    S.rodInsertion = clamp(Math.min(S.rodInsertion, 0.22), 0, 1);
+    ui.scramBtn.classList.remove('on');
+  });
+  ui.focusBtn.addEventListener('click', () => {
+    S.focusMode = !S.focusMode;
+    if(!S.focusMode) S.focusSequence = null;
+    ui.focusBtn.classList.toggle('on', S.focusMode);
+  });
+  ui.traceBtns.forEach((btn) => btn.addEventListener('click', () => {
+    S.chartMetric = btn.dataset.series || 'keff';
+    renderTrendChart();
+  }));
   ui.zoomBtn.addEventListener('click', () => {
     if(S.viewMode === '3d'){
       const reset = Math.abs(S.camDist - 680) > 6 || Math.abs(S.camTargetX) > 4 || Math.abs(S.camTargetY) > 4 || Math.abs(S.camTargetZ) > 4;
@@ -2288,11 +2849,7 @@
   setMode('demo');
   S.expectedNeutrons = S.initialNeutrons;
   buildInitialPopulation();
-
-  for(let i=0;i<28;i++){
-    S.heatTrail.push(1.0);
-    S.spark.push(285);
-  }
+  captureTrendSample(1);
 
   requestAnimationFrame(loop);
 })();
