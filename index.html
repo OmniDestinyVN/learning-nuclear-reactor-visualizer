@@ -660,9 +660,6 @@
     camTargetX: 0,
     camTargetY: 0,
     camTargetZ: 0,
-    camVelX: 0,
-    camVelY: 0,
-    camVelZ: 0,
     dragging: false,
     dragX: 0,
     dragY: 0,
@@ -787,9 +784,6 @@
     S.camTargetX = 0;
     S.camTargetY = 0;
     S.camTargetZ = 0;
-    S.camVelX = 0;
-    S.camVelY = 0;
-    S.camVelZ = 0;
     ui.kSlider.value = '1.0000';
     ui.kTargetRead.textContent = '1.0000';
     ui.statusBadge.textContent = 'BÌNH THƯỜNG';
@@ -2210,6 +2204,25 @@
   function drawScene(){
     if(S.viewMode === '3d') drawScene3D();
     else drawScene2D();
+
+    // Post-meltdown overlay: hiển thị khi lõi đã hỏng và overlay bị dismiss
+    if(S.meltdown){
+      const W = ui.scene.width, H = ui.scene.height;
+      c.save();
+      c.fillStyle = 'rgba(130,0,0,.18)';
+      c.fillRect(0, 0, W, H);
+      const fs1 = Math.max(14, Math.round(W / 30));
+      const fs2 = Math.max(10, Math.round(W / 56));
+      c.textAlign = 'center';
+      c.fillStyle = 'rgba(255,110,110,.95)';
+      c.font = `bold ${fs1}px Consolas, monospace`;
+      c.fillText('LÕI ĐÃ NÓNG CHẢY', W / 2, H / 2 - fs1 * 0.6);
+      c.fillStyle = 'rgba(255,190,190,.70)';
+      c.font = `${fs2}px Consolas, monospace`;
+      c.fillText('Nhấn ĐẶT LẠI để thử lại · Quan sát đường nhiệt dư còn cao dù lò đã tắt', W / 2, H / 2 + fs1 * 0.8);
+      c.textAlign = 'left';
+      c.restore();
+    }
   }
 
   function updateStepPanel(){
@@ -2543,6 +2556,11 @@
     renderReactivityBreakdown();
     refreshStoryCards();
     updateStepPanel();
+
+    // Khi meltdown: vô hiệu hóa tất cả nút trừ ĐẶT LẠI để tránh incoherent state
+    const physicsButtons = [ui.scramBtn, ui.xrayBtn, ui.focusBtn, ui.viewBtn, ui.stepBtn,
+                            ui.demoBtn, ui.realityBtn, ui.kSlider];
+    physicsButtons.forEach(el => { if(el) el.disabled = !!S.meltdown; });
   }
 
   const STEP_EXPLAIN = [
@@ -2722,7 +2740,8 @@
     S.focusSequence = null;
     S.scramAge = 0;
     S.scramPower = Math.max(0.18, S.promptPower + S.decayHeat);
-    S.rodInsertion = clamp(Math.min(S.rodInsertion, 0.22), 0, 1);
+    // Không snap rodInsertion — để computeFeedback lerp rút thanh dần dần
+    // (rodRate = 1.35 khi scram=false → rod rút trong ~1-2 giây, không teleport)
     ui.scramBtn.classList.remove('on');
   });
   ui.focusBtn.addEventListener('click', () => {
@@ -2846,9 +2865,7 @@
   // Start
   resizeCanvas();
   setViewMode('2d');
-  setMode('demo');
-  S.expectedNeutrons = S.initialNeutrons;
-  buildInitialPopulation();
+  setMode('demo');  // gọi resetReactor() → buildInitialPopulation() bên trong rồi
   captureTrendSample(1);
 
   requestAnimationFrame(loop);
