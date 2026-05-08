@@ -1,0 +1,222 @@
+
+    supplyFill: document.getElementById('supplyFill'),
+    demandNeed: document.getElementById('demandNeed'),
+    supplyNeed: document.getElementById('supplyNeed'),
+    peakRead: document.getElementById('peakRead'),
+    reserveRead: document.getElementById('reserveRead'),
+    solarRead: document.getElementById('solarRead'),
+    stabilityRead: document.getElementById('stabilityRead'),
+    summaryTitle: document.getElementById('summaryTitle'),
+    summaryText: document.getElementById('summaryText'),
+    finalHead: document.getElementById('finalHead'),
+    finalBody: document.getElementById('finalBody'),
+    activeCount: document.getElementById('activeCount'),
+    sourceList: document.getElementById('sourceList'),
+    stressBtns: document.getElementById('stressBtns'),
+    timelineSvg: document.getElementById('timelineSvg'),
+    shapeSvg: document.getElementById('shapeSvg'),
+  };
+
+  function clamp(n, a, b){ return Math.max(a, Math.min(b, n)); }
+  function hourLabel(h){ return `${String(h).padStart(2,'0')}:00`; }
+  function fmt(n){ return Number(n).toLocaleString('vi-VN'); }
+  function currentStressObj(){ return stressModes[currentStress]; }
+  function visibleSources(){ return sourceDefs.filter(s => !hidden.has(s.key)); }
+
+  function demandAt(hour){
+    const s = currentStressObj();
+    const bell1 = Math.exp(-Math.pow((hour - 7.5)/3.2, 2));
+    const bell2 = Math.exp(-Math.pow((hour - 19.5)/2.8, 2));
+    const nightFloor = 0.55 + 0.15 * Math.cos((hour/24)*Math.PI*2);
+    return clamp((62 + 18*bell1 + 32*bell2 + 8*nightFloor) * s.factor, 50, 140);
+  }
+  function solarAt(hour){ return clamp(Math.max(0, Math.sin((Math.PI*(hour-6))/12)) * 38 * currentStressObj().solarBoost, 0, 38); }
+  function windAt(hour){ return clamp(11 + 4*Math.sin((hour/24)*Math.PI*2 + 1.4) + 2*Math.sin((hour/24)*Math.PI*6), 5, 18); }
+  function hydroAt(hour){ return clamp((16 + 2*Math.sin((hour/24)*Math.PI*2 - 0.7)) * (currentStress === 'dry' ? 0.95 : 1), 10, 22); }
+  function coalAt(hour){ return clamp((hour < 6 || hour >= 22 ? 35 : 31) - (currentStress === 'heatwave' ? 1.5 : 0), 28, 36); }
+  function gasAt(hour){ return clamp(((hour >= 17 && hour <= 22) ? 16 : 12) + (currentStress === 'heatwave' ? 2 : 0), 10, 18); }
+  function nuclearAt(){ return 25; }
+
+  function sourceValue(key, hour){
+    if (key === 'coal') return coalAt(hour);
+    if (key === 'hydro') return hydroAt(hour);
+    if (key === 'solar') return solarAt(hour);
+    if (key === 'wind') return windAt(hour);
+    if (key === 'gas') return gasAt(hour);
+    if (key === 'nuclear') return nuclearAt(hour);
+    return 0;
+  }
+
+  function buildSourceCards(){
+    el.sourceList.innerHTML = sourceDefs.map(s => {
+      const active = !hidden.has(s.key);
+      return `
+        <div class="source ${active ? 'active' : ''}" data-key="${s.key}">
+          <div class="swatch" style="background:${s.color}"></div>
+          <div>
+            <h3>${s.name}</h3>
+            <p>${s.desc}</p>
+          </div>
+          <div class="kv">${active ? 'ON' : 'OFF'}</div>
+        </div>
+      `;
+    }).join('');
+
+    el.sourceList.querySelectorAll('.source').forEach(node => {
+      node.onclick = () => {
+        const key = node.dataset.key;
+        hidden.has(key) ? hidden.delete(key) : hidden.add(key);
+        renderAll();
+      };
+    });
+
+    el.activeCount.textContent = `${visibleSources().length} nguồn`;
+  }
+
+  function buildStressButtons(){
+    el.stressBtns.innerHTML = Object.entries(stressModes).map(([key, s]) => `
+      <button class="btn ${currentStress === key ? 'on' : ''}" data-stress="${key}">${s.label}</button>
+    `).join('');
+
+    el.stressBtns.querySelectorAll('[data-stress]').forEach(btn => {
+      btn.onclick = () => {
+        currentStress = btn.dataset.stress;
+        renderAll();
+      };
+    });
+  }
+
+  function renderTimeline(){
+    const w = 860, h = 310, pad = 42;
+    const hours = Array.from({length:24}, (_,i)=>i);
+    const demandVals = hours.map(demandAt);
+    const supplyVals = hours.map(hh => visibleSources().reduce((sum,s)=>sum + sourceValue(s.key, hh), 0));
+    const maxY = 150, minY = 0;
+    const x = i => pad + i*((w-pad*2)/(hours.length-1));
+    const y = v => h - pad - ((v-minY)/(maxY-minY)) * (h-pad*2);
+
+    const demandLine = demandVals.map((v,i)=>(i===0?'M':'L') + ` ${x(i)} ${y(v)}`).join(' ');
+    const supplyLine = supplyVals.map((v,i)=>(i===0?'M':'L') + ` ${x(i)} ${y(v)}`).join(' ');
+    const currentX = x(currentHour);
+    const currentDemand = demandVals[currentHour];
+    const currentSupply = supplyVals[currentHour];
+    const reserve = currentSupply - currentDemand;
+    const fillDemand = demandVals.slice(0, currentHour+1).map((v,i)=>(i===0?'M':'L') + ` ${x(i)} ${y(v)}`).join(' ') + ` L ${currentX} ${h-pad} L ${x(0)} ${h-pad} Z`;
+
+    el.timelineSvg.innerHTML = `
+      <svg viewBox="0 0 ${w} ${h}" aria-label="Demand timeline">
+        <defs>
+          <linearGradient id="demandGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="rgba(125,211,252,.28)"/>
+            <stop offset="100%" stop-color="rgba(125,211,252,.02)"/>
+          </linearGradient>
+          <linearGradient id="supplyGrad" x1="0" x2="1" y1="0" y2="0">
+            <stop offset="0%" stop-color="#34d399"/>
+            <stop offset="100%" stop-color="#7dd3fc"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="${w}" height="${h}" rx="18" fill="rgba(5,10,18,.4)"></rect>
+        ${Array.from({length:5},(_,i)=>{
+          const yy = pad + i*((h-pad*2)/4);
+          const val = Math.round(maxY - i*((maxY-minY)/4));
+          return `<line x1="${pad}" x2="${w-pad}" y1="${yy}" y2="${yy}" stroke="rgba(255,255,255,.06)"></line><text x="12" y="${yy+4}" fill="#98adc7" font-size="10">${val}%</text>`;
+        }).join('')}
+        ${[0,6,12,18].map(hh=>`<line x1="${x(hh)}" x2="${x(hh)}" y1="${pad}" y2="${h-pad}" stroke="rgba(255,255,255,.05)"></line><text x="${x(hh)}" y="${h-pad+18}" text-anchor="middle" fill="#98adc7" font-size="11">${String(hh).padStart(2,'0')}:00</text>`).join('')}
+        <path d="${fillDemand}" fill="url(#demandGrad)"></path>
+        <path d="${demandLine}" fill="none" stroke="#7dd3fc" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="${supplyLine}" fill="none" stroke="url(#supplyGrad)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <line x1="${currentX}" x2="${currentX}" y1="${pad}" y2="${h-pad}" stroke="rgba(255,255,255,.16)" stroke-dasharray="6 6"></line>
+        <circle cx="${currentX}" cy="${y(currentDemand)}" r="7" fill="#efffff"></circle>
+        <circle cx="${currentX}" cy="${y(currentSupply)}" r="6" fill="#34d399"></circle>
+        <text x="${w-pad}" y="${pad+8}" text-anchor="end" fill="#cfe5ff" font-size="11">Demand (blue) · Supply (green)</text>
+        <text x="${w-pad}" y="${pad+24}" text-anchor="end" fill="${reserve >= 0 ? '#34d399' : '#fb7185'}" font-size="11">Reserve: ${reserve >= 0 ? '+' : ''}${reserve.toFixed(1)}%</text>
+      </svg>
+    `;
+
+    const phase = (currentHour < 6) ? 'Late night' : (currentHour < 11) ? 'Morning ramp' : (currentHour < 17) ? 'Solar window' : (currentHour < 23) ? 'Evening peak' : 'Late night';
+    el.timePill.textContent = `${hourLabel(currentHour)} · ${phase}`;
+    el.clockRead.textContent = hourLabel(currentHour);
+    el.balanceRead.textContent = reserve >= 0 ? 'Đủ tải' : 'Thiếu tải';
+    el.balanceRead.className = `pill ${reserve >= 0 ? 'good' : 'bad'}`;
+  }
+
+  function renderShape(){
+    const w = 640, h = 250, pad = 34;
+    const vals = Array.from({length:24}, (_,i)=>demandAt(i));
+    const x = i => pad + i*((w-pad*2)/23);
+    const y = v => h - pad - ((v-50)/(145-50)) * (h-pad*2);
+    const line = vals.map((v,i)=>(i===0?'M':'L') + ` ${x(i)} ${y(v)}`).join(' ');
+    const area = `${line} L ${x(23)} ${h-pad} L ${x(0)} ${h-pad} Z`;
+
+    el.shapeSvg.innerHTML = `
+      <svg viewBox="0 0 ${w} ${h}" aria-label="Demand shape">
+        <defs>
+          <linearGradient id="shapeGrad" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0%" stop-color="rgba(251,191,36,.35)"/>
+            <stop offset="100%" stop-color="rgba(251,191,36,.03)"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="${w}" height="${h}" rx="18" fill="rgba(5,10,18,.4)"></rect>
+        ${[0,1,2,3].map(i=>{ const yy = pad + i*((h-pad*2)/3); return `<line x1="${pad}" x2="${w-pad}" y1="${yy}" y2="${yy}" stroke="rgba(255,255,255,.05)"></line>`; }).join('')}
+        <path d="${area}" fill="url(#shapeGrad)"></path>
+        <path d="${line}" fill="none" stroke="#fbbf24" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <text x="${w-pad}" y="${pad+8}" text-anchor="end" fill="#fbbf24" font-size="11">${currentStressObj().label}</text>
+      </svg>
+    `;
+  }
+
+  function updateMetrics(){
+    const visible = visibleSources();
+    const demand = demandAt(currentHour);
+    const supply = visible.reduce((sum,s)=>sum + sourceValue(s.key, currentHour), 0);
+    const reserve = supply - demand;
+    const solarNow = sourceValue('solar', currentHour);
+
+    el.demandNeed.textContent = `${demand.toFixed(0)}%`;
+    el.supplyNeed.textContent = `${supply.toFixed(0)}%`;
+    el.demandFill.style.width = `${clamp(demand,0,140)}%`;
+    el.supplyFill.style.width = `${clamp(supply,0,140)}%`;
+    el.peakRead.textContent = `${currentStressObj().peak}%`;
+    el.reserveRead.textContent = `${reserve >= 0 ? '+' : ''}${reserve.toFixed(0)}%`;
+    el.reserveRead.style.color = reserve >= 0 ? 'var(--good)' : 'var(--bad)';
+    el.solarRead.textContent = `${solarNow.toFixed(0)}%`;
+    el.stabilityRead.textContent = reserve >= 0 ? 'OK' : 'Rủi ro';
+
+    if (reserve < -8){
+      el.summaryTitle.textContent = 'Hệ bị ép, biên an toàn mỏng.';
+      el.summaryText.textContent = `Ở ${hourLabel(currentHour)}, nhu cầu đã vượt cung rõ rệt. Bài toán lúc này không còn là nguồn nào đẹp hơn, mà là nguồn nào giữ được hệ không sập.`;
+    } else if (currentHour >= 18 && currentHour <= 22 && solarNow < 4){
+      el.summaryTitle.textContent = 'Peak tối làm lộ khoảng trống solar.';
+      el.summaryText.textContent = `Buổi tối, solar rơi gần về 0 trong khi demand vẫn cao. Đây là chỗ điện nền và reserve margin trở nên quyết định.`;
+    } else if (currentHour >= 11 && currentHour <= 15){
+      el.summaryTitle.textContent = 'Ban ngày solar giảm áp lực.';
+      el.summaryText.textContent = `Khi có nắng, solar giúp giảm tải rõ hơn. Nhưng lợi thế này chỉ xuất hiện trong một khung giờ hẹp nên không thể tự thay nguồn nền.`;
+    } else {
+      el.summaryTitle.textContent = 'Hệ giữ được cân bằng.';
+      el.summaryText.textContent = `Khi demand ở mức cơ sở, hệ thống còn giữ được reserve margin. Nhưng chỉ cần tăng stress hoặc đổi giờ, trade-off sẽ lộ ra rất nhanh.`;
+    }
+
+    const reserveText = reserve >= 0 ? 'ổn định hơn' : 'nguy cơ thiếu điện';
+    el.finalHead.textContent = reserve >= 0 ? 'Nguồn nào cũng có mặt mạnh, nhưng trade-off không biến mất.' : 'Hệ bị ép: câu hỏi không còn là “có đủ điện không?”';
+    el.finalBody.textContent = `Kịch bản ${currentStressObj().label.toLowerCase()} cho thấy: than giữ nền tốt nhưng carbon cao, solar mạnh theo giờ, wind biến thiên, gas đỡ tải nhanh nhưng vẫn phát thải, nuclear giữ điện nền tốt nhưng cần điều kiện triển khai dài hạn. Trạng thái hiện tại: ${reserveText}.`;
+
+    el.stressPill.textContent = currentStressObj().label;
+  }
+
+  function renderAll(){
+    buildStressButtons();
+    buildSourceCards();
+    renderTimeline();
+    renderShape();
+    updateMetrics();
+  }
+
+  el.timeSlider.addEventListener('input', () => {
+    currentHour = Number(el.timeSlider.value);
+    renderAll();
+  });
+
+  renderAll();
+</script>
+</body>
+</html>
