@@ -54,10 +54,10 @@ body::before {
   pointer-events:none;
   z-index:0;
 }
-
+ 
 /* ===== LAYOUT ===== */
 .wrapper { position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:24px 20px 60px; }
-
+ 
 /* ===== HEADER ===== */
 .header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
 .header-top { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
@@ -83,7 +83,7 @@ h1 {
   font-family:var(--mono); font-size:11px; color:var(--text3); margin-top:10px;
   border-left:2px solid var(--border2); padding-left:12px;
 }
-
+ 
 /* ===== MISSION CONTROL ===== */
 .mc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:32px; }
 .mc-card {
@@ -112,12 +112,12 @@ h1 {
   animation: pulse 2s infinite;
 }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-
+ 
 /* ===== SECTION HEADER ===== */
 .section-header { margin-bottom:16px; }
 .section-label { font-family:var(--mono); font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.12em; margin-bottom:4px; }
 .section-title { font-size:18px; font-weight:600; color:var(--text); }
-
+ 
 /* ===== TABS ===== */
 .tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:0; }
 .tab-btn {
@@ -129,7 +129,7 @@ h1 {
 .tab-btn.active { color:var(--amber); border-bottom-color:var(--amber); }
 .tab-panel { display:none; }
 .tab-panel.active { display:block; }
-
+ 
 /* ===== LENS A: BY YEAR ===== */
 .chart-card {
   background:var(--card); border:1px solid var(--border); border-radius:8px;
@@ -146,7 +146,7 @@ h1 {
 .chart-proof span { color:var(--amber); }
 .two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 @media(max-width:640px) { .two-col { grid-template-columns:1fr; } }
-
+ 
 /* milestone list */
 .milestone-list { list-style:none; }
 .milestone-list li {
@@ -158,7 +158,7 @@ h1 {
 .ms-val  { font-family:var(--mono); font-weight:700; }
 .ms-label { color:var(--text2); font-size:11px; }
 .ms-badge { font-family:var(--mono); font-size:9px; background:rgba(245,158,11,.15); color:var(--amber); padding:2px 6px; border-radius:2px; }
-
+ 
 /* ===== LENS B: BY SOURCE ===== */
 .toggles { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
 .toggle-btn {
@@ -178,10 +178,10 @@ h1 {
 .toggle-gas   { --c: var(--gas);    color:var(--gas); }
 .toggle-import{ --c: var(--import); color:var(--import); }
 .toggle-btn.active { border-color: var(--c); }
-
+ 
 .lens-b-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 @media(max-width:640px) { .lens-b-grid { grid-template-columns:1fr; } }
-
+ 
 /* ===== LENS C: CONSTRAINT TABLE ===== */
 .constraint-table { width:100%; border-collapse:collapse; font-size:13px; }
 .constraint-table th {
@@ -203,7 +203,7 @@ h1 {
   border:1px solid var(--border); border-radius:4px; padding:8px 12px; margin-top:10px;
   line-height:1.6;
 }
-
+ 
 /* ===== STRESS TEST ===== */
 .stress-header { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
 .stress-tag { font-family:var(--mono); font-size:9px; background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.25); padding:3px 9px; border-radius:2px; }
@@ -224,7 +224,7 @@ h1 {
 .gap-label { font-family:var(--mono); font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
 .gap-val { font-family:var(--mono); font-size:20px; font-weight:700; }
 .gap-desc { font-size:11px; color:var(--text2); margin-top:4px; }
-
+ 
 input[type=range] {
   width:100%; accent-color:var(--amber); cursor:pointer;
   height:4px; background:var(--border); border-radius:2px; outline:none; border:none;
@@ -236,15 +236,15 @@ input[type=range]::-webkit-slider-thumb {
 }
 .slider-row { margin-bottom:20px; }
 .slider-labels { display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--text3); margin-top:4px; }
-
+ 
 /* ===== LEGEND ===== */
 .legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; }
 .legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text2); }
 .legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-
+ 
 /* ===== SECTION DIVIDER ===== */
 .divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
-
+ 
 /* ===== FOOTNOTES ===== */
 .footnotes { font-family:var(--mono); font-size:10px; color:var(--text3); border-top:1px solid var(--border); padding-top:20px; margin-top:32px; line-height:1.7; }
 .footnotes a { color:var(--sky); text-decoration:none; }
@@ -252,7 +252,7 @@ input[type=range]::-webkit-slider-thumb {
 </head>
 <body>
 <div class="wrapper">
-
+ 
 <!-- ===== HEADER ===== -->
 <header class="header">
   <div class="header-top">
@@ -269,7 +269,7 @@ input[type=range]::-webkit-slider-thumb {
     Mọi số liệu đều có thể truy nguồn. Số liệu phái sinh hoặc ước tính đều được ghi rõ.
   </p>
 </header>
-
+ 
 <!-- ===== MISSION CONTROL ===== -->
 <div class="section-header">
   <div class="section-label"><span class="live-dot"></span>Mission Control — Cập nhật theo nguồn được bật</div>
@@ -303,19 +303,19 @@ input[type=range]::-webkit-slider-thumb {
     <div class="mc-formula">= Σ tỷ trọng nguồn nền đang bật</div>
   </div>
 </div>
-
+ 
 <!-- ===== LENSES ===== -->
 <div class="section-header">
   <div class="section-label">Hệ thống phân tích</div>
   <div class="section-title">Ba lăng kính</div>
 </div>
-
+ 
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('year',this)">Theo Năm</button>
   <button class="tab-btn" onclick="switchTab('source',this)">Theo Nguồn</button>
   <button class="tab-btn" onclick="switchTab('constraint',this)">Theo Ràng Buộc</button>
 </div>
-
+ 
 <!-- LENS A: THEO NĂM -->
 <div id="panel-year" class="tab-panel active">
   <div class="two-col">
@@ -344,7 +344,7 @@ input[type=range]::-webkit-slider-thumb {
       </div>
     </div>
   </div>
-
+ 
   <div class="chart-card">
     <div class="chart-title">Dòng thời gian sự kiện — Các mốc kỷ lục</div>
     <ul class="milestone-list">
@@ -379,7 +379,7 @@ input[type=range]::-webkit-slider-thumb {
     </div>
   </div>
 </div>
-
+ 
 <!-- LENS B: THEO NGUỒN -->
 <div id="panel-source" class="tab-panel">
   <div class="chart-card">
@@ -421,7 +421,7 @@ input[type=range]::-webkit-slider-thumb {
     </div>
   </div>
 </div>
-
+ 
 <!-- LENS C: THEO RÀNG BUỘC -->
 <div id="panel-constraint" class="tab-panel">
   <div class="chart-card">
@@ -506,9 +506,9 @@ input[type=range]::-webkit-slider-thumb {
     </div>
   </div>
 </div>
-
+ 
 <hr class="divider">
-
+ 
 <!-- ===== STRESS TEST ===== -->
 <div class="section-header">
   <div class="section-label">Kiểm tra áp lực</div>
@@ -517,11 +517,22 @@ input[type=range]::-webkit-slider-thumb {
 <div class="chart-card">
   <div class="stress-header">
     <div>
-      <div class="chart-q">Mô hình tương đối — minh họa khái niệm cho ngày hè đỉnh phụ tải</div>
+      <div class="chart-q">Hình dạng đường cong do nhóm xây dựng phục vụ trực quan hóa khái niệm</div>
     </div>
-    <span class="stress-tag">⚠ MINH HỌA KHÁI NIỆM — KHÔNG PHẢI DỮ LIỆU VẬN HÀNH THỰC</span>
+    <span class="stress-tag">⚠ ĐƯỜNG CONG DO NHÓM XÂY DỰNG — KHÔNG PHẢI DỮ LIỆU VẬN HÀNH THỰC TỪ A0</span>
   </div>
-
+ 
+  <!-- Methodology box -->
+  <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:12px 16px;margin-bottom:20px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--text2);">
+    <span style="color:var(--amber);font-weight:700;">📋 CƠ SỞ XÂY DỰNG MÔ HÌNH NÀY</span><br>
+    Hình dạng đường cong được nhóm nghiên cứu xây dựng dựa trên <strong style="color:var(--text);">mô tả định tính trong báo cáo</strong>, không phải dữ liệu giờ thực từ A0:<br>
+    · <span style="color:var(--text);">Đỉnh trưa ~13:30</span> — báo cáo ghi "Pmax ngày 19/06/2024 lúc 13h30" (nguồn: A0)<br>
+    · <span style="color:var(--text);">Giờ cao điểm tối 18:00–22:00</span> — báo cáo mô tả "giờ cao điểm miền Bắc rơi vào 18h–22h" (case study mùa khô 2023)<br>
+    · <span style="color:var(--text);">Mặt trời = 0 sau 18h</span> — suy luận trực tiếp từ bản chất vật lý<br>
+    · <span style="color:var(--text);">Điện nền tương đối phẳng</span> — phản ánh vai trò "chạy nền" của than+khí<br>
+    <span style="color:var(--text3);">Trục Y không có đơn vị tuyệt đối. Mục đích duy nhất: trực quan hóa bài toán khoảng thiếu hụt buổi tối.</span>
+  </div>
+ 
   <div class="slider-row">
     <label style="font-family:var(--mono);font-size:11px;color:var(--text3);display:block;margin-bottom:8px;">
       KÉO ĐỂ THAY ĐỔI GIỜ TRONG NGÀY
@@ -531,7 +542,7 @@ input[type=range]::-webkit-slider-thumb {
       <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
     </div>
   </div>
-
+ 
   <div class="stress-grid">
     <div>
       <div class="chart-wrap" style="height:220px">
@@ -556,32 +567,36 @@ input[type=range]::-webkit-slider-thumb {
         <div class="status-name">Nhu cầu tương đối</div>
         <div class="status-bar-wrap">
           <div class="status-bar"><div class="status-bar-fill" id="bar-demand" style="background:#ef4444;width:0%"></div></div>
-          <div class="status-val" id="val-demand" style="color:#ef4444"></div>
+          <div class="status-val" id="val-demand" style="color:#ef4444;font-size:11px;min-width:60px"></div>
         </div>
       </div>
       <div class="status-row">
         <div class="status-name">Mặt trời</div>
         <div class="status-bar-wrap">
           <div class="status-bar"><div class="status-bar-fill" id="bar-solar" style="background:var(--solar);width:0%"></div></div>
-          <div class="status-val" id="val-solar" style="color:var(--solar)"></div>
+          <div class="status-val" id="val-solar" style="color:var(--solar);font-size:11px;min-width:60px"></div>
         </div>
       </div>
       <div class="status-row">
-        <div class="status-name">Điện nền ổn định</div>
+        <div class="status-name">Điện nền (Than+Khí)</div>
         <div class="status-bar-wrap">
           <div class="status-bar"><div class="status-bar-fill" id="bar-base" style="background:var(--coal);width:0%"></div></div>
-          <div class="status-val" id="val-base" style="color:var(--coal)"></div>
+          <div class="status-val" id="val-base" style="color:var(--coal);font-size:11px;min-width:60px"></div>
         </div>
       </div>
       <div class="gap-indicator" id="gapBlock">
-        <div class="gap-label">Khoảng thiếu hụt ước tính</div>
-        <div class="gap-val" id="gap-val" style="color:var(--red)">—</div>
+        <div class="gap-label">Trạng thái cung–cầu</div>
+        <div class="gap-val" id="gap-val" style="font-size:16px">—</div>
         <div class="gap-desc" id="gap-desc">—</div>
+      </div>
+      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:10px;line-height:1.5;">
+        Mức hiển thị: Cao / Trung bình / Thấp / Không có<br>
+        Không có giá trị tuyệt đối — hình dạng khái niệm
       </div>
     </div>
   </div>
 </div>
-
+ 
 <!-- ===== FOOTNOTES ===== -->
 <div class="footnotes">
   <strong>Ghi chú nguồn dữ liệu:</strong><br>
@@ -590,12 +605,12 @@ input[type=range]::-webkit-slider-thumb {
   [3] Phát thải CO₂ vòng đời (LCA): IEA, NREL, World Nuclear Association — trích dẫn trong báo cáo gốc.<br>
   [4] Hệ số công suất (CF): World Nuclear Association, U.S. DOE — trích dẫn trong báo cáo gốc.<br>
   [5] <em>Các số liệu phái sinh</em> (CO₂ hỗn hợp, CF trung bình gia quyền): tính toán từ công thức Σ(tỷ trọng × giá trị), dựa trên dữ liệu đã xác nhận ở [2] và [3]–[4].<br>
-  [6] <em>Stress Test</em>: Mô hình tương đối khái niệm — giá trị minh họa, KHÔNG phải dữ liệu vận hành giờ thực từ A0. Mục đích: trực quan hóa bài toán khoảng thiếu hụt buổi tối.<br>
+  [6] <em>Stress Test — Phương pháp luận</em>: Hình dạng đường cong do nhóm nghiên cứu xây dựng phục vụ trực quan hóa, KHÔNG phải dữ liệu vận hành giờ thực từ A0. Cơ sở: (a) đỉnh trưa ~13:30 — trích từ báo cáo gốc [A0]; (b) giờ cao điểm tối 18–22h — trích từ case study mùa khô 2023 trong báo cáo; (c) mặt trời = 0 sau 18h — suy luận vật lý; (d) điện nền tương đối phẳng — phản ánh đặc tính than+khí. Trục Y không có đơn vị tuyệt đối. Tooltip bị tắt có chủ ý để tránh hiển thị số không có nguồn.<br>
   [7] Nhập khẩu — CO₂ đại diện (~200 g/kWh): ước tính proxy, chưa có dữ liệu LCA cụ thể trong báo cáo. Được đánh dấu trong tính toán CO₂ hỗn hợp.
 </div>
-
+ 
 </div><!-- /wrapper -->
-
+ 
 <script>
 /* ===== DATA ===== */
 const SOURCES = {
@@ -608,9 +623,9 @@ const SOURCES = {
 };
 // 'other' (dầu & khác 0.1%) excluded from toggles, included in total for mix only
 const OTHER = { share:0.1, co2:500, cfMid:60, isBase:false, label:'Khác', color:'#64748b', proxy:true };
-
+ 
 const enabled = { coal:true, hydro:true, solar:true, wind:true, gas:true, imports:true };
-
+ 
 /* ===== COMPUTE MISSION CONTROL ===== */
 function computeMetrics() {
   let totalShare = 0, co2Sum = 0, cfSum = 0, baseShare = 0;
@@ -629,7 +644,7 @@ function computeMetrics() {
     totalShare
   };
 }
-
+ 
 function updateMissionControl() {
   const m = computeMetrics();
   document.getElementById('mc-co2').textContent = m.co2.toFixed(0) + ' g/kWh';
@@ -644,7 +659,7 @@ function updateMissionControl() {
   updateMixChart();
   updateCo2BarChart();
 }
-
+ 
 /* ===== TOGGLE SOURCE ===== */
 function toggleSource(key, btn) {
   enabled[key] = !enabled[key];
@@ -652,7 +667,7 @@ function toggleSource(key, btn) {
   btn.classList.toggle('off',    !enabled[key]);
   updateMissionControl();
 }
-
+ 
 /* ===== TAB SWITCH ===== */
 function switchTab(id, btn) {
   document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
@@ -660,14 +675,14 @@ function switchTab(id, btn) {
   document.getElementById('panel-' + id).classList.add('active');
   btn.classList.add('active');
 }
-
+ 
 /* ===== CHART.JS DEFAULTS ===== */
 Chart.defaults.color = '#94a3b8';
 Chart.defaults.font.family = "'JetBrains Mono', monospace";
 Chart.defaults.font.size = 11;
-
+ 
 const GRID_COLOR = 'rgba(26,40,69,.6)';
-
+ 
 /* ===== LENS A CHARTS ===== */
 // Pmax line chart
 const pmaxData = {
@@ -704,7 +719,7 @@ new Chart(ctxPmax, {
     }
   }
 });
-
+ 
 // Q1 comparison bar
 const ctxQ1 = document.getElementById('chartQ1').getContext('2d');
 new Chart(ctxQ1, {
@@ -736,10 +751,10 @@ new Chart(ctxQ1, {
     }
   }
 });
-
+ 
 /* ===== LENS B CHARTS ===== */
 let mixChart, co2BarChart;
-
+ 
 function getMixDataset() {
   const keys = [], labels = [], values = [], colors = [];
   for (const [k, s] of Object.entries(SOURCES)) {
@@ -748,7 +763,7 @@ function getMixDataset() {
   }
   return { keys, labels, values, colors };
 }
-
+ 
 function buildMixChart() {
   const d = getMixDataset();
   const ctx = document.getElementById('chartMix').getContext('2d');
@@ -767,7 +782,7 @@ function buildMixChart() {
     }
   });
 }
-
+ 
 function updateMixChart() {
   const d = getMixDataset();
   mixChart.data.labels = d.labels;
@@ -775,7 +790,7 @@ function updateMixChart() {
   mixChart.data.datasets[0].backgroundColor = d.colors;
   mixChart.update();
 }
-
+ 
 function buildCo2BarChart() {
   const d = getMixDataset();
   const ctx = document.getElementById('chartCo2Bar').getContext('2d');
@@ -805,7 +820,7 @@ function buildCo2BarChart() {
     }
   });
 }
-
+ 
 function updateCo2BarChart() {
   const d = getMixDataset();
   co2BarChart.data.labels = d.labels;
@@ -814,7 +829,7 @@ function updateCo2BarChart() {
   co2BarChart.data.datasets[0].borderColor = d.colors;
   co2BarChart.update();
 }
-
+ 
 /* ===== STRESS TEST ===== */
 // Relative conceptual curves — 0 to 100 scale
 // Demand: double-hump, morning peak ~13h, evening peak ~19h
@@ -840,13 +855,13 @@ function solarCurve(h) {
 }
 function baseCurve()  { return 62; }
 function windCurve(h) { return 12 + 5 * Math.sin(h * 0.4); }
-
+ 
 const hours = Array.from({length:24}, (_,i) => i);
 const demandArr  = hours.map(demandCurve);
 const solarArr   = hours.map(solarCurve);
 const baseArr    = hours.map(baseCurve);
 const windArr    = hours.map(windCurve);
-
+ 
 const ctxStress = document.getElementById('chartStress').getContext('2d');
 let markerLine = {
   id: 'markerLine',
@@ -866,7 +881,7 @@ let markerLine = {
     ctx.restore();
   }
 };
-
+ 
 const stressChart = new Chart(ctxStress, {
   type: 'line',
   plugins: [markerLine],
@@ -884,7 +899,7 @@ const stressChart = new Chart(ctxStress, {
     animation: { duration: 0 },
     plugins: {
       legend: { display: false },
-      tooltip: { mode: 'index', intersect: false }
+      tooltip: { enabled: false }
     },
     scales: {
       x: {
@@ -894,12 +909,22 @@ const stressChart = new Chart(ctxStress, {
       y: {
         min: 0, max: 110,
         grid: { color: GRID_COLOR },
-        ticks: { callback: v => v + '%' }
+        ticks: {
+          // No numeric values — axis is qualitative only
+          callback: v => {
+            if (v === 0)   return 'Không có';
+            if (v === 37)  return 'Thấp';
+            if (v === 65)  return 'Trung bình';
+            if (v === 92)  return 'Cao';
+            return '';
+          },
+          color: '#475569'
+        }
       }
     }
   }
 });
-
+ 
 function updateStressTest(h) {
   h = parseInt(h);
   document.getElementById('hourDisplay').textContent = String(h).padStart(2,'0') + ':00';
@@ -909,34 +934,46 @@ function updateStressTest(h) {
   const wind   = windCurve(h);
   const supply = solar + base + wind;
   const gap    = Math.max(0, demand - supply);
-
-  const setPct = (id, val, max) => {
-    document.getElementById(id).style.width = Math.min(100, (val/max)*100).toFixed(0) + '%';
+ 
+  // Qualitative level labels — no absolute numbers shown
+  const toLevel = v => {
+    if (v <= 5)  return { label: 'Không có', pct: 3 };
+    if (v < 40)  return { label: 'Thấp',     pct: 28 };
+    if (v < 70)  return { label: 'Trung bình', pct: 58 };
+    return              { label: 'Cao',       pct: 88 };
   };
-  const setVal = (id, val, suffix) => {
-    document.getElementById(id).textContent = val.toFixed(0) + (suffix || '%');
+ 
+  const setPct = (barId, valId, v, color) => {
+    const lv = toLevel(v);
+    document.getElementById(barId).style.width = lv.pct + '%';
+    document.getElementById(valId).textContent = lv.label;
   };
-  setPct('bar-demand', demand, 110); setVal('val-demand', demand);
-  setPct('bar-solar',  solar,  110); setVal('val-solar', solar);
-  setPct('bar-base',   base,   110); setVal('val-base', base);
-
-  const gapEl = document.getElementById('gap-val');
+  setPct('bar-demand', 'val-demand', demand);
+  setPct('bar-solar',  'val-solar',  solar);
+  setPct('bar-base',   'val-base',   base);
+ 
+  // Gap: qualitative only
+  const gapEl  = document.getElementById('gap-val');
   const descEl = document.getElementById('gap-desc');
-  if (gap > 2) {
+  if (gap > 12) {
     gapEl.style.color = '#f87171';
-    gapEl.textContent = '−' + gap.toFixed(0) + ' đơn vị';
+    gapEl.textContent = 'Thiếu hụt đáng kể';
     descEl.textContent = h >= 18 && h <= 22
-      ? 'Mặt trời đã tắt — điện nền và gió chưa bù đủ'
-      : 'Nhu cầu cao — nguồn cung chưa đủ';
+      ? 'Mặt trời đã tắt — điện nền + gió chưa bù đủ nhu cầu tối'
+      : 'Nhu cầu cao, cung chưa đáp ứng đủ';
+  } else if (gap > 3) {
+    gapEl.style.color = '#facc15';
+    gapEl.textContent = 'Thiếu hụt nhỏ';
+    descEl.textContent = 'Cung sát ngưỡng nhu cầu — hệ thống căng';
   } else {
     gapEl.style.color = '#4ade80';
     gapEl.textContent = 'Cân bằng';
-    descEl.textContent = 'Cung ≥ Cầu tại giờ này';
+    descEl.textContent = 'Cung đủ đáp ứng nhu cầu tại giờ này';
   }
-
+ 
   stressChart.update();
 }
-
+ 
 /* ===== INIT ===== */
 buildMixChart();
 buildCo2BarChart();
