@@ -3,982 +3,989 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nghịch Lý & Bối Cảnh</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<title>Phòng Bằng Chứng — Chương 1</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
-/* ===== RESET & BASE ===== */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root {
-  --bg:        #06091a;
-  --bg2:       #0c1120;
-  --card:      #0f1629;
-  --border:    #1a2845;
-  --border2:   #243660;
-  --amber:     #f59e0b;
-  --amber2:    #fbbf24;
-  --sky:       #38bdf8;
-  --green:     #4ade80;
-  --red:       #f87171;
-  --yellow:    #facc15;
-  --purple:    #a78bfa;
-  --text:      #e2e8f0;
-  --text2:     #94a3b8;
-  --text3:     #475569;
-  --coal:      #9ca3af;
-  --hydro:     #60a5fa;
-  --solar:     #fbbf24;
-  --wind:      #34d399;
-  --gas:       #fb923c;
-  --import:    #c084fc;
-  --other:     #64748b;
-  --mono: 'JetBrains Mono', monospace;
-  --sans: 'Sora', sans-serif;
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Warm dark palette */
+  --bg:     #0c0b08;
+  --bg2:    #141210;
+  --card:   #1a1815;
+  --card2:  #201e1a;
+  --border: #2e2b25;
+  --border2:#3d3a32;
+
+  /* Warm accents */
+  --amber:  #d4864a;
+  --amber2: #e8a060;
+  --teal:   #5daa96;
+  --sage:   #7aad7a;
+  --rust:   #c46a58;
+  --gold:   #c4a040;
+  --lilac:  #9880c8;
+
+  /* Text — warm cream scale */
+  --text:   #ede8de;
+  --text2:  #9a9080;
+  --text3:  #5a5448;
+  --text4:  #38342e;
+
+  /* Source colors — warm, muted */
+  --coal:   #a09080;
+  --hydro:  #5898d4;
+  --solar:  #d4a840;
+  --wind:   #5aad88;
+  --gas:    #d47848;
+  --import: #a878c4;
+  --nuclear:#4ab0c8;
+
+  --mono: 'IBM Plex Mono', monospace;
+  --serif:'Source Serif 4', Georgia, serif;
+  --display:'Playfair Display', Georgia, serif;
 }
-html { scroll-behavior: smooth; }
-body {
-  font-family: var(--sans);
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  line-height: 1.6;
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--serif);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  line-height:1.65;
 }
-/* Grid overlay texture */
-body::before {
-  content:'';
-  position:fixed;inset:0;
-  background-image:
-    linear-gradient(rgba(56,189,248,.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(56,189,248,.03) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events:none;
-  z-index:0;
+
+/* Subtle warm grain */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.028'/%3E%3C/svg%3E");
+  background-size:200px 200px;
+  pointer-events:none;z-index:0;
 }
- 
-/* ===== LAYOUT ===== */
-.wrapper { position:relative; z-index:1; max-width:1200px; margin:0 auto; padding:24px 20px 60px; }
- 
-/* ===== HEADER ===== */
-.header { border-bottom: 1px solid var(--border); padding-bottom: 24px; margin-bottom: 32px; }
-.header-top { display:flex; align-items:center; gap:12px; margin-bottom:8px; }
-.badge {
-  font-family:var(--mono); font-size:10px; font-weight:700;
-  background: var(--amber); color:#000; padding:3px 8px; border-radius:3px;
-  letter-spacing:.08em;
+
+.wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 22px 80px}
+
+/* ── STICKY NAV ── */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(12,11,8,.92);backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;padding:0 22px;height:46px;
+  transition:transform .3s ease;transform:translateY(-100%);
 }
-.badge-outline {
-  font-family:var(--mono); font-size:10px; font-weight:600;
-  border:1px solid var(--border2); color:var(--text2); padding:3px 8px; border-radius:3px;
-  letter-spacing:.08em;
+.nav.show{transform:translateY(0)}
+.nav-brand{
+  font-family:var(--mono);font-size:10px;color:var(--amber);font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;margin-right:22px;white-space:nowrap;
 }
-h1 {
-  font-family:var(--mono); font-size:clamp(22px,4vw,36px); font-weight:700;
-  color:var(--amber); letter-spacing:-.02em; line-height:1;
+.nav-links{display:flex;flex:1;flex-wrap:nowrap;overflow:hidden}
+.nav-a{
+  font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--text3);text-decoration:none;
+  padding:0 12px;height:46px;display:flex;align-items:center;
+  border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;
 }
-.thesis {
-  font-size:14px; color:var(--text2); margin-top:6px; max-width:680px; line-height:1.5;
+.nav-a:hover{color:var(--text2)}
+.nav-a.on{color:var(--amber2);border-bottom-color:var(--amber)}
+
+/* ── HERO ── */
+.hero{padding:80px 0 48px}
+.hero-eye{
+  font-family:var(--mono);font-size:10px;color:var(--text3);letter-spacing:.16em;
+  text-transform:uppercase;margin-bottom:24px;display:flex;align-items:center;gap:14px;
 }
-.thesis strong { color:var(--text); }
-.header-note {
-  font-family:var(--mono); font-size:11px; color:var(--text3); margin-top:10px;
-  border-left:2px solid var(--border2); padding-left:12px;
+.hero-eye::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--border2),transparent)}
+.hero-q{
+  font-family:var(--display);
+  font-size:clamp(26px,4.5vw,52px);
+  font-weight:600;line-height:1.2;
+  color:var(--text);
+  max-width:820px;
+  letter-spacing:-.01em;
+  margin-bottom:20px;
 }
- 
-/* ===== MISSION CONTROL ===== */
-.mc-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px; margin-bottom:32px; }
-.mc-card {
-  background: var(--card); border:1px solid var(--border); border-radius:8px;
-  padding:16px 20px; position:relative; overflow:hidden;
+.hero-q em{font-style:italic;color:var(--amber2)}
+.hero-body{
+  font-family:var(--serif);font-size:14px;color:var(--text2);
+  max-width:600px;line-height:1.75;margin-bottom:28px;font-weight:300;
 }
-.mc-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+.hero-pills{display:flex;gap:9px;flex-wrap:wrap}
+.pill{
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  padding:5px 13px;border-radius:100px;
+  display:inline-flex;align-items:center;gap:5px;
+  letter-spacing:.04em;
 }
-.mc-card.amber::before { background: var(--amber); }
-.mc-card.sky::before   { background: var(--sky); }
-.mc-card.green::before { background: var(--green); }
-.mc-card.purple::before { background: var(--purple); }
-.mc-label { font-family:var(--mono); font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.1em; margin-bottom:6px; }
-.mc-value { font-family:var(--mono); font-size:clamp(22px,3vw,30px); font-weight:700; line-height:1; margin-bottom:4px; }
-.mc-card.amber .mc-value { color:var(--amber2); }
-.mc-card.sky   .mc-value { color:var(--sky); }
-.mc-card.green .mc-value { color:var(--green); }
-.mc-card.purple .mc-value { color:var(--purple); }
-.mc-sub  { font-size:11px; color:var(--text2); }
-.mc-src  { font-family:var(--mono); font-size:9px; color:var(--text3); margin-top:8px; }
-.mc-formula { font-family:var(--mono); font-size:9px; color:var(--text3); margin-top:2px; font-style:italic; }
-.live-dot {
-  display:inline-block; width:6px; height:6px; border-radius:50%;
-  background:var(--green); margin-right:5px;
-  animation: pulse 2s infinite;
+.p-rust  {background:rgba(196,106,88,.12);color:var(--rust);  border:1px solid rgba(196,106,88,.28)}
+.p-amber {background:rgba(212,134,74,.12);color:var(--amber2);border:1px solid rgba(212,134,74,.28)}
+.p-lilac {background:rgba(152,128,200,.12);color:var(--lilac);border:1px solid rgba(152,128,200,.28)}
+
+/* ── KPI STRIP ── */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding-bottom:56px;border-bottom:1px solid var(--border)}
+@media(max-width:700px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:7px;padding:15px 18px;position:relative;overflow:hidden;transition:border-color .2s}
+.kpi:hover{border-color:var(--border2)}
+.kpi::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px}
+.kpi.ka::after{background:linear-gradient(90deg,var(--amber),transparent)}
+.kpi.kb::after{background:linear-gradient(90deg,var(--teal),transparent)}
+.kpi.kc::after{background:linear-gradient(90deg,var(--sage),transparent)}
+.kpi.kd::after{background:linear-gradient(90deg,var(--lilac),transparent)}
+.kpi-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.11em;margin-bottom:6px}
+.kpi-val{font-family:var(--mono);font-size:clamp(16px,2.2vw,24px);font-weight:600;line-height:1;margin-bottom:4px}
+.kpi.ka .kpi-val{color:var(--amber2)}.kpi.kb .kpi-val{color:var(--teal)}
+.kpi.kc .kpi-val{color:var(--sage)}.kpi.kd .kpi-val{color:var(--lilac)}
+.kpi-sub{font-size:11px;color:var(--text2);font-family:var(--mono)}
+.kpi-src{font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:7px}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.live{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--sage);margin-right:4px;animation:blink 2.5s infinite}
+
+/* ── SECTION SHELL ── */
+.sec{padding:52px 0}
+.sec+.sec{border-top:1px solid var(--border)}
+.sec-eye{font-family:var(--mono);font-size:9px;color:var(--text3);letter-spacing:.16em;text-transform:uppercase;margin-bottom:5px}
+.sec-title{font-family:var(--display);font-size:clamp(18px,2.8vw,28px);font-weight:600;color:var(--text);letter-spacing:-.01em;margin-bottom:5px}
+.sec-q{font-family:var(--serif);font-size:13px;color:var(--text2);margin-bottom:26px;font-style:italic;font-weight:300}
+
+/* ── CARD ── */
+.card{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:22px;margin-bottom:14px;transition:border-color .2s}
+.card:hover{border-color:var(--border2)}
+.card-title{font-family:var(--serif);font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.card-q{font-family:var(--mono);font-size:10px;color:var(--teal);margin-bottom:16px;letter-spacing:.03em}
+.card-note{font-family:var(--mono);font-size:9px;color:var(--text3);border-top:1px solid var(--border);margin-top:14px;padding-top:10px;line-height:1.6}
+.card-note em{color:var(--amber2);font-style:normal}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.two{grid-template-columns:1fr}}
+
+/* ── MILESTONE LIST ── */
+.ml{list-style:none}
+.ml li{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:10px 6px;border-bottom:1px solid var(--border);
+  font-size:12px;gap:8px;border-radius:4px;transition:background .15s;
 }
-@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
- 
-/* ===== SECTION HEADER ===== */
-.section-header { margin-bottom:16px; }
-.section-label { font-family:var(--mono); font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.12em; margin-bottom:4px; }
-.section-title { font-size:18px; font-weight:600; color:var(--text); }
- 
-/* ===== TABS ===== */
-.tabs { display:flex; gap:4px; margin-bottom:20px; border-bottom:1px solid var(--border); padding-bottom:0; }
-.tab-btn {
-  font-family:var(--mono); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.08em;
-  color:var(--text3); background:none; border:none; cursor:pointer;
-  padding:10px 16px; border-bottom:2px solid transparent; transition:all .2s;
+.ml li:hover{background:rgba(255,255,255,.015)}
+.ml li:last-child{border-bottom:none}
+.m-date{font-family:var(--mono);color:var(--text3);font-size:9px;min-width:90px;flex-shrink:0}
+.m-text{color:var(--text2);font-size:11px;flex:1;font-family:var(--serif);font-weight:300}
+.m-val {font-family:var(--mono);font-weight:600;font-size:11px;flex-shrink:0}
+.m-tag {font-family:var(--mono);font-size:8px;padding:2px 6px;border-radius:2px;flex-shrink:0}
+.mt-a{background:rgba(212,134,74,.15);color:var(--amber2)}
+.mt-r{background:rgba(196,106,88,.15);color:var(--rust)}
+
+/* ── TOGGLES ── */
+.tog-row{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:16px}
+.tog{
+  display:flex;align-items:center;gap:5px;
+  font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.05em;
+  border:1px solid var(--border2);border-radius:4px;padding:5px 10px;
+  cursor:pointer;background:none;color:var(--text2);transition:all .15s;
 }
-.tab-btn:hover { color:var(--text2); }
-.tab-btn.active { color:var(--amber); border-bottom-color:var(--amber); }
-.tab-panel { display:none; }
-.tab-panel.active { display:block; }
- 
-/* ===== LENS A: BY YEAR ===== */
-.chart-card {
-  background:var(--card); border:1px solid var(--border); border-radius:8px;
-  padding:20px; margin-bottom:16px;
+.tog .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.tog.off{opacity:.3}
+.tog.on{border-color:currentColor}
+.t-co{color:var(--coal)}.t-hy{color:var(--hydro)}.t-so{color:var(--solar)}
+.t-wi{color:var(--wind)}.t-ga{color:var(--gas)}.t-im{color:var(--import)}
+
+.mix-g{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:640px){.mix-g{grid-template-columns:1fr}}
+
+/* ── CONSTRAINT TABLE ── */
+.ctbl{width:100%;border-collapse:collapse;font-size:11px}
+.ctbl th{font-family:var(--mono);font-size:8px;text-transform:uppercase;letter-spacing:.09em;color:var(--text3);background:var(--bg2);padding:8px 11px;text-align:left;border-bottom:1px solid var(--border)}
+.ctbl td{padding:9px 11px;border-bottom:1px solid var(--border);vertical-align:top;font-family:var(--serif);font-weight:300}
+.ctbl tr:hover td{background:rgba(255,255,255,.01)}
+.tag{display:inline-block;font-family:var(--mono);font-size:8px;padding:2px 6px;border-radius:2px;font-weight:500}
+.tg{background:rgba(122,173,122,.14);color:var(--sage)}
+.ty{background:rgba(196,160,64,.14);color:var(--gold)}
+.tr{background:rgba(196,106,88,.14);color:var(--rust)}
+.tn{background:rgba(154,144,128,.1);color:var(--text2)}
+
+/* ══════════════════════════════════════
+   KIỂM TRA ÁP LỰC
+   ══════════════════════════════════════ */
+.sec-kta{
+  background:linear-gradient(180deg,transparent 0%,rgba(196,106,88,.04) 100%);
+  border-top:1px solid rgba(196,106,88,.2) !important;
+  position:relative;
 }
-.chart-title { font-size:13px; font-weight:600; color:var(--text); margin-bottom:4px; }
-.chart-q { font-family:var(--mono); font-size:11px; color:var(--sky); margin-bottom:16px; }
-.chart-wrap { position:relative; }
-.chart-proof {
-  font-family:var(--mono); font-size:11px; color:var(--text3);
-  border-top:1px solid var(--border); margin-top:16px; padding-top:12px;
-  line-height:1.5;
+.sec-kta::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(196,106,88,.4),transparent);
 }
-.chart-proof span { color:var(--amber); }
-.two-col { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-@media(max-width:640px) { .two-col { grid-template-columns:1fr; } }
- 
-/* milestone list */
-.milestone-list { list-style:none; }
-.milestone-list li {
-  display:flex; justify-content:space-between; align-items:center;
-  padding:10px 0; border-bottom:1px solid var(--border); font-size:12px;
+.kta-cue{
+  font-family:var(--serif);font-size:15px;color:var(--text2);font-style:italic;
+  margin-bottom:22px;padding:14px 18px;border-left:3px solid var(--rust);
+  background:rgba(196,106,88,.05);border-radius:0 6px 6px 0;line-height:1.6;
 }
-.milestone-list li:last-child { border-bottom:none; }
-.ms-date { font-family:var(--mono); color:var(--text3); }
-.ms-val  { font-family:var(--mono); font-weight:700; }
-.ms-label { color:var(--text2); font-size:11px; }
-.ms-badge { font-family:var(--mono); font-size:9px; background:rgba(245,158,11,.15); color:var(--amber); padding:2px 6px; border-radius:2px; }
- 
-/* ===== LENS B: BY SOURCE ===== */
-.toggles { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
-.toggle-btn {
-  display:flex; align-items:center; gap:6px;
-  font-family:var(--mono); font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:.06em;
-  border:1px solid var(--border2); border-radius:4px; padding:6px 12px;
-  cursor:pointer; background:none; color:var(--text2); transition:all .15s;
+.kta-cue strong{color:var(--text);font-style:normal}
+
+/* Scenario cards */
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:620px){.sc-grid{grid-template-columns:1fr}}
+.sc{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:15px;cursor:pointer;transition:all .2s;
 }
-.toggle-btn .dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
-.toggle-btn.off { opacity:.35; }
-.toggle-btn:hover { border-color:var(--border); opacity:.8; }
-.toggle-btn.active { border-color: currentColor; opacity:1; }
-.toggle-coal  { --c: var(--coal);   color:var(--coal); }
-.toggle-hydro { --c: var(--hydro);  color:var(--hydro); }
-.toggle-solar { --c: var(--solar);  color:var(--solar); }
-.toggle-wind  { --c: var(--wind);   color:var(--wind); }
-.toggle-gas   { --c: var(--gas);    color:var(--gas); }
-.toggle-import{ --c: var(--import); color:var(--import); }
-.toggle-btn.active { border-color: var(--c); }
- 
-.lens-b-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
-@media(max-width:640px) { .lens-b-grid { grid-template-columns:1fr; } }
- 
-/* ===== LENS C: CONSTRAINT TABLE ===== */
-.constraint-table { width:100%; border-collapse:collapse; font-size:13px; }
-.constraint-table th {
-  font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.08em;
-  color:var(--text3); background:var(--bg2); padding:10px 14px;
-  text-align:left; border-bottom:1px solid var(--border);
+.sc:hover{border-color:var(--border2)}
+.sc.s-amber{border-color:var(--amber);background:rgba(212,134,74,.07)}
+.sc.s-rust {border-color:var(--rust); background:rgba(196,106,88,.07)}
+.sc.s-teal {border-color:var(--teal); background:rgba(93,170,150,.07)}
+.sc-ico{font-size:20px;margin-bottom:8px}
+.sc-name{font-family:var(--mono);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text);margin-bottom:4px}
+.sc-txt{font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;line-height:1.45}
+.sc-info{
+  font-family:var(--serif);font-size:12px;color:var(--text2);font-weight:300;
+  padding:10px 14px;background:var(--bg2);border-radius:5px;margin-bottom:18px;
+  line-height:1.55;border-left:2px solid var(--amber);transition:border-color .3s;
 }
-.constraint-table td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:top; }
-.constraint-table tr:hover td { background:rgba(255,255,255,.02); }
-.src-name { font-weight:600; }
-.tag-green  { display:inline-block; font-family:var(--mono); font-size:10px; background:rgba(74,222,128,.15); color:var(--green);  padding:2px 7px; border-radius:2px; }
-.tag-yellow { display:inline-block; font-family:var(--mono); font-size:10px; background:rgba(250,204,21,.15);  color:var(--yellow); padding:2px 7px; border-radius:2px; }
-.tag-red    { display:inline-block; font-family:var(--mono); font-size:10px; background:rgba(248,113,113,.15); color:var(--red);    padding:2px 7px; border-radius:2px; }
-.tag-neutral { display:inline-block; font-family:var(--mono); font-size:10px; background:rgba(148,163,184,.10); color:var(--text2); padding:2px 7px; border-radius:2px; }
-.val-mono { font-family:var(--mono); font-size:12px; }
-.fn { font-size:10px; color:var(--text3); }
-.table-note {
-  font-family:var(--mono); font-size:10px; color:var(--text3);
-  border:1px solid var(--border); border-radius:4px; padding:8px 12px; margin-top:10px;
-  line-height:1.6;
+
+/* Slider */
+.sl-wrap{margin-bottom:22px}
+.sl-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:.13em;margin-bottom:9px;display:block}
+input[type=range]{
+  width:100%;cursor:pointer;height:4px;
+  background:linear-gradient(90deg,var(--amber) calc(var(--val,54.2%)),var(--border) 0);
+  border-radius:2px;outline:none;border:none;
+  appearance:none;-webkit-appearance:none;
 }
- 
-/* ===== STRESS TEST ===== */
-.stress-header { display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
-.stress-tag { font-family:var(--mono); font-size:9px; background:rgba(248,113,113,.12); color:var(--red); border:1px solid rgba(248,113,113,.25); padding:3px 9px; border-radius:2px; }
-.stress-grid { display:grid; grid-template-columns:1fr 300px; gap:16px; }
-@media(max-width:720px) { .stress-grid { grid-template-columns:1fr; } }
-.hour-display { font-family:var(--mono); font-size:clamp(32px,6vw,52px); font-weight:700; color:var(--amber); text-align:center; }
-.hour-label { font-family:var(--mono); font-size:10px; color:var(--text3); text-align:center; text-transform:uppercase; letter-spacing:.1em; margin-bottom:16px; }
-.status-row { background:var(--bg2); border:1px solid var(--border); border-radius:6px; padding:12px 16px; margin-bottom:8px; }
-.status-name { font-family:var(--mono); font-size:10px; color:var(--text3); margin-bottom:4px; text-transform:uppercase; letter-spacing:.08em; }
-.status-bar-wrap { display:flex; align-items:center; gap:10px; }
-.status-bar { flex:1; height:6px; background:var(--border); border-radius:3px; overflow:hidden; }
-.status-bar-fill { height:100%; border-radius:3px; transition:width .4s ease; }
-.status-val { font-family:var(--mono); font-size:12px; font-weight:700; min-width:40px; text-align:right; }
-.gap-indicator {
-  background:rgba(248,113,113,.08); border:1px solid rgba(248,113,113,.2);
-  border-radius:6px; padding:12px 16px; text-align:center;
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:18px;height:18px;border-radius:50%;
+  background:var(--amber2);border:3px solid var(--bg);cursor:pointer;
+  box-shadow:0 0 0 2px rgba(212,134,74,.3);transition:transform .15s;
 }
-.gap-label { font-family:var(--mono); font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:.08em; margin-bottom:4px; }
-.gap-val { font-family:var(--mono); font-size:20px; font-weight:700; }
-.gap-desc { font-size:11px; color:var(--text2); margin-top:4px; }
- 
-input[type=range] {
-  width:100%; accent-color:var(--amber); cursor:pointer;
-  height:4px; background:var(--border); border-radius:2px; outline:none; border:none;
-  appearance:none; -webkit-appearance:none;
+input[type=range]:active::-webkit-slider-thumb{transform:scale(1.15)}
+.sl-marks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:5px}
+
+/* KTA grid */
+.kta-g{display:grid;grid-template-columns:1fr 270px;gap:16px}
+@media(max-width:680px){.kta-g{grid-template-columns:1fr}}
+.hour-big{
+  font-family:var(--mono);font-size:clamp(38px,7vw,58px);font-weight:600;
+  color:var(--amber2);text-align:center;line-height:1;transition:color .3s;
 }
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance:none; width:16px; height:16px; border-radius:50%;
-  background:var(--amber); border:2px solid var(--bg); cursor:pointer;
+.hour-lbl{font-family:var(--mono);font-size:9px;color:var(--text3);text-align:center;text-transform:uppercase;letter-spacing:.13em;margin:5px 0 20px}
+.st-row{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:10px 13px;margin-bottom:7px}
+.st-name{font-family:var(--mono);font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px}
+.st-bw{display:flex;align-items:center;gap:9px}
+.st-b{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.st-f{height:100%;border-radius:3px;transition:width .55s cubic-bezier(.4,0,.2,1)}
+.st-v{font-family:var(--mono);font-size:11px;font-weight:600;min-width:72px;text-align:right}
+.gap-box{border-radius:6px;padding:12px 14px;text-align:center;border:1px solid;transition:all .4s}
+.g-ok  {background:rgba(122,173,122,.07); border-color:rgba(122,173,122,.28)}
+.g-warn{background:rgba(196,160,64,.07);  border-color:rgba(196,160,64,.28)}
+.g-bad {background:rgba(196,106,88,.07);  border-color:rgba(196,106,88,.32)}
+.g-lbl{font-family:var(--mono);font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.g-val{font-family:var(--mono);font-size:15px;font-weight:600;margin-bottom:4px}
+.g-dsc{font-size:10px;color:var(--text2);font-family:var(--serif);font-weight:300;line-height:1.4}
+
+.lgd{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--text2);font-family:var(--mono)}
+.ld{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+
+.mbox{
+  background:rgba(212,134,74,.06);border:1px solid rgba(212,134,74,.18);
+  border-radius:6px;padding:12px 15px;margin-bottom:18px;
+  font-family:var(--mono);font-size:9px;line-height:1.75;color:var(--text2);
 }
-.slider-row { margin-bottom:20px; }
-.slider-labels { display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--text3); margin-top:4px; }
- 
-/* ===== LEGEND ===== */
-.legend { display:flex; flex-wrap:wrap; gap:12px; margin-top:12px; }
-.legend-item { display:flex; align-items:center; gap:5px; font-size:11px; color:var(--text2); }
-.legend-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
- 
-/* ===== SECTION DIVIDER ===== */
-.divider { border:none; border-top:1px solid var(--border); margin:32px 0; }
- 
-/* ===== FOOTNOTES ===== */
-.footnotes { font-family:var(--mono); font-size:10px; color:var(--text3); border-top:1px solid var(--border); padding-top:20px; margin-top:32px; line-height:1.7; }
-.footnotes a { color:var(--sky); text-decoration:none; }
+.mbox strong{color:var(--amber2)}
+
+/* ══════════════════════════════════════
+   TẦNG 5 — ĐÁNH ĐỔI HỆ THỐNG HIỆN TẠI
+   ══════════════════════════════════════ */
+.trilemma-intro{
+  font-family:var(--serif);font-size:14px;color:var(--text2);font-weight:300;
+  line-height:1.7;margin-bottom:26px;max-width:780px;
+}
+.trilemma-intro strong{color:var(--text);font-weight:400}
+
+/* Three-option cards */
+.opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:640px){.opt-grid{grid-template-columns:1fr}}
+.opt{
+  background:var(--card);border:1px solid var(--border);border-radius:8px;
+  padding:18px;transition:all .2s;cursor:default;
+}
+.opt:hover{border-color:var(--border2);transform:translateY(-2px)}
+.opt.coal-opt{border-top:3px solid var(--coal)}
+.opt.re-opt  {border-top:3px solid var(--sage)}
+.opt.lng-opt {border-top:3px solid var(--gas)}
+.opt-name{font-family:var(--display);font-size:16px;font-weight:600;margin-bottom:3px}
+.opt-coal{color:var(--coal)}.opt-re{color:var(--sage)}.opt-lng{color:var(--gas)}
+.opt-sub{font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;margin-bottom:16px;line-height:1.4}
+.crit-list{list-style:none}
+.crit-list li{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:7px 0;border-bottom:1px solid var(--border);font-size:11px;
+}
+.crit-list li:last-child{border-bottom:none}
+.crit-name{color:var(--text2);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.06em}
+.dots{display:flex;gap:3px;align-items:center}
+.dot-f{width:7px;height:7px;border-radius:50%}
+.dot-e{width:7px;height:7px;border-radius:50%;background:var(--border)}
+.score-tag{font-family:var(--mono);font-size:9px;padding:2px 6px;border-radius:2px;margin-left:6px}
+
+/* Trilemma triangle visual */
+.trilemma-bottom{
+  background:rgba(152,128,200,.05);border:1px solid rgba(152,128,200,.18);
+  border-radius:8px;padding:20px;
+}
+.tri-title{font-family:var(--mono);font-size:9px;font-weight:600;color:var(--lilac);text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}
+.tri-body{font-family:var(--serif);font-size:13px;color:var(--text2);font-weight:300;line-height:1.7;margin-bottom:14px}
+.tri-body strong{color:var(--text);font-weight:400}
+.tri-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+@media(max-width:480px){.tri-grid{grid-template-columns:1fr}}
+.tri-item{background:var(--bg2);border-radius:6px;padding:11px 13px}
+.tri-ilbl{font-family:var(--mono);font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px}
+.tri-ival{font-size:12px;font-weight:600;color:var(--text);font-family:var(--display)}
+.tri-isub{font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;margin-top:2px;line-height:1.4}
+
+/* ── NGHỊCH LÝ VÙNG ── */
+.nl-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:640px){.nl-grid{grid-template-columns:1fr}}
+.nl{border-radius:8px;padding:20px}
+.nl-case{background:rgba(196,106,88,.05);border:1px solid rgba(196,106,88,.2)}
+.nl-dens{background:rgba(212,134,74,.05);border:1px solid rgba(212,134,74,.2)}
+.nl-t{font-family:var(--mono);font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.12em;margin-bottom:12px}
+.nl-case .nl-t{color:var(--rust)}.nl-dens .nl-t{color:var(--amber2)}
+.cs-r{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(196,106,88,.1)}
+.cs-r:last-child{border-bottom:none}
+.cs-ico{font-size:16px;flex-shrink:0;margin-top:1px}
+.cs-p{font-size:12px;font-weight:600;color:var(--text);margin-bottom:2px;font-family:var(--serif)}
+.cs-e{font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;line-height:1.4}
+.d-row{margin-bottom:13px}
+.d-lbl{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.d-nm{font-size:12px;font-weight:600;font-family:var(--serif)}.d-vl{font-family:var(--mono);font-size:10px;color:var(--text2)}
+.d-out{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.d-in{height:100%;border-radius:4px;transition:width 1.4s cubic-bezier(.4,0,.2,1)}
+.d-x{font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:3px}
+
+/* EV note */
+.ev{display:flex;gap:12px;align-items:flex-start;background:rgba(74,176,200,.05);border:1px solid rgba(74,176,200,.18);border-radius:6px;padding:13px 15px;margin-top:12px;font-size:12px;color:var(--text2);line-height:1.55;font-family:var(--serif);font-weight:300}
+.ev strong{color:var(--nuclear);font-weight:400}
+
+/* ── FOOTNOTES ── */
+.fns{font-family:var(--mono);font-size:9px;color:var(--text3);border-top:1px solid var(--border);padding-top:18px;margin-top:40px;line-height:1.75}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.fi{animation:fadeUp .5s ease both}
+.d1{animation-delay:.05s}.d2{animation-delay:.1s}.d3{animation-delay:.16s}.d4{animation-delay:.22s}
 </style>
 </head>
 <body>
-<div class="wrapper">
- 
-<!-- ===== HEADER ===== -->
-<header class="header">
-  <div class="header-top">
-    <span class="badge">DỮ LIỆU</span>
-    <span class="badge-outline">CHƯƠNG 1 — NGHỊCH LÝ NĂNG LƯỢNG</span>
+
+<!-- STICKY NAV -->
+<nav class="nav" id="nav">
+  <span class="nav-brand">Chương 1 · Nghịch lý năng lượng</span>
+  <div class="nav-links">
+    <a class="nav-a" href="#ap-luc">Áp lực</a>
+    <a class="nav-a" href="#co-cau">Cơ cấu</a>
+    <a class="nav-a" href="#kiem-tra">Kiểm tra</a>
+    <a class="nav-a" href="#danh-doi">Đánh đổi</a>
   </div>
-  <h1>PHÒNG BẰNG CHỨNG NĂNG LƯỢNG</h1>
-  <p class="thesis">
-    Nhu cầu tăng không ngừng · <strong>Than phải giảm</strong> · Tái tạo chưa đủ ổn định để thay thế ·
-    Không một nguồn nào thắng trên mọi chiều.
+</nav>
+
+<div class="wrap">
+
+<!-- ══════════════════════════
+     TẦNG 1 — LUẬN ĐỀ
+     ══════════════════════════ -->
+<section class="hero">
+  <div class="hero-eye">Phòng bằng chứng năng lượng · Chuyên đề Vật lí · Chương 1</div>
+  <h1 class="hero-q">
+    Nếu than phải giảm, mà tái tạo chưa đủ ổn định —<br>
+    <em>nguồn điện nền của Việt Nam sẽ đến từ đâu?</em>
+  </h1>
+  <p class="hero-body">
+    Việt Nam đang vận hành trên một cơ cấu năng lượng không thể giữ nguyên.
+    Nhu cầu điện lập kỷ lục mới mỗi năm. Cam kết Net Zero 2050 ngày càng gần.
+    Và mỗi nguồn điện đều mang theo một ràng buộc mà không ai nói thẳng.
+    Dashboard này đặt tất cả lên bàn — để bạn tự khám phá.
   </p>
-  <p class="header-note">
-    Dashboard này chuyển các con số rải rác trong báo cáo thành một lập luận nhìn thấy được.
-    Mọi số liệu đều có thể truy nguồn. Số liệu phái sinh hoặc ước tính đều được ghi rõ.
-  </p>
-</header>
- 
-<!-- ===== MISSION CONTROL ===== -->
-<div class="section-header">
-  <div class="section-label"><span class="live-dot"></span>Mission Control — Cập nhật theo nguồn được bật</div>
-</div>
-<div class="mc-grid">
-  <div class="mc-card amber">
-    <div class="mc-label">Đỉnh Pmax (2026)</div>
-    <div class="mc-value" id="mc-pmax">51.691 MW</div>
-    <div class="mc-sub">Ngày 07/04/2026 — kỷ lục mới nhất</div>
-    <div class="mc-src">Nguồn: Trung tâm A0 / Bộ Công Thương</div>
+  <div class="hero-pills">
+    <span class="pill p-rust">↑ Nhu cầu tăng không ngừng</span>
+    <span class="pill p-amber">↓ Than phải giảm dần</span>
+    <span class="pill p-lilac">? Điện nền sạch từ đâu</span>
   </div>
-  <div class="mc-card sky">
-    <div class="mc-label">CO₂ hỗn hợp ước tính</div>
-    <div class="mc-value" id="mc-co2">—</div>
-    <div class="mc-sub" id="mc-co2-sub">Trung bình gia quyền theo tỷ trọng nguồn</div>
-    <div class="mc-src">Ước tính từ LCA — Q1/2026</div>
-    <div class="mc-formula">= Σ(tỷ trọng × CO₂ vòng đời)</div>
+</section>
+
+<!-- ══════════════════════════
+     BỐN CHỈ SỐ NHANH
+     ══════════════════════════ -->
+<div class="kpi-row">
+  <div class="kpi ka fi d1">
+    <div class="kpi-lbl">Đỉnh Pmax — 07/04/2026</div>
+    <div class="kpi-val">51.691 MW</div>
+    <div class="kpi-sub">Kỷ lục mới nhất</div>
+    <div class="kpi-src">Trung tâm A0 / Bộ Công Thương</div>
   </div>
-  <div class="mc-card green">
-    <div class="mc-label">Hệ số công suất TB</div>
-    <div class="mc-value" id="mc-cf">—</div>
-    <div class="mc-sub" id="mc-cf-sub">Trung bình gia quyền theo tỷ trọng nguồn</div>
-    <div class="mc-src">Ước tính phái sinh từ dữ liệu Q1/2026</div>
-    <div class="mc-formula">= Σ(tỷ trọng × CF trung điểm)</div>
+  <div class="kpi kb fi d2">
+    <div class="kpi-lbl">CO₂ hỗn hợp ước tính</div>
+    <div class="kpi-val" id="kv-co2">—</div>
+    <div class="kpi-sub" id="ks-co2">Bình quân gia quyền</div>
+    <div class="kpi-src"><span class="live"></span>Cập nhật theo nguồn đang bật</div>
   </div>
-  <div class="mc-card purple">
-    <div class="mc-label">Tỷ trọng điện nền</div>
-    <div class="mc-value" id="mc-base">—</div>
-    <div class="mc-sub" id="mc-base-sub">Than + Khí (nguồn nền đang bật)</div>
-    <div class="mc-src">Tính từ cơ cấu Q1/2026 — EVN</div>
-    <div class="mc-formula">= Σ tỷ trọng nguồn nền đang bật</div>
+  <div class="kpi kc fi d3">
+    <div class="kpi-lbl">Hệ số công suất TB</div>
+    <div class="kpi-val" id="kv-cf">—</div>
+    <div class="kpi-sub" id="ks-cf">Bình quân gia quyền</div>
+    <div class="kpi-src"><span class="live"></span>Cập nhật theo nguồn đang bật</div>
+  </div>
+  <div class="kpi kd fi d4">
+    <div class="kpi-lbl">Tỷ trọng điện nền</div>
+    <div class="kpi-val" id="kv-base">—</div>
+    <div class="kpi-sub" id="ks-base">Than + Khí đang bật</div>
+    <div class="kpi-src"><span class="live"></span>Cập nhật theo nguồn đang bật</div>
   </div>
 </div>
- 
-<!-- ===== LENSES ===== -->
-<div class="section-header">
-  <div class="section-label">Hệ thống phân tích</div>
-  <div class="section-title">Ba lăng kính</div>
-</div>
- 
-<div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('year',this)">Theo Năm</button>
-  <button class="tab-btn" onclick="switchTab('source',this)">Theo Nguồn</button>
-  <button class="tab-btn" onclick="switchTab('constraint',this)">Theo Ràng Buộc</button>
-</div>
- 
-<!-- LENS A: THEO NĂM -->
-<div id="panel-year" class="tab-panel active">
-  <div class="two-col">
-    <div class="chart-card">
-      <div class="chart-title">Đỉnh công suất (Pmax) — Các mốc 2024–2026</div>
-      <div class="chart-q">Áp lực lên hệ thống điện đang leo thang nhanh như thế nào?</div>
-      <div class="chart-wrap" style="height:200px">
-        <canvas id="chartPmax"></canvas>
-      </div>
-      <div class="chart-proof">
-        Mỗi mùa hè một đỉnh mới. <span>+1.757 MW</span> chỉ sau 1 năm (2024→2025).
-        Hệ thống phải liên tục đuổi theo nhu cầu.
-        <br><span style="color:var(--text3);font-size:10px;">Nguồn: A0, Bộ Công Thương — 2024–2026</span>
-      </div>
+
+<!-- ══════════════════════════
+     TẦNG 2 — ÁP LỰC
+     ══════════════════════════ -->
+<section class="sec" id="ap-luc">
+  <div class="sec-eye">Tầng 02 · Bằng chứng áp lực</div>
+  <div class="sec-title">Áp lực tăng trưởng</div>
+  <div class="sec-q">Hệ thống đang bị kéo căng ra sao — và xu thế này có dấu hiệu chậm lại không?</div>
+
+  <div class="two">
+    <div class="card">
+      <div class="card-title">Đỉnh công suất (Pmax) — Chuỗi kỷ lục</div>
+      <div class="card-q">2024 → 2025 → 2026: mỗi năm một ngưỡng mới</div>
+      <div style="height:190px"><canvas id="cPmax"></canvas></div>
+      <div class="card-note">Tăng <em>+1.757 MW</em> chỉ sau một năm. Hệ thống liên tục đuổi theo nhu cầu.<br><span style="color:var(--text4)">Nguồn: A0, Bộ Công Thương 2024–2026</span></div>
     </div>
-    <div class="chart-card">
-      <div class="chart-title">Sản lượng Q1 — 2025 vs 2026</div>
-      <div class="chart-q">Tốc độ tăng trưởng theo từng quý</div>
-      <div class="chart-wrap" style="height:200px">
-        <canvas id="chartQ1"></canvas>
-      </div>
-      <div class="chart-proof">
-        Q1/2026 tăng <span>+6,6%</span> so với Q1/2025 (76,86 tỷ kWh so với 72,1 tỷ kWh).
-        Tốc độ tăng đều, không có dấu hiệu chậm lại.
-        <br><span style="color:var(--text3);font-size:10px;">Nguồn: EVN / Bộ Công Thương — Q1/2025, Q1/2026</span>
-      </div>
+    <div class="card">
+      <div class="card-title">Sản lượng Q1 — So sánh năm liền kề</div>
+      <div class="card-q">Tăng đều qua từng quý, không có dấu hiệu chậm lại</div>
+      <div style="height:190px"><canvas id="cQ1"></canvas></div>
+      <div class="card-note">Q1/2026 tăng <em>+6,6%</em> — 76,86 tỷ kWh so với 72,1 tỷ kWh năm trước.<br><span style="color:var(--text4)">Nguồn: EVN / Bộ Công Thương</span></div>
     </div>
   </div>
- 
-  <div class="chart-card">
-    <div class="chart-title">Dòng thời gian sự kiện — Các mốc kỷ lục</div>
-    <ul class="milestone-list">
-      <li>
-        <span class="ms-date">28–29/05/2024</span>
-        <span class="ms-label">Lần đầu vượt 1 tỷ kWh/ngày</span>
-        <span class="ms-val" style="color:var(--amber)">1 tỷ kWh</span>
-        <span class="ms-badge">LỊCH SỬ</span>
-      </li>
-      <li>
-        <span class="ms-date">19/06/2024</span>
-        <span class="ms-label">Pmax kỷ lục lần 1</span>
-        <span class="ms-val" style="color:var(--amber)">49.533 MW</span>
-        <span class="ms-badge">KỶ LỤC</span>
-      </li>
-      <li>
-        <span class="ms-date">02/06/2025</span>
-        <span class="ms-label">Pmax kỷ lục lần 2 — hơn 2024 tới 1.757 MW</span>
-        <span class="ms-val" style="color:var(--amber2)">51.290 MW</span>
-        <span class="ms-badge">KỶ LỤC MỚI</span>
-      </li>
-      <li>
-        <span class="ms-date">07/04/2026</span>
-        <span class="ms-label">Pmax kỷ lục mới nhất — tính đến lúc soạn tài liệu</span>
-        <span class="ms-val" style="color:var(--red)">51.691 MW</span>
-        <span class="ms-badge">MỚI NHẤT</span>
-      </li>
+
+  <div class="card">
+    <div class="card-title">Dòng thời gian — Các mốc kỷ lục đầy đủ 2024–2026</div>
+    <ul class="ml" style="margin-top:12px">
+      <li><span class="m-date">28–29/05/2024</span><span class="m-text">Lần đầu lịch sử vượt 1 tỷ kWh/ngày — hai ngày liên tiếp</span><span class="m-val" style="color:var(--amber)">~1 tỷ kWh</span><span class="m-tag mt-a">LỊCH SỬ</span></li>
+      <li><span class="m-date">14/06/2024</span><span class="m-text">Sản lượng toàn quốc lập mốc tiếp theo</span><span class="m-val" style="color:var(--amber)">1,025 tỷ kWh</span><span class="m-tag mt-a">MỐC MỚI</span></li>
+      <li><span class="m-date">19/06/2024 · 13:30</span><span class="m-text">Pmax kỷ lục lần 1 — cùng tuần hàng triệu hộ miền Bắc bị cắt điện luân phiên</span><span class="m-val" style="color:var(--amber)">49.533 MW</span><span class="m-tag mt-a">KỶ LỤC 1</span></li>
+      <li><span class="m-date">05/2025</span><span class="m-text">Nhiều ngày liên tiếp vượt 1,05 tỷ kWh/ngày; Pmax chạm 50.000 MW</span><span class="m-val" style="color:var(--amber2)">~50.000 MW</span><span class="m-tag mt-a">LEO THANG</span></li>
+      <li><span class="m-date">02/06/2025</span><span class="m-text">Pmax kỷ lục lần 2 — cao hơn năm 2024 tới 1.757 MW</span><span class="m-val" style="color:var(--amber2)">51.290 MW</span><span class="m-tag mt-a">KỶ LỤC 2</span></li>
+      <li><span class="m-date">07/04/2026</span><span class="m-text">Kỷ lục mới nhất tính đến lúc soạn tài liệu này</span><span class="m-val" style="color:var(--rust)">51.691 MW</span><span class="m-tag mt-r">MỚI NHẤT</span></li>
     </ul>
-    <div class="chart-proof">
-      Chuỗi kỷ lục này không phải bước nhảy ngẫu nhiên — đó là xu thế tích lũy liên tục.
-      <span>Mỗi năm một ngưỡng mới.</span>
-    </div>
+    <div class="card-note">Chuỗi này không phải bước nhảy ngẫu nhiên. <em>Mỗi năm một ngưỡng mới — hệ thống liên tục đuổi theo nhu cầu.</em></div>
   </div>
-</div>
- 
-<!-- LENS B: THEO NGUỒN -->
-<div id="panel-source" class="tab-panel">
-  <div class="chart-card">
-    <div class="chart-title">Cơ cấu nguồn điện Q1/2026 — Bật/tắt để xem thay đổi Mission Control</div>
-    <div class="chart-q">Hỗn hợp Q1/2026 trông như thế nào, và vấn đề ẩn bên trong là gì?</div>
-    <div class="toggles" id="toggles">
-      <button class="toggle-btn toggle-coal active" data-src="coal" onclick="toggleSource('coal',this)">
-        <span class="dot" style="background:var(--coal)"></span>Than (52,8%)
-      </button>
-      <button class="toggle-btn toggle-hydro active" data-src="hydro" onclick="toggleSource('hydro',this)">
-        <span class="dot" style="background:var(--hydro)"></span>Thủy điện (20,9%)
-      </button>
-      <button class="toggle-btn toggle-solar active" data-src="solar" onclick="toggleSource('solar',this)">
-        <span class="dot" style="background:var(--solar)"></span>Mặt trời (~9,1%)
-      </button>
-      <button class="toggle-btn toggle-wind active" data-src="wind" onclick="toggleSource('wind',this)">
-        <span class="dot" style="background:var(--wind)"></span>Gió (~5,6%)
-      </button>
-      <button class="toggle-btn toggle-gas active" data-src="gas" onclick="toggleSource('gas',this)">
-        <span class="dot" style="background:var(--gas)"></span>Khí/LNG (7,0%)
-      </button>
-      <button class="toggle-btn toggle-import active" data-src="imports" onclick="toggleSource('imports',this)">
-        <span class="dot" style="background:var(--import)"></span>Nhập khẩu (3,8%)
-      </button>
+</section>
+
+<!-- ══════════════════════════
+     TẦNG 3 — CƠ CẤU NGUỒN
+     ══════════════════════════ -->
+<section class="sec" id="co-cau">
+  <div class="sec-eye">Tầng 03 · Bằng chứng cơ cấu</div>
+  <div class="sec-title">Cơ cấu nguồn điện</div>
+  <div class="sec-q">Hệ thống đang đứng trên nền tảng nào — và tại sao điều đó là vấn đề?</div>
+
+  <div class="card">
+    <div class="card-title">Q1/2026 — Bật / tắt nguồn để xem bốn chỉ số thay đổi theo</div>
+    <div class="tog-row" style="margin-top:12px" id="togs">
+      <button class="tog t-co on" onclick="togSrc('coal',this)"><span class="dot" style="background:var(--coal)"></span>Than (52,8%)</button>
+      <button class="tog t-hy on" onclick="togSrc('hydro',this)"><span class="dot" style="background:var(--hydro)"></span>Thủy điện (20,9%)</button>
+      <button class="tog t-so on" onclick="togSrc('solar',this)"><span class="dot" style="background:var(--solar)"></span>Mặt trời (~9,1%)</button>
+      <button class="tog t-wi on" onclick="togSrc('wind',this)"><span class="dot" style="background:var(--wind)"></span>Gió (~5,6%)</button>
+      <button class="tog t-ga on" onclick="togSrc('gas',this)"><span class="dot" style="background:var(--gas)"></span>Khí/LNG (7,0%)</button>
+      <button class="tog t-im on" onclick="togSrc('imports',this)"><span class="dot" style="background:var(--import)"></span>Nhập khẩu (3,8%)</button>
     </div>
-    <div class="lens-b-grid">
-      <div class="chart-wrap" style="height:240px">
-        <canvas id="chartMix"></canvas>
-      </div>
-      <div class="chart-wrap" style="height:240px">
-        <canvas id="chartCo2Bar"></canvas>
-      </div>
+    <div class="mix-g">
+      <div style="height:250px"><canvas id="cMix"></canvas></div>
+      <div style="height:250px"><canvas id="cCo2"></canvas></div>
     </div>
-    <div class="chart-proof">
-      Than chiếm <span>52,8%</span> sản lượng — nhưng mang phát thải <span>~820 g CO₂/kWh</span>.
-      Tái tạo (gió+mặt trời) mới ở mức <span>14,7%</span> và chỉ phát khi có nắng/gió.
-      Không có nguồn điện nền sạch nào đủ ổn định để thay than 24/7.
-      <br><span style="color:var(--text3);font-size:10px;">Nguồn: EVN / Bộ Công Thương Q1/2026. CO₂: Ước tính LCA trung bình vòng đời.</span>
-    </div>
+    <div class="card-note">Than <em>52,8%</em> sản lượng — phát thải <em>~820 g CO₂/kWh</em>. Tái tạo gió+mặt trời đạt <em>14,7%</em> nhưng chỉ phát khi có nắng/gió. Không có nguồn điện nền sạch nào đủ ổn định để thay than 24/7.<br><span style="color:var(--text4)">Nguồn: EVN / Bộ Công Thương Q1/2026 · CO₂: ước tính LCA vòng đời</span></div>
   </div>
-</div>
- 
-<!-- LENS C: THEO RÀNG BUỘC -->
-<div id="panel-constraint" class="tab-panel">
-  <div class="chart-card">
-    <div class="chart-title">Bảng so sánh đa chiều theo nguồn điện</div>
-    <div class="chart-q">Tại sao không thể đơn giản chọn nguồn điện "tốt nhất"?</div>
-    <div style="overflow-x:auto">
-      <table class="constraint-table">
-        <thead>
-          <tr>
-            <th>Nguồn</th>
-            <th>CO₂ vòng đời</th>
-            <th>Hệ số CS (CF)</th>
-            <th>Vai trò điện nền</th>
-            <th>Phát điện ban đêm</th>
-            <th>Tỷ trọng Q1/2026</th>
-            <th>Đánh giá tổng thể</th>
-          </tr>
-        </thead>
+
+  <div class="card">
+    <div class="card-title">Bảng so sánh ràng buộc — Tại sao không thể đơn giản chọn nguồn "tốt nhất"?</div>
+    <div style="overflow-x:auto;margin-top:14px">
+      <table class="ctbl">
+        <thead><tr><th>Nguồn</th><th>CO₂ vòng đời</th><th>Hệ số CS</th><th>Điện nền 24/7</th><th>Phát đêm</th><th>Nhận xét</th></tr></thead>
         <tbody>
-          <tr>
-            <td><span class="src-name" style="color:var(--coal)">🔲 Than</span></td>
-            <td><span class="val-mono" style="color:var(--red)">~820 g/kWh</span></td>
-            <td><span class="val-mono tag-green">70–85%</span></td>
-            <td><span class="tag-green">Rất tốt</span></td>
-            <td><span class="tag-green">Có</span></td>
-            <td><span class="val-mono">52,8%</span></td>
-            <td><span class="tag-red">Phải giảm</span><br><span class="fn">Phát thải rất cao — Net Zero bắt buộc loại dần</span></td>
-          </tr>
-          <tr>
-            <td><span class="src-name" style="color:var(--hydro)">💧 Thủy điện</span></td>
-            <td><span class="val-mono" style="color:var(--green)">~4–30 g/kWh</span></td>
-            <td><span class="val-mono tag-yellow">~42% trung bình</span><br><span class="fn">Biến thiên mạnh theo mùa</span></td>
-            <td><span class="tag-yellow">Hạn chế</span></td>
-            <td><span class="tag-yellow">Có, khi đủ nước</span></td>
-            <td><span class="val-mono">20,9%</span></td>
-            <td><span class="tag-yellow">Phụ thuộc thời tiết</span><br><span class="fn">El Niño 2023: giảm ~15 tỷ kWh</span></td>
-          </tr>
-          <tr>
-            <td><span class="src-name" style="color:var(--solar)">☀️ Mặt trời</span></td>
-            <td><span class="val-mono" style="color:var(--green)">~45 g/kWh</span></td>
-            <td><span class="val-mono tag-red">15–20%</span></td>
-            <td><span class="tag-red">Không</span></td>
-            <td><span class="tag-red">Không</span></td>
-            <td><span class="val-mono">~9,1%</span></td>
-            <td><span class="tag-yellow">Cần kết hợp lưu trữ</span><br><span class="fn">Thay 1.000 MW nền cần 5.000–6.000 MW mặt trời + BESS</span></td>
-          </tr>
-          <tr>
-            <td><span class="src-name" style="color:var(--wind)">🌬️ Gió</span></td>
-            <td><span class="val-mono" style="color:var(--green)">~11 g/kWh</span></td>
-            <td><span class="val-mono tag-red">25–35%</span></td>
-            <td><span class="tag-red">Không</span></td>
-            <td><span class="tag-yellow">Khi có gió</span></td>
-            <td><span class="val-mono">~5,6%</span></td>
-            <td><span class="tag-yellow">Cần kết hợp lưu trữ</span><br><span class="fn">Gián đoạn theo thời tiết</span></td>
-          </tr>
-          <tr>
-            <td><span class="src-name" style="color:var(--gas)">🔥 Khí/LNG</span></td>
-            <td><span class="val-mono" style="color:var(--yellow)">~490 g/kWh</span></td>
-            <td><span class="val-mono tag-green">70–85%</span></td>
-            <td><span class="tag-green">Tốt</span></td>
-            <td><span class="tag-green">Có</span></td>
-            <td><span class="val-mono">7,0%</span></td>
-            <td><span class="tag-yellow">Phát thải trung bình</span><br><span class="fn">Vẫn là nhiên liệu hóa thạch — nhập khẩu LNG</span></td>
-          </tr>
-          <tr style="background:rgba(56,189,248,.03)">
-            <td><span class="src-name" style="color:var(--sky)">⚛️ Hạt nhân</span><br><span class="fn">(để so sánh — chưa có tại VN)</span></td>
-            <td><span class="val-mono" style="color:var(--green)">~12 g/kWh</span></td>
-            <td><span class="val-mono tag-green">90–95%</span></td>
-            <td><span class="tag-green">Tốt nhất</span></td>
-            <td><span class="tag-green">Có — 24/7</span></td>
-            <td><span class="val-mono tag-neutral">0% (2026)</span></td>
-            <td><span class="tag-neutral">Đang cân nhắc</span><br><span class="fn">Chi phí đầu tư cao, thời gian xây 7–15 năm</span></td>
-          </tr>
+          <tr><td><strong style="color:var(--coal)">🔲 Than</strong></td><td><span style="font-family:var(--mono);color:var(--rust)">~820 g/kWh</span></td><td><span class="tag tg">70–85%</span></td><td><span class="tag tg">Rất tốt</span></td><td><span class="tag tg">Có</span></td><td><span class="tag tr">Phải giảm</span></td></tr>
+          <tr><td><strong style="color:var(--hydro)">💧 Thủy điện</strong></td><td><span style="font-family:var(--mono);color:var(--sage)">~4–30 g/kWh</span></td><td><span class="tag ty">~42% TB</span></td><td><span class="tag ty">Hạn chế</span></td><td><span class="tag ty">Khi đủ nước</span></td><td><span class="tag ty">Phụ thời tiết</span></td></tr>
+          <tr><td><strong style="color:var(--solar)">☀️ Mặt trời</strong></td><td><span style="font-family:var(--mono);color:var(--sage)">~45 g/kWh</span></td><td><span class="tag tr">15–20%</span></td><td><span class="tag tr">Không</span></td><td><span class="tag tr">Không</span></td><td><span class="tag ty">Cần lưu trữ</span></td></tr>
+          <tr><td><strong style="color:var(--wind)">🌬️ Gió</strong></td><td><span style="font-family:var(--mono);color:var(--sage)">~11 g/kWh</span></td><td><span class="tag tr">25–35%</span></td><td><span class="tag tr">Không</span></td><td><span class="tag ty">Khi có gió</span></td><td><span class="tag ty">Cần lưu trữ</span></td></tr>
+          <tr><td><strong style="color:var(--gas)">🔥 Khí/LNG</strong></td><td><span style="font-family:var(--mono);color:var(--gold)">~490 g/kWh</span></td><td><span class="tag tg">70–85%</span></td><td><span class="tag tg">Tốt</span></td><td><span class="tag tg">Có</span></td><td><span class="tag ty">Phụ thuộc nhập khẩu</span></td></tr>
+          <tr style="background:rgba(74,176,200,.025)"><td><strong style="color:var(--nuclear)">⚛️ Hạt nhân</strong><br><span style="font-size:10px;color:var(--text3);font-family:var(--mono)">(chưa có tại VN)</span></td><td><span style="font-family:var(--mono);color:var(--sage)">~12 g/kWh</span></td><td><span class="tag tg">90–95%</span></td><td><span class="tag tg">Tốt nhất</span></td><td><span class="tag tg">Có — 24/7</span></td><td><span class="tag tn">QHĐ VIII: 4–6,4 GW</span></td></tr>
         </tbody>
       </table>
     </div>
-    <div class="table-note">
-      <strong>Đọc bảng:</strong> Không có ô nào xanh toàn bộ — đó chính là nghịch lý. ·
-      CO₂: ước tính LCA (Life Cycle Assessment) trung bình vòng đời, không phải đo trực tiếp từ Việt Nam. ·
-      CF: hệ số công suất — tỷ lệ điện thực tế so với công suất lý thuyết tối đa. ·
-      Nguồn CF & CO₂: IEA, NREL, World Nuclear Association — trích dẫn trong báo cáo.
+    <div class="card-note">Không có ô nào xanh toàn bộ — đó chính là nghịch lý. · Hệ số CS: hệ số công suất · CO₂: ước tính LCA · Nguồn: IEA, NREL, World Nuclear Association</div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     TẦNG 4 — KIỂM TRA ÁP LỰC
+     ══════════════════════════ -->
+<section class="sec sec-kta" id="kiem-tra">
+  <div class="sec-eye">Tầng 04 · Tương tác hệ thống</div>
+  <div class="sec-title">Kiểm tra áp lực</div>
+
+  <div class="kta-cue">
+    <strong>Khi mặt trời lặn lúc 18 giờ — ai gánh lưới điện?</strong><br>
+    Kéo thanh thời gian bên dưới và chọn kịch bản để tự tìm câu trả lời.
+  </div>
+
+  <div class="mbox">
+    <strong>Ghi chú phương pháp:</strong> Đường cong do nhóm nghiên cứu xây dựng từ mô tả định tính trong báo cáo — không phải dữ liệu giờ thực từ A0. Trục dọc không có đơn vị tuyệt đối; mục đích duy nhất là trực quan hóa bài toán khoảng thiếu hụt buổi tối.<br>
+    <span style="color:var(--text3)">Cơ sở: đỉnh trưa ~13:30 [A0] · Giờ cao điểm 18–22h [báo cáo] · Mặt trời = 0 sau 18h [vật lý] · Điện nền tương đối phẳng [đặc tính than+khí]</span>
+  </div>
+
+  <div class="sc-grid">
+    <div class="sc s-amber" onclick="setSc('normal',this,'amber')" data-id="normal">
+      <div class="sc-ico">🌤️</div>
+      <div class="sc-name">Bình thường</div>
+      <div class="sc-txt">Cơ cấu Q1/2026. Thủy điện đủ nước, không có yếu tố bất thường.</div>
+    </div>
+    <div class="sc" onclick="setSc('elnino',this,'rust')" data-id="elnino">
+      <div class="sc-ico">🌵</div>
+      <div class="sc-name">El Niño — Hạn hán</div>
+      <div class="sc-txt">Thủy điện giảm ~60%, mô phỏng mùa khô 2023. Khoảng thiếu hụt buổi tối mở rộng rõ rệt.</div>
+    </div>
+    <div class="sc" onclick="setSc('ev',this,'teal')" data-id="ev">
+      <div class="sc-ico">🚗⚡</div>
+      <div class="sc-name">Cộng xe điện (2030)</div>
+      <div class="sc-txt">Nhu cầu sạc ban đêm tăng thêm ~12 điểm tương đối sau 18h. Áp lực điện nền tăng cao.</div>
     </div>
   </div>
-</div>
- 
-<hr class="divider">
- 
-<!-- ===== STRESS TEST ===== -->
-<div class="section-header">
-  <div class="section-label">Kiểm tra áp lực</div>
-  <div class="section-title">Khi mặt trời lặn vào lúc 18 giờ, ai gánh lưới điện?</div>
-</div>
-<div class="chart-card">
-  <div class="stress-header">
+
+  <div id="sc-info" class="sc-info">
+    Kịch bản bình thường: cơ cấu nguồn Q1/2026 — thủy điện đủ nước, không có yếu tố bất thường.
+  </div>
+
+  <div class="sl-wrap">
+    <span class="sl-lbl">Kéo để thay đổi giờ trong ngày</span>
+    <input type="range" id="hrSlider" min="0" max="23" value="13"
+      style="--val:54.2%"
+      oninput="this.style.setProperty('--val',(this.value/23*100)+'%');updateStr(this.value)">
+    <div class="sl-marks"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span></div>
+  </div>
+
+  <div class="kta-g">
     <div>
-      <div class="chart-q">Hình dạng đường cong do nhóm xây dựng phục vụ trực quan hóa khái niệm</div>
-    </div>
-    <span class="stress-tag">⚠ ĐƯỜNG CONG DO NHÓM XÂY DỰNG — KHÔNG PHẢI DỮ LIỆU VẬN HÀNH THỰC TỪ A0</span>
-  </div>
- 
-  <!-- Methodology box -->
-  <div style="background:rgba(245,158,11,.06);border:1px solid rgba(245,158,11,.2);border-radius:6px;padding:12px 16px;margin-bottom:20px;font-family:var(--mono);font-size:11px;line-height:1.7;color:var(--text2);">
-    <span style="color:var(--amber);font-weight:700;">📋 CƠ SỞ XÂY DỰNG MÔ HÌNH NÀY</span><br>
-    Hình dạng đường cong được nhóm nghiên cứu xây dựng dựa trên <strong style="color:var(--text);">mô tả định tính trong báo cáo</strong>, không phải dữ liệu giờ thực từ A0:<br>
-    · <span style="color:var(--text);">Đỉnh trưa ~13:30</span> — báo cáo ghi "Pmax ngày 19/06/2024 lúc 13h30" (nguồn: A0)<br>
-    · <span style="color:var(--text);">Giờ cao điểm tối 18:00–22:00</span> — báo cáo mô tả "giờ cao điểm miền Bắc rơi vào 18h–22h" (case study mùa khô 2023)<br>
-    · <span style="color:var(--text);">Mặt trời = 0 sau 18h</span> — suy luận trực tiếp từ bản chất vật lý<br>
-    · <span style="color:var(--text);">Điện nền tương đối phẳng</span> — phản ánh vai trò "chạy nền" của than+khí<br>
-    <span style="color:var(--text3);">Trục Y không có đơn vị tuyệt đối. Mục đích duy nhất: trực quan hóa bài toán khoảng thiếu hụt buổi tối.</span>
-  </div>
- 
-  <div class="slider-row">
-    <label style="font-family:var(--mono);font-size:11px;color:var(--text3);display:block;margin-bottom:8px;">
-      KÉO ĐỂ THAY ĐỔI GIỜ TRONG NGÀY
-    </label>
-    <input type="range" id="hourSlider" min="0" max="23" value="13" oninput="updateStressTest(this.value)">
-    <div class="slider-labels">
-      <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
-    </div>
-  </div>
- 
-  <div class="stress-grid">
-    <div>
-      <div class="chart-wrap" style="height:220px">
-        <canvas id="chartStress"></canvas>
+      <div style="height:265px"><canvas id="cStr"></canvas></div>
+      <div class="lgd">
+        <div class="li"><span class="ld" style="background:#c46a58"></span>Nhu cầu</div>
+        <div class="li"><span class="ld" style="background:var(--solar)"></span>Mặt trời</div>
+        <div class="li"><span class="ld" style="background:var(--hydro)"></span>Thủy điện</div>
+        <div class="li"><span class="ld" style="background:var(--coal)"></span>Điện nền</div>
+        <div class="li"><span class="ld" style="background:var(--wind)"></span>Gió</div>
       </div>
-      <div class="legend">
-        <div class="legend-item"><span class="legend-dot" style="background:#ef4444"></span>Nhu cầu</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--solar)"></span>Mặt trời</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--coal)"></span>Điện nền (Than+Khí)</div>
-        <div class="legend-item"><span class="legend-dot" style="background:var(--wind)"></span>Gió</div>
-      </div>
-      <div class="chart-proof" style="margin-top:8px">
-        Minh họa: Điện mặt trời biến mất sau 18 giờ khi nhu cầu vẫn còn cao.
-        <span>Khoảng trống này phải được nguồn nền lấp đầy.</span> Giá trị tương đối, không phải tuyệt đối.
+      <div class="card-note" style="margin-top:10px;border-top:1px solid var(--border);padding-top:10px">
+        Kéo sang <em>18:00–22:00</em> để thấy khoảng thiếu hụt · Thử El Niño để mô phỏng mùa khô 2023 · Giá trị tương đối, không tuyệt đối
       </div>
     </div>
     <div>
-      <div class="hour-label">GIỜ ĐANG XEM</div>
-      <div class="hour-display" id="hourDisplay">13:00</div>
-      <div style="margin-bottom:16px"></div>
-      <div class="status-row">
-        <div class="status-name">Nhu cầu tương đối</div>
-        <div class="status-bar-wrap">
-          <div class="status-bar"><div class="status-bar-fill" id="bar-demand" style="background:#ef4444;width:0%"></div></div>
-          <div class="status-val" id="val-demand" style="color:#ef4444;font-size:11px;min-width:60px"></div>
-        </div>
+      <div class="hour-lbl">Giờ đang xem</div>
+      <div class="hour-big" id="hDisp">13:00</div>
+      <div style="margin-bottom:18px"></div>
+      <div class="st-row"><div class="st-name">Nhu cầu tương đối</div><div class="st-bw"><div class="st-b"><div class="st-f" id="fb-d" style="background:#c46a58;width:0%"></div></div><div class="st-v" id="fv-d" style="color:#c46a58"></div></div></div>
+      <div class="st-row"><div class="st-name">Mặt trời</div><div class="st-bw"><div class="st-b"><div class="st-f" id="fb-s" style="background:var(--solar);width:0%"></div></div><div class="st-v" id="fv-s" style="color:var(--solar)"></div></div></div>
+      <div class="st-row"><div class="st-name">Thủy điện</div><div class="st-bw"><div class="st-b"><div class="st-f" id="fb-h" style="background:var(--hydro);width:0%"></div></div><div class="st-v" id="fv-h" style="color:var(--hydro)"></div></div></div>
+      <div class="st-row"><div class="st-name">Điện nền (Than + Khí)</div><div class="st-bw"><div class="st-b"><div class="st-f" id="fb-b" style="background:var(--coal);width:0%"></div></div><div class="st-v" id="fv-b" style="color:var(--coal)"></div></div></div>
+      <div class="gap-box g-bad" id="gBox">
+        <div class="g-lbl">Trạng thái cung–cầu</div>
+        <div class="g-val" id="gVal">—</div>
+        <div class="g-dsc" id="gDsc">—</div>
       </div>
-      <div class="status-row">
-        <div class="status-name">Mặt trời</div>
-        <div class="status-bar-wrap">
-          <div class="status-bar"><div class="status-bar-fill" id="bar-solar" style="background:var(--solar);width:0%"></div></div>
-          <div class="status-val" id="val-solar" style="color:var(--solar);font-size:11px;min-width:60px"></div>
-        </div>
+      <div style="font-family:var(--mono);font-size:8px;color:var(--text3);margin-top:8px;line-height:1.5">Mức hiển thị: Cao / Trung bình / Thấp / Không có<br>Không có giá trị tuyệt đối — hình dạng khái niệm</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════
+     TẦNG 5 — ĐÁNH ĐỔI HỆ THỐNG HIỆN TẠI
+     ══════════════════════════ -->
+<section class="sec" id="danh-doi">
+  <div class="sec-eye">Tầng 05 · Phân tích đánh đổi</div>
+  <div class="sec-title">Đánh đổi của hệ thống điện hiện tại</div>
+  <div class="sec-q">Sạch hơn, rẻ hơn, hay ổn định hơn — ba tiêu chí này không bao giờ cùng lúc đạt được</div>
+
+  <p class="trilemma-intro">
+    Việt Nam đang cân nhắc giữa ba hướng điều chỉnh cơ cấu nguồn điện.
+    Mỗi hướng cải thiện được một hoặc hai tiêu chí — nhưng đồng thời đánh đổi ở chiều khác.
+    <strong>Không có hướng nào thắng trên cả bốn tiêu chí:</strong>
+    ổn định 24/7, phát thải carbon, chi phí dài hạn và mức độ tự chủ nguồn nhiên liệu.
+  </p>
+
+  <div class="opt-grid">
+    <!-- THAN -->
+    <div class="opt coal-opt">
+      <div class="opt-name opt-coal">Giữ than</div>
+      <div class="opt-sub">Tiếp tục dựa vào nhiệt điện than như nguồn chủ đạo — hướng quán tính hiện tại.</div>
+      <ul class="crit-list">
+        <li>
+          <span class="crit-name">Ổn định 24/7</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span></span>
+            <span class="score-tag" style="background:rgba(122,173,122,.12);color:var(--sage)">Cao</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Phát thải</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--rust)"></span><span class="dot-e"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,106,88,.12);color:var(--rust)">Rất cao</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Chi phí dài hạn</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--gold)"></span><span class="dot-f" style="background:var(--gold)"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,160,64,.12);color:var(--gold)">Thấp ban đầu</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Tự chủ nguồn</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--rust)"></span><span class="dot-e"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,106,88,.12);color:var(--rust)">Phụ nhập than</span>
+          </span>
+        </li>
+      </ul>
+      <div style="margin-top:12px;font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;line-height:1.45;padding:9px 11px;background:rgba(196,106,88,.05);border-radius:5px;border:1px solid rgba(196,106,88,.15)">
+        Điện ổn định, chi phí vận hành quen thuộc — nhưng vi phạm cam kết Net Zero và tiếp tục nhập 44 triệu tấn than/năm từ nước ngoài.
       </div>
-      <div class="status-row">
-        <div class="status-name">Điện nền (Than+Khí)</div>
-        <div class="status-bar-wrap">
-          <div class="status-bar"><div class="status-bar-fill" id="bar-base" style="background:var(--coal);width:0%"></div></div>
-          <div class="status-val" id="val-base" style="color:var(--coal);font-size:11px;min-width:60px"></div>
-        </div>
+    </div>
+
+    <!-- TÁI TẠO -->
+    <div class="opt re-opt">
+      <div class="opt-name opt-re">Đẩy nhanh tái tạo</div>
+      <div class="opt-sub">Tăng mạnh điện gió, mặt trời và hệ thống lưu trữ BESS để thay thế than.</div>
+      <ul class="crit-list">
+        <li>
+          <span class="crit-name">Ổn định 24/7</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--gold)"></span><span class="dot-e"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,160,64,.12);color:var(--gold)">Gián đoạn</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Phát thải</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span></span>
+            <span class="score-tag" style="background:rgba(122,173,122,.12);color:var(--sage)">Rất thấp</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Chi phí dài hạn</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(122,173,122,.12);color:var(--sage)">Đang giảm</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Tự chủ nguồn</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span></span>
+            <span class="score-tag" style="background:rgba(122,173,122,.12);color:var(--sage)">Tự chủ cao</span>
+          </span>
+        </li>
+      </ul>
+      <div style="margin-top:12px;font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;line-height:1.45;padding:9px 11px;background:rgba(122,173,122,.04);border-radius:5px;border:1px solid rgba(122,173,122,.15)">
+        Phát thải thấp, tự chủ tốt — nhưng mặt trời tắt sau 18h và lưu trữ BESS đủ lớn để gánh cả đêm chưa có ở quy mô toàn quốc.
       </div>
-      <div class="gap-indicator" id="gapBlock">
-        <div class="gap-label">Trạng thái cung–cầu</div>
-        <div class="gap-val" id="gap-val" style="font-size:16px">—</div>
-        <div class="gap-desc" id="gap-desc">—</div>
-      </div>
-      <div style="font-family:var(--mono);font-size:9px;color:var(--text3);margin-top:10px;line-height:1.5;">
-        Mức hiển thị: Cao / Trung bình / Thấp / Không có<br>
-        Không có giá trị tuyệt đối — hình dạng khái niệm
+    </div>
+
+    <!-- LNG -->
+    <div class="opt lng-opt">
+      <div class="opt-name opt-lng">Chuyển sang LNG</div>
+      <div class="opt-sub">Dùng khí thiên nhiên hóa lỏng nhập khẩu như nguồn chuyển tiếp thay than.</div>
+      <ul class="crit-list">
+        <li>
+          <span class="crit-name">Ổn định 24/7</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--sage)"></span><span class="dot-f" style="background:var(--sage)"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(122,173,122,.12);color:var(--sage)">Tốt</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Phát thải</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--gold)"></span><span class="dot-f" style="background:var(--gold)"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,160,64,.12);color:var(--gold)">Giảm ~40%</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Chi phí dài hạn</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--rust)"></span><span class="dot-e"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,106,88,.12);color:var(--rust)">Biến động</span>
+          </span>
+        </li>
+        <li>
+          <span class="crit-name">Tự chủ nguồn</span>
+          <span style="display:flex;align-items:center">
+            <span class="dots"><span class="dot-f" style="background:var(--rust)"></span><span class="dot-e"></span><span class="dot-e"></span></span>
+            <span class="score-tag" style="background:rgba(196,106,88,.12);color:var(--rust)">Phụ nhập LNG</span>
+          </span>
+        </li>
+      </ul>
+      <div style="margin-top:12px;font-size:11px;color:var(--text2);font-family:var(--serif);font-weight:300;line-height:1.45;padding:9px 11px;background:rgba(212,120,72,.04);border-radius:5px;border:1px solid rgba(212,120,72,.15)">
+        Ổn định hơn tái tạo, phát thải thấp hơn than — nhưng giá LNG biến động theo địa chính trị và nguồn khí nội địa đang cạn dần.
       </div>
     </div>
   </div>
+
+  <!-- Trilemma conclusion -->
+  <div class="trilemma-bottom">
+    <div class="tri-title">⚖️ Tam giác bất khả thi của hệ thống điện</div>
+    <p class="tri-body">
+      Ba hướng đi trên đều là lựa chọn thật — nhưng không hướng nào thắng trên cả bốn tiêu chí cùng lúc.
+      Giữ than thì ổn định nhưng phát thải cao và phụ thuộc nhập khẩu.
+      Đẩy tái tạo thì sạch và tự chủ nhưng gián đoạn khi cần nhất.
+      Chuyển LNG thì ổn định và ít phát thải hơn than, nhưng lại tạo ra <strong>phụ thuộc mới</strong> — đổi nhập than sang nhập khí.
+      <br><br>
+      <strong>Đây là lý do câu hỏi điện nền vẫn còn mở.</strong>
+      Chương 1 đặt ra câu hỏi này — những lựa chọn công nghệ cụ thể hơn như hạt nhân, BESS hay kết hợp đa nguồn sẽ được phân tích trong các chương tiếp theo.
+    </p>
+    <div class="tri-grid">
+      <div class="tri-item">
+        <div class="tri-ilbl">Nếu ưu tiên ổn định</div>
+        <div class="tri-ival" style="color:var(--coal)">Giữ than / LNG</div>
+        <div class="tri-isub">Phải trả bằng phát thải cao và/hoặc phụ thuộc nhập khẩu</div>
+      </div>
+      <div class="tri-item">
+        <div class="tri-ilbl">Nếu ưu tiên sạch + tự chủ</div>
+        <div class="tri-ival" style="color:var(--sage)">Đẩy tái tạo</div>
+        <div class="tri-isub">Phải giải được bài toán lưu trữ và điện nền 24/7</div>
+      </div>
+      <div class="tri-item">
+        <div class="tri-ilbl">Câu hỏi vẫn còn mở</div>
+        <div class="tri-ival" style="color:var(--lilac)">Điện nền sạch?</div>
+        <div class="tri-isub">Nguồn nào ổn định, phát thải thấp, và không tạo thêm phụ thuộc mới?</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Case Study + Mật độ -->
+  <div class="nl-grid" style="margin-top:14px">
+    <div class="nl nl-case">
+      <div class="nl-t">📋 Case study — Mùa khô 2023</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.55;font-family:var(--serif);font-weight:300">Miền Bắc thiếu hụt đỉnh <strong style="color:var(--rust)">~4.350 MW</strong> — không phải thiếu nhà máy, mà vì các nguồn không gặp nhau đúng lúc.</p>
+      <div class="cs-r"><div class="cs-ico">💧</div><div><div class="cs-p">Thủy điện cạn do El Niño</div><div class="cs-e">Mực nước hồ về mức chết — giảm ~15 tỷ kWh so với năm trước</div></div></div>
+      <div class="cs-r"><div class="cs-ico">☀️</div><div><div class="cs-p">Mặt trời phát mạnh buổi trưa</div><div class="cs-e">Giờ cao điểm miền Bắc là 18–22h — mặt trời đã tắt</div></div></div>
+      <div class="cs-r"><div class="cs-ico">🔌</div><div><div class="cs-p">Lưới 500kV quá tải</div><div class="cs-e">Gió/mặt trời miền Nam không truyền ra được để hỗ trợ miền Bắc</div></div></div>
+      <div style="margin-top:11px;padding:8px 10px;background:rgba(196,106,88,.08);border-radius:4px;font-family:var(--mono);font-size:9px;color:var(--rust);line-height:1.6">KẾT QUẢ: Miền Bắc cắt điện luân phiên · Gió/mặt trời miền Nam dừng phát vì lưới không hấp thụ được</div>
+    </div>
+
+    <div class="nl nl-dens">
+      <div class="nl-t">⚡ Mật độ năng lượng theo nhiên liệu</div>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:14px;line-height:1.55;font-family:var(--serif);font-weight:300">Vì sao 1 viên uranium nhỏ bằng đầu ngón tay tương đương 1 tấn than?</p>
+      <div class="d-row">
+        <div class="d-lbl"><span class="d-nm" style="color:var(--coal)">🔲 Than đá</span><span class="d-vl">~8 kWh/kg</span></div>
+        <div class="d-out"><div class="d-in" id="db1" style="width:0%;background:var(--coal)"></div></div>
+        <div class="d-x">Mốc tham chiếu · 1×</div>
+      </div>
+      <div class="d-row">
+        <div class="d-lbl"><span class="d-nm" style="color:var(--gas)">🛢️ Dầu mỏ</span><span class="d-vl">~12 kWh/kg</span></div>
+        <div class="d-out"><div class="d-in" id="db2" style="width:0%;background:var(--gas)"></div></div>
+        <div class="d-x">1,5× so với than</div>
+      </div>
+      <div class="d-row">
+        <div class="d-lbl"><span class="d-nm" style="color:var(--nuclear)">⚛️ Uranium-235</span><span class="d-vl" style="color:var(--nuclear)">~24.000.000 kWh/kg</span></div>
+        <div class="d-out" style="background:rgba(74,176,200,.1)"><div class="d-in" id="db3" style="width:0%;background:linear-gradient(90deg,var(--nuclear),var(--lilac))"></div></div>
+        <div class="d-x" style="color:var(--nuclear)">~3.000.000× so với than — trục logarithm</div>
+      </div>
+      <div style="margin-top:11px;font-family:var(--mono);font-size:9px;color:var(--text3);padding:8px 10px;background:rgba(74,176,200,.04);border-radius:4px;border:1px solid rgba(74,176,200,.12);line-height:1.6">
+        📌 1 viên nhiên liệu Uranium ≈ 1 tấn than ≈ 560 lít dầu hỏa ≈ 481 m³ khí tự nhiên
+      </div>
+    </div>
+  </div>
+
+  <div class="ev">
+    <span style="font-size:22px">🚗⚡</span>
+    <div><strong>Áp lực bổ sung — chuyển đổi sang xe điện:</strong> Khi xe điện phổ biến hơn, nhu cầu sạc sẽ dồn vào lưới vào buổi tối — đúng lúc mặt trời đã tắt và điện nền đang gánh mức cao nhất. Bài toán cơ cấu nguồn cần được giải quyết <strong>sớm hơn dự kiến.</strong></div>
+  </div>
+</section>
+
+<!-- FOOTNOTES -->
+<div class="fns">
+  <strong>Ghi chú nguồn:</strong><br>
+  [1] Pmax, sản lượng Q1: A0, Bộ Công Thương, EVN — 2024–2026.<br>
+  [2] Cơ cấu nguồn Q1/2026: EVN / Bộ Công Thương.<br>
+  [3] CO₂ vòng đời (LCA): IEA, NREL, World Nuclear Association.<br>
+  [4] Hệ số công suất: World Nuclear Association, U.S. DOE.<br>
+  [5] Số liệu phái sinh (CO₂ hỗn hợp, CF bình quân): tính từ Σ(tỷ trọng × giá trị) dựa trên [2][3][4].<br>
+  [6] Kiểm tra áp lực — đường cong khái niệm, không phải dữ liệu giờ thực từ A0. Trục dọc không có đơn vị tuyệt đối.<br>
+  [7] Mật độ năng lượng: Than ~8 kWh/kg, Dầu ~12 kWh/kg, U-235 ~24.000.000 kWh/kg — báo cáo gốc.<br>
+  [8] Case study 2023: thiếu hụt đỉnh ~4.350 MW — EVN / A0 qua báo cáo gốc.<br>
+  [9] Nhập khẩu CO₂ (~200 g/kWh): ước tính proxy, chưa có LCA cụ thể — ghi chú trong tính toán.
 </div>
- 
-<!-- ===== FOOTNOTES ===== -->
-<div class="footnotes">
-  <strong>Ghi chú nguồn dữ liệu:</strong><br>
-  [1] Pmax, sản lượng Q1: A0 (Trung tâm Điều độ Hệ thống điện Quốc gia), Bộ Công Thương, EVN — 2024–2026.<br>
-  [2] Cơ cấu nguồn điện Q1/2026: EVN / Bộ Công Thương.<br>
-  [3] Phát thải CO₂ vòng đời (LCA): IEA, NREL, World Nuclear Association — trích dẫn trong báo cáo gốc.<br>
-  [4] Hệ số công suất (CF): World Nuclear Association, U.S. DOE — trích dẫn trong báo cáo gốc.<br>
-  [5] <em>Các số liệu phái sinh</em> (CO₂ hỗn hợp, CF trung bình gia quyền): tính toán từ công thức Σ(tỷ trọng × giá trị), dựa trên dữ liệu đã xác nhận ở [2] và [3]–[4].<br>
-  [6] <em>Stress Test — Phương pháp luận</em>: Hình dạng đường cong do nhóm nghiên cứu xây dựng phục vụ trực quan hóa, KHÔNG phải dữ liệu vận hành giờ thực từ A0. Cơ sở: (a) đỉnh trưa ~13:30 — trích từ báo cáo gốc [A0]; (b) giờ cao điểm tối 18–22h — trích từ case study mùa khô 2023 trong báo cáo; (c) mặt trời = 0 sau 18h — suy luận vật lý; (d) điện nền tương đối phẳng — phản ánh đặc tính than+khí. Trục Y không có đơn vị tuyệt đối. Tooltip bị tắt có chủ ý để tránh hiển thị số không có nguồn.<br>
-  [7] Nhập khẩu — CO₂ đại diện (~200 g/kWh): ước tính proxy, chưa có dữ liệu LCA cụ thể trong báo cáo. Được đánh dấu trong tính toán CO₂ hỗn hợp.
-</div>
- 
-</div><!-- /wrapper -->
- 
+
+</div><!-- /wrap -->
+
 <script>
-/* ===== DATA ===== */
-const SOURCES = {
-  coal:    { share:52.8, co2:820,  cfMid:77.5, isBase:true,  label:'Than',        color:'#9ca3af' },
-  hydro:   { share:20.9, co2:17,   cfMid:42,   isBase:false, label:'Thủy điện',   color:'#60a5fa' },
-  solar:   { share:9.1,  co2:45,   cfMid:17.5, isBase:false, label:'Mặt trời',    color:'#fbbf24' },
-  wind:    { share:5.6,  co2:11,   cfMid:30,   isBase:false, label:'Gió',         color:'#34d399' },
-  gas:     { share:7.0,  co2:490,  cfMid:77.5, isBase:true,  label:'Khí/LNG',     color:'#fb923c' },
-  imports: { share:3.8,  co2:200,  cfMid:60,   isBase:false, label:'Nhập khẩu',   color:'#c084fc', proxy:true },
+/* ══ DATA ══ */
+const S={
+  coal:   {sh:52.8,co2:820, cf:77.5,base:true, lb:'Than',       c:'#a09080'},
+  hydro:  {sh:20.9,co2:17,  cf:42,  base:false,lb:'Thủy điện',  c:'#5898d4'},
+  solar:  {sh:9.1, co2:45,  cf:17.5,base:false,lb:'Mặt trời',   c:'#d4a840'},
+  wind:   {sh:5.6, co2:11,  cf:30,  base:false,lb:'Gió',         c:'#5aad88'},
+  gas:    {sh:7.0, co2:490, cf:77.5,base:true, lb:'Khí/LNG',    c:'#d47848'},
+  imports:{sh:3.8, co2:200, cf:60,  base:false,lb:'Nhập khẩu',  c:'#a878c4'},
 };
-// 'other' (dầu & khác 0.1%) excluded from toggles, included in total for mix only
-const OTHER = { share:0.1, co2:500, cfMid:60, isBase:false, label:'Khác', color:'#64748b', proxy:true };
- 
-const enabled = { coal:true, hydro:true, solar:true, wind:true, gas:true, imports:true };
- 
-/* ===== COMPUTE MISSION CONTROL ===== */
-function computeMetrics() {
-  let totalShare = 0, co2Sum = 0, cfSum = 0, baseShare = 0;
-  for (const [k, s] of Object.entries(SOURCES)) {
-    if (!enabled[k]) continue;
-    totalShare += s.share;
-    co2Sum += s.share * s.co2;
-    cfSum  += s.share * s.cfMid;
-    if (s.isBase) baseShare += s.share;
-  }
-  if (totalShare === 0) return { co2: 0, cf: 0, base: 0 };
-  return {
-    co2:  co2Sum  / totalShare,
-    cf:   cfSum   / totalShare,
-    base: baseShare,
-    totalShare
-  };
+const ON={coal:true,hydro:true,solar:true,wind:true,gas:true,imports:true};
+function calcKPI(){
+  let t=0,co2=0,cf=0,base=0;
+  for(const[k,s]of Object.entries(S)){if(!ON[k])continue;t+=s.sh;co2+=s.sh*s.co2;cf+=s.sh*s.cf;if(s.base)base+=s.sh;}
+  return t?{co2:co2/t,cf:cf/t,base,t}:{co2:0,cf:0,base:0,t:0};
 }
- 
-function updateMissionControl() {
-  const m = computeMetrics();
-  document.getElementById('mc-co2').textContent = m.co2.toFixed(0) + ' g/kWh';
-  document.getElementById('mc-cf').textContent  = m.cf.toFixed(1) + '%';
-  document.getElementById('mc-base').textContent = m.base.toFixed(1) + '%';
-  document.getElementById('mc-co2-sub').textContent = m.totalShare < 99
-    ? `Nguồn đang bật: ${m.totalShare.toFixed(1)}% hệ thống — ước tính điều chỉnh`
-    : 'Trung bình gia quyền theo tỷ trọng nguồn';
-  document.getElementById('mc-base-sub').textContent = m.base === 0
-    ? 'Không có nguồn nền nào đang bật'
-    : `Than + Khí đang bật — tổng: ${m.base.toFixed(1)}%`;
-  updateMixChart();
-  updateCo2BarChart();
+function updKPI(){
+  const m=calcKPI();
+  document.getElementById('kv-co2').textContent=m.co2.toFixed(0)+' g/kWh';
+  document.getElementById('kv-cf').textContent=m.cf.toFixed(1)+'%';
+  document.getElementById('kv-base').textContent=m.base.toFixed(1)+'%';
+  document.getElementById('ks-co2').textContent=m.t<99?`Nguồn bật: ${m.t.toFixed(1)}%`:'Bình quân gia quyền';
+  document.getElementById('ks-base').textContent=m.base===0?'Không có nguồn nền bật':`Than + Khí: ${m.base.toFixed(1)}%`;
+  refMix();refCo2();
 }
- 
-/* ===== TOGGLE SOURCE ===== */
-function toggleSource(key, btn) {
-  enabled[key] = !enabled[key];
-  btn.classList.toggle('active', enabled[key]);
-  btn.classList.toggle('off',    !enabled[key]);
-  updateMissionControl();
+function togSrc(k,btn){ON[k]=!ON[k];btn.classList.toggle('on',ON[k]);btn.classList.toggle('off',!ON[k]);updKPI();}
+
+/* ══ CHART DEFAULTS ══ */
+Chart.defaults.color='#9a9080';
+Chart.defaults.font.family="'IBM Plex Mono',monospace";
+Chart.defaults.font.size=10;
+const GC='rgba(46,43,37,.55)';
+
+/* ══ PMAX ══ */
+new Chart(document.getElementById('cPmax'),{type:'line',
+  data:{labels:['19/06\n2024','02/06\n2025','07/04\n2026'],datasets:[{
+    data:[49533,51290,51691],borderColor:'#d4864a',backgroundColor:'rgba(212,134,74,.1)',
+    pointBackgroundColor:['#5898d4','#d4a840','#c46a58'],pointRadius:7,pointHoverRadius:9,tension:.3,fill:true
+  }]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y.toLocaleString('vi-VN')+' MW'}}},
+    scales:{y:{min:48000,max:53000,grid:{color:GC},ticks:{callback:v=>(v/1000).toFixed(0)+'K'}},x:{grid:{color:GC}}}}
+});
+
+/* ══ Q1 ══ */
+new Chart(document.getElementById('cQ1'),{type:'bar',
+  data:{labels:['Q1/2025','Q1/2026'],datasets:[{data:[72.1,76.86],
+    backgroundColor:['rgba(88,152,212,.22)','rgba(212,134,74,.35)'],
+    borderColor:['#5898d4','#d4864a'],borderWidth:1,borderRadius:6}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.parsed.y+' tỷ kWh'}}},
+    scales:{y:{min:68,max:80,grid:{color:GC},ticks:{callback:v=>v}},x:{grid:{color:GC}}}}
+});
+
+/* ══ MIX & CO2 ══ */
+let mxC,c2C;
+function getMD(){const k=[],l=[],v=[],c=[];for(const[key,s]of Object.entries(S)){if(!ON[key])continue;k.push(key);l.push(s.lb);v.push(s.sh);c.push(s.c);}return{k,l,v,c};}
+function buildMix(){
+  const d=getMD();
+  mxC=new Chart(document.getElementById('cMix'),{type:'doughnut',
+    data:{labels:d.l,datasets:[{data:d.v,backgroundColor:d.c,borderColor:'#1a1815',borderWidth:2}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+      plugins:{legend:{position:'bottom',labels:{boxWidth:9,padding:7,font:{size:9}}},
+        title:{display:true,text:'Cơ cấu nguồn Q1/2026',color:'#ede8de',font:{size:11}}}}});
 }
- 
-/* ===== TAB SWITCH ===== */
-function switchTab(id, btn) {
-  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  btn.classList.add('active');
+function buildCo2(){
+  const d=getMD();
+  c2C=new Chart(document.getElementById('cCo2'),{type:'bar',
+    data:{labels:d.l,datasets:[{data:d.k.map(k=>S[k].co2),backgroundColor:d.c.map(c=>c+'aa'),borderColor:d.c,borderWidth:1,borderRadius:4}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},title:{display:true,text:'Phát thải CO₂ vòng đời (g/kWh)',color:'#ede8de',font:{size:11}}},
+      scales:{x:{grid:{color:GC},ticks:{callback:v=>v}},y:{grid:{display:false}}}}});
 }
- 
-/* ===== CHART.JS DEFAULTS ===== */
-Chart.defaults.color = '#94a3b8';
-Chart.defaults.font.family = "'JetBrains Mono', monospace";
-Chart.defaults.font.size = 11;
- 
-const GRID_COLOR = 'rgba(26,40,69,.6)';
- 
-/* ===== LENS A CHARTS ===== */
-// Pmax line chart
-const pmaxData = {
-  labels: ['19/06\n2024', '02/06\n2025', '07/04\n2026'],
-  values: [49533, 51290, 51691]
+function refMix(){if(!mxC)return;const d=getMD();mxC.data.labels=d.l;mxC.data.datasets[0].data=d.v;mxC.data.datasets[0].backgroundColor=d.c;mxC.update();}
+function refCo2(){if(!c2C)return;const d=getMD();c2C.data.labels=d.l;c2C.data.datasets[0].data=d.k.map(k=>S[k].co2);c2C.data.datasets[0].backgroundColor=d.c.map(c=>c+'aa');c2C.data.datasets[0].borderColor=d.c;c2C.update();}
+
+/* ══ STRESS TEST ══ */
+let curSc='normal';
+const SC={
+  normal:{hm:1,db:0,txt:'Kịch bản bình thường: cơ cấu nguồn Q1/2026 — thủy điện đủ nước, không có yếu tố bất thường.',bc:'var(--amber)'},
+  elnino:{hm:.4,db:0,txt:'El Niño: thủy điện giảm ~60%, mô phỏng mùa khô 2023. Khoảng thiếu hụt buổi tối mở rộng rõ rệt.',bc:'var(--rust)'},
+  ev:    {hm:1,db:12,txt:'Cộng xe điện (2030 ước tính): nhu cầu sạc ban đêm tăng thêm ~12 điểm tương đối sau 18h. Áp lực điện nền tăng cao.',bc:'var(--teal)'},
 };
-const ctxPmax = document.getElementById('chartPmax').getContext('2d');
-new Chart(ctxPmax, {
-  type: 'line',
-  data: {
-    labels: pmaxData.labels,
-    datasets: [{
-      label: 'Pmax (MW)',
-      data: pmaxData.values,
-      borderColor: '#f59e0b',
-      backgroundColor: 'rgba(245,158,11,.1)',
-      pointBackgroundColor: '#f59e0b',
-      pointRadius: 6,
-      pointHoverRadius: 8,
-      tension: 0.3,
-      fill: true,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
-    scales: {
-      y: {
-        min: 48000, max: 53000,
-        grid: { color: GRID_COLOR },
-        ticks: { callback: v => (v/1000).toFixed(0) + 'K' }
-      },
-      x: { grid: { color: GRID_COLOR } }
-    }
-  }
+const hrs=Array.from({length:24},(_,i)=>i);
+function dem(h,db){
+  let b;if(h<1)b=42;else if(h<6)b=38+h*2;else if(h<10)b=55+(h-6)*5;
+  else if(h<13)b=75+(h-10)*4;else if(h<14)b=87;else if(h<17)b=87-(h-14)*3;
+  else if(h<20)b=78+(h-17)*4;else if(h<22)b=90-(h-20)*6;else b=90-(h-20)*8;
+  return Math.min(110,b+(h>=18&&db>0?db*Math.min(1,(h-18)/2):0));
+}
+function sol(h){if(h<6||h>=18)return 0;const x=(h-12)/6;return Math.max(0,Math.round(35*Math.exp(-x*x/0.28)));}
+function hyd(h,m){return Math.round(22*m);}
+function bas(){return 50;}
+function wnd(h){return 10+4*Math.sin(h*.4);}
+const mkr={id:'m',beforeDraw(ch){
+  const{ctx,chartArea:ca,scales}=ch;if(!ca)return;
+  const x=scales.x.getPixelForValue(parseInt(document.getElementById('hrSlider').value));
+  ctx.save();ctx.strokeStyle='rgba(212,134,74,.45)';ctx.lineWidth=2;ctx.setLineDash([4,4]);
+  ctx.beginPath();ctx.moveTo(x,ca.top);ctx.lineTo(x,ca.bottom);ctx.stroke();ctx.restore();
+}};
+const strC=new Chart(document.getElementById('cStr'),{type:'line',plugins:[mkr],
+  data:{labels:hrs,datasets:[
+    {data:hrs.map(h=>dem(h,0)),borderColor:'#c46a58',backgroundColor:'rgba(196,106,88,.07)',tension:.4,fill:true,pointRadius:0},
+    {data:hrs.map(sol),borderColor:'#d4a840',backgroundColor:'rgba(212,168,64,.09)',tension:.4,fill:true,pointRadius:0},
+    {data:hrs.map(h=>hyd(h,1)),borderColor:'#5898d4',backgroundColor:'rgba(88,152,212,.07)',tension:.2,fill:true,pointRadius:0},
+    {data:hrs.map(bas),borderColor:'#a09080',backgroundColor:'rgba(160,144,128,.06)',tension:0,fill:true,pointRadius:0},
+    {data:hrs.map(wnd),borderColor:'#5aad88',backgroundColor:'rgba(90,173,136,.04)',tension:.4,fill:false,pointRadius:0},
+  ]},
+  options:{responsive:true,maintainAspectRatio:false,animation:{duration:380},
+    plugins:{legend:{display:false},tooltip:{enabled:false}},
+    scales:{x:{grid:{color:GC},ticks:{callback:v=>v+':00',maxTicksLimit:8}},
+      y:{min:0,max:115,grid:{color:GC},ticks:{callback:v=>{if(v===0)return'Không có';if(v===37)return'Thấp';if(v===65)return'Vừa';if(v===92)return'Cao';return'';},color:'#5a5448'}}}}
 });
- 
-// Q1 comparison bar
-const ctxQ1 = document.getElementById('chartQ1').getContext('2d');
-new Chart(ctxQ1, {
-  type: 'bar',
-  data: {
-    labels: ['Q1/2025', 'Q1/2026'],
-    datasets: [{
-      label: 'Sản lượng (tỷ kWh)',
-      data: [72.1, 76.86],
-      backgroundColor: ['rgba(56,189,248,.25)', 'rgba(245,158,11,.4)'],
-      borderColor:     ['#38bdf8', '#f59e0b'],
-      borderWidth: 1,
-      borderRadius: 4,
-    }]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    plugins: {
-      legend: { display: false },
-      tooltip: { callbacks: { label: ctx => ctx.parsed.y + ' tỷ kWh' } }
-    },
-    scales: {
-      y: {
-        min: 68, max: 80,
-        grid: { color: GRID_COLOR },
-        ticks: { callback: v => v + ' tỷ' }
-      },
-      x: { grid: { color: GRID_COLOR } }
-    }
-  }
+
+function setSc(key,el,color){
+  curSc=key;
+  document.querySelectorAll('.sc').forEach(c=>c.className='sc');
+  el.classList.add('s-'+color);
+  const s=SC[key];
+  const info=document.getElementById('sc-info');
+  info.textContent=s.txt;info.style.borderLeftColor=s.bc;
+  updateStr(document.getElementById('hrSlider').value);
+}
+function updateStr(h){
+  h=parseInt(h);
+  const s=SC[curSc];
+  document.getElementById('hDisp').textContent=String(h).padStart(2,'0')+':00';
+  strC.data.datasets[0].data=hrs.map(hh=>dem(hh,s.db));
+  strC.data.datasets[2].data=hrs.map(hh=>hyd(hh,s.hm));
+  strC.update();
+  const d=dem(h,s.db),so=sol(h),hy=hyd(h,s.hm),b=bas(),w=wnd(h);
+  const gap=Math.max(0,d-(so+hy+b+w));
+  const lv=v=>{if(v<=5)return{t:'Không có',p:3};if(v<35)return{t:'Thấp',p:28};if(v<65)return{t:'Vừa',p:58};return{t:'Cao',p:88};};
+  const set=(bi,vi,v,c)=>{const l=lv(v);document.getElementById(bi).style.width=l.p+'%';document.getElementById(vi).textContent=l.t;};
+  set('fb-d','fv-d',d);set('fb-s','fv-s',so);set('fb-h','fv-h',hy);set('fb-b','fv-b',b);
+  const gv=document.getElementById('gVal'),gd=document.getElementById('gDsc'),gb=document.getElementById('gBox');
+  if(gap>15){gb.className='gap-box g-bad';gv.style.color='#c46a58';gv.textContent='Thiếu hụt đáng kể';gd.textContent=h>=18&&h<=22?'Mặt trời đã tắt — điện nền chưa đủ bù nhu cầu buổi tối':'Nhu cầu cao, cung chưa đủ';}
+  else if(gap>5){gb.className='gap-box g-warn';gv.style.color='#c4a040';gv.textContent='Thiếu hụt nhỏ';gd.textContent='Cung sát ngưỡng nhu cầu — hệ thống căng thẳng';}
+  else{gb.className='gap-box g-ok';gv.style.color='#7aad7a';gv.textContent='✓ Cân bằng';gd.textContent='Cung đáp ứng được nhu cầu tại giờ này';}
+}
+
+/* ══ DENSITY ANIMATION ══ */
+let densOk=false;
+function animDens(){
+  if(densOk)return;densOk=true;
+  setTimeout(()=>document.getElementById('db1').style.width='.0003%',100);
+  setTimeout(()=>document.getElementById('db2').style.width='.0005%',200);
+  setTimeout(()=>document.getElementById('db3').style.width='100%',320);
+}
+
+/* ══ SCROLL ══ */
+const navEl=document.getElementById('nav');
+const secEls=document.querySelectorAll('section[id]');
+const navAs=document.querySelectorAll('.nav-a');
+window.addEventListener('scroll',()=>{
+  navEl.classList.toggle('show',window.scrollY>260);
+  let cur='';
+  secEls.forEach(s=>{if(window.scrollY>=s.offsetTop-100)cur=s.id;});
+  navAs.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+cur));
+  const nl=document.getElementById('danh-doi');
+  if(nl&&nl.getBoundingClientRect().top<window.innerHeight*.82)animDens();
 });
- 
-/* ===== LENS B CHARTS ===== */
-let mixChart, co2BarChart;
- 
-function getMixDataset() {
-  const keys = [], labels = [], values = [], colors = [];
-  for (const [k, s] of Object.entries(SOURCES)) {
-    if (!enabled[k]) continue;
-    keys.push(k); labels.push(s.label); values.push(s.share); colors.push(s.color);
-  }
-  return { keys, labels, values, colors };
-}
- 
-function buildMixChart() {
-  const d = getMixDataset();
-  const ctx = document.getElementById('chartMix').getContext('2d');
-  mixChart = new Chart(ctx, {
-    type: 'doughnut',
-    data: {
-      labels: d.labels,
-      datasets: [{ data: d.values, backgroundColor: d.colors, borderColor: '#0f1629', borderWidth: 2 }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10 } } },
-        title: { display: true, text: 'Cơ cấu nguồn điện Q1/2026', color: '#e2e8f0', font: { size: 12 } }
-      }
-    }
-  });
-}
- 
-function updateMixChart() {
-  const d = getMixDataset();
-  mixChart.data.labels = d.labels;
-  mixChart.data.datasets[0].data = d.values;
-  mixChart.data.datasets[0].backgroundColor = d.colors;
-  mixChart.update();
-}
- 
-function buildCo2BarChart() {
-  const d = getMixDataset();
-  const ctx = document.getElementById('chartCo2Bar').getContext('2d');
-  co2BarChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: d.labels,
-      datasets: [{
-        label: 'CO₂ vòng đời (g/kWh)',
-        data: d.keys.map(k => SOURCES[k].co2),
-        backgroundColor: d.colors.map(c => c + 'aa'),
-        borderColor: d.colors,
-        borderWidth: 1, borderRadius: 4,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        title: { display: true, text: 'Phát thải CO₂ vòng đời (g/kWh)', color: '#e2e8f0', font: { size: 12 } }
-      },
-      scales: {
-        x: { grid: { color: GRID_COLOR }, ticks: { callback: v => v + ' g' } },
-        y: { grid: { display: false } }
-      }
-    }
-  });
-}
- 
-function updateCo2BarChart() {
-  const d = getMixDataset();
-  co2BarChart.data.labels = d.labels;
-  co2BarChart.data.datasets[0].data = d.keys.map(k => SOURCES[k].co2);
-  co2BarChart.data.datasets[0].backgroundColor = d.colors.map(c => c + 'aa');
-  co2BarChart.data.datasets[0].borderColor = d.colors;
-  co2BarChart.update();
-}
- 
-/* ===== STRESS TEST ===== */
-// Relative conceptual curves — 0 to 100 scale
-// Demand: double-hump, morning peak ~13h, evening peak ~19h
-// Solar: bell 6→18h
-// Baseload: flat ~65
-// Wind: slight variation
-function demandCurve(h) {
-  if (h < 1)  return 42;
-  if (h < 6)  return 38 + h * 2;
-  if (h < 10) return 55 + (h-6) * 5;
-  if (h < 13) return 75 + (h-10) * 4;
-  if (h < 14) return 87;
-  if (h < 17) return 87 - (h-14) * 3;
-  if (h < 20) return 78 + (h-17) * 4;
-  if (h < 22) return 90 - (h-20) * 6;
-  return 90 - (h-20) * 8;
-}
-function solarCurve(h) {
-  if (h < 6 || h >= 18) return 0;
-  // bell shape peaking at 12
-  const x = (h - 12) / 6;
-  return Math.max(0, Math.round(35 * Math.exp(-x * x / 0.28)));
-}
-function baseCurve()  { return 62; }
-function windCurve(h) { return 12 + 5 * Math.sin(h * 0.4); }
- 
-const hours = Array.from({length:24}, (_,i) => i);
-const demandArr  = hours.map(demandCurve);
-const solarArr   = hours.map(solarCurve);
-const baseArr    = hours.map(baseCurve);
-const windArr    = hours.map(windCurve);
- 
-const ctxStress = document.getElementById('chartStress').getContext('2d');
-let markerLine = {
-  id: 'markerLine',
-  beforeDraw(chart, args, options) {
-    const {ctx, chartArea, scales} = chart;
-    if (!chartArea) return;
-    const hour = parseInt(document.getElementById('hourSlider').value);
-    const x = scales.x.getPixelForValue(hour);
-    ctx.save();
-    ctx.strokeStyle = 'rgba(245,158,11,.6)';
-    ctx.lineWidth = 2;
-    ctx.setLineDash([4, 3]);
-    ctx.beginPath();
-    ctx.moveTo(x, chartArea.top);
-    ctx.lineTo(x, chartArea.bottom);
-    ctx.stroke();
-    ctx.restore();
-  }
-};
- 
-const stressChart = new Chart(ctxStress, {
-  type: 'line',
-  plugins: [markerLine],
-  data: {
-    labels: hours,
-    datasets: [
-      { label: 'Nhu cầu', data: demandArr, borderColor: '#ef4444', backgroundColor: 'rgba(239,68,68,.08)', tension: 0.4, fill: true, pointRadius: 0 },
-      { label: 'Mặt trời', data: solarArr, borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,.12)', tension: 0.4, fill: true, pointRadius: 0 },
-      { label: 'Điện nền', data: baseArr,  borderColor: '#9ca3af', backgroundColor: 'rgba(156,163,175,.08)', tension: 0, fill: true, pointRadius: 0 },
-      { label: 'Gió',      data: windArr,  borderColor: '#34d399', backgroundColor: 'rgba(52,211,153,.06)', tension: 0.4, fill: false, pointRadius: 0 },
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    animation: { duration: 0 },
-    plugins: {
-      legend: { display: false },
-      tooltip: { enabled: false }
-    },
-    scales: {
-      x: {
-        grid: { color: GRID_COLOR },
-        ticks: { callback: v => v + ':00', maxTicksLimit: 8 }
-      },
-      y: {
-        min: 0, max: 110,
-        grid: { color: GRID_COLOR },
-        ticks: {
-          // No numeric values — axis is qualitative only
-          callback: v => {
-            if (v === 0)   return 'Không có';
-            if (v === 37)  return 'Thấp';
-            if (v === 65)  return 'Trung bình';
-            if (v === 92)  return 'Cao';
-            return '';
-          },
-          color: '#475569'
-        }
-      }
-    }
-  }
-});
- 
-function updateStressTest(h) {
-  h = parseInt(h);
-  document.getElementById('hourDisplay').textContent = String(h).padStart(2,'0') + ':00';
-  const demand = demandCurve(h);
-  const solar  = solarCurve(h);
-  const base   = baseCurve();
-  const wind   = windCurve(h);
-  const supply = solar + base + wind;
-  const gap    = Math.max(0, demand - supply);
- 
-  // Qualitative level labels — no absolute numbers shown
-  const toLevel = v => {
-    if (v <= 5)  return { label: 'Không có', pct: 3 };
-    if (v < 40)  return { label: 'Thấp',     pct: 28 };
-    if (v < 70)  return { label: 'Trung bình', pct: 58 };
-    return              { label: 'Cao',       pct: 88 };
-  };
- 
-  const setPct = (barId, valId, v, color) => {
-    const lv = toLevel(v);
-    document.getElementById(barId).style.width = lv.pct + '%';
-    document.getElementById(valId).textContent = lv.label;
-  };
-  setPct('bar-demand', 'val-demand', demand);
-  setPct('bar-solar',  'val-solar',  solar);
-  setPct('bar-base',   'val-base',   base);
- 
-  // Gap: qualitative only
-  const gapEl  = document.getElementById('gap-val');
-  const descEl = document.getElementById('gap-desc');
-  if (gap > 12) {
-    gapEl.style.color = '#f87171';
-    gapEl.textContent = 'Thiếu hụt đáng kể';
-    descEl.textContent = h >= 18 && h <= 22
-      ? 'Mặt trời đã tắt — điện nền + gió chưa bù đủ nhu cầu tối'
-      : 'Nhu cầu cao, cung chưa đáp ứng đủ';
-  } else if (gap > 3) {
-    gapEl.style.color = '#facc15';
-    gapEl.textContent = 'Thiếu hụt nhỏ';
-    descEl.textContent = 'Cung sát ngưỡng nhu cầu — hệ thống căng';
-  } else {
-    gapEl.style.color = '#4ade80';
-    gapEl.textContent = 'Cân bằng';
-    descEl.textContent = 'Cung đủ đáp ứng nhu cầu tại giờ này';
-  }
- 
-  stressChart.update();
-}
- 
-/* ===== INIT ===== */
-buildMixChart();
-buildCo2BarChart();
-updateMissionControl();
-updateStressTest(13);
+
+/* ══ INIT ══ */
+buildMix();buildCo2();updKPI();updateStr(13);
 </script>
 </body>
 </html>
